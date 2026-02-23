@@ -1,5 +1,6 @@
 import arcade
 import constants as c
+from object import Object
 
 '''
 GameView represents a window object
@@ -22,16 +23,9 @@ class GameView(arcade.Window):
             use_spatial_hash=True
         )
 
-        square = arcade.SpriteSolidColor(
-            width = 100,
-            height = 100,
-            center_x = 600,
-            center_y = 400,
-            color = arcade.csscolor.BLACK,
-            angle = 0
-        )
+        square = Object(size = 100, x = 400, y = 400, color = arcade.csscolor.BLACK)
 
-        self.object_list.append(square) 
+        self.object_list.append(square.to_sprite()) 
 
     '''
     on_draw redraws each frame

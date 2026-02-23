@@ -16,7 +16,7 @@ class Object():
     def __init__(self, size, x, y, color):
         # For now just makes cubes
         # Right now this also ignores the angle parameter
-        square = arcade.SpriteSolidColor(
+        self.obj = arcade.SpriteSolidColor(
             width = size,
             height = size,
             center_x = x,
@@ -24,3 +24,14 @@ class Object():
             color = color,
             angle = 0
         )
+    
+    '''
+    to_sprite returns the object as a sprite to be drawn
+
+    param:
+        nothing
+    returns:
+        sprite version of the object
+    '''
+    def to_sprite(self):
+        return self.obj
