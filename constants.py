@@ -6,3 +6,4 @@ TITLE = "Highway to Hibernation"
 
 # Colors
 background = arcade.csscolor.SEA_GREEN
+start_screen_background = arcade.csscolor.BLACK

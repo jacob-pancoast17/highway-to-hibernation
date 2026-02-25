@@ -5,7 +5,7 @@ from object import Object
 '''
 GameView represents a window object
 '''
-class GameView(arcade.Window):
+class GameView(arcade.View):
     '''
     Constructor
 
@@ -13,7 +13,7 @@ class GameView(arcade.Window):
     return: nothing
     '''
     def __init__(self):
-        super().__init__(c.WIDTH, c.HEIGHT, c.TITLE)
+        super().__init__()
 
         self.background_color = c.background
         self.object_list = None
