@@ -1,7 +1,7 @@
 import arcade
 import constants as c
 import game_view as GameView
-import screen as Screen
+import start_screen as Screen
 
 # Create a GameView and run it
 window = arcade.Window(c.WIDTH, c.HEIGHT, c.TITLE)

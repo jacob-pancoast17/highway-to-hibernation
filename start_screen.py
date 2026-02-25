@@ -17,6 +17,7 @@ class StartScreen(arcade.View):
         # Reset window
         self.clear()
 
+        #TODO: Change to text objects, apparently draw is very inefficient
         arcade.draw_text("Highway to Hibernation", 
                          x = c.WIDTH / 2, 
                          y = c.HEIGHT * 3 / 4,
