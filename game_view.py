@@ -29,7 +29,7 @@ class GameView(arcade.View):
         self.object_list.append(square.to_sprite()) 
 
     '''
-    on_draw redraws each frame
+    on_draw redraws each frame and each object
 
     param: self
     return: nothing
@@ -40,11 +40,24 @@ class GameView(arcade.View):
 
         self.object_list.draw()
 
+    '''
+    run_window sets up the window and runs it
+
+    param: self
+    return: nothing
+    '''
     def run_window(self):
         self.setup()
         arcade.run()
 
-    def on_key_press(self, symbol, modifier):
+    '''
+    on_key_press detects when a key is pressed
+
+    param: self
+           symbol - key pressed
+           modifiers - e.g. capslock or numlock
+    '''
+    def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.ESCAPE:
             game_over = GameOver.GameOver()
             self.window.show_view(game_over)
