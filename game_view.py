@@ -1,5 +1,6 @@
 import arcade
 import constants as c
+import game_over_screen as GameOver
 from object import Object
 
 '''
@@ -42,3 +43,8 @@ class GameView(arcade.View):
     def run_window(self):
         self.setup()
         arcade.run()
+
+    def on_key_press(self, symbol, modifier):
+        if symbol == arcade.key.ESCAPE:
+            game_over = GameOver.GameOver()
+            self.window.show_view(game_over)
