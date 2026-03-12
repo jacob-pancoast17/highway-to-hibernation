@@ -31,6 +31,8 @@ class WorldGen():
         self.rows = np.zeros(c.ROW_COUNT)
         self.generate_array()
 
+        self.loaded = []
+
     def generate_array(self):
         '''
         generate_array fills the array created in the constructor
@@ -89,6 +91,12 @@ class WorldGen():
             else:
                 print("ERROR GENERATING ARRAY IN WORLD_GEN.PY")
                 exit()
+    
+    def generate_screen(self):
+
+        for i in range(c.ROW_COUNT):
+
+            self.loaded.append(self.generate_row(i))
 
     def generate_row(self, row):
         '''
@@ -130,7 +138,7 @@ class WorldGen():
         for i in range(c.COLUMN_COUNT):
 
             hostiles.append(
-                Hostile(c.TILE_SIZE, i, row, arcade.csscolor.RED).to_sprite())
+                Hostile(c.TILE_SIZE, i, row, arcade.csscolor.RED))
         
         return hostiles
 
@@ -166,14 +174,14 @@ class WorldGen():
                 grass[i] > 1):
 
                 sprites.append(
-                    Obstacle(c.TILE_SIZE, i, row, arcade.csscolor.DARK_GREEN).to_sprite())
+                    Obstacle(c.TILE_SIZE, i, row, arcade.csscolor.DARK_GREEN))
 
             # Otherwise, make it a random chance to be a rock
             else:
 
                 if random.random() < .3:
                     sprites.append(
-                        Obstacle(c.TILE_SIZE, i, row, arcade.csscolor.DARK_GRAY).to_sprite())
+                        Obstacle(c.TILE_SIZE, i, row, arcade.csscolor.DARK_GRAY))
         
         return sprites
 
@@ -196,7 +204,28 @@ class WorldGen():
         for i in range(c.COLUMN_COUNT):
 
             hostiles.append(
-                Hostile(c.TILE_SIZE, i, row, arcade.csscolor.BLUE).to_sprite())
+                Hostile(c.TILE_SIZE, i, row, arcade.csscolor.BLUE))
         
         return hostiles
+    
+    def get_row(self, row):
+
+        return_list = []
+
+        for x in range(c.COLUMN_COUNT):
+
+            there_was_a_sprite = False
+
+            for sprite in self.loaded[row]:
+
+                if sprite.x == x:
+
+                    there_was_a_sprite = True
+                    return_list.append(sprite)
+
+            if not there_was_a_sprite:
+                    
+                return_list.append(None)
+
+        return return_list
         

@@ -32,7 +32,7 @@ class GameView(arcade.View):
         self.player_sprite = None
 
         self.world = None
-        self.curr_loaded = None
+        #self.curr_loaded = None
 
         self.setup()
 
@@ -62,8 +62,8 @@ class GameView(arcade.View):
         # pyarcade can only drawing using a SpriteList, so
         # player has to be in a SpriteList
         self.player = Player(c.TILE_WIDTH,
-                              c.STARTING_X,
-                                c.STARTING_Y, 
+                              c.STARTING_Y,
+                                c.STARTING_X, 
                                 color = arcade.color.GREEN)
         self.player_sprite = arcade.SpriteList()
 
@@ -86,7 +86,8 @@ class GameView(arcade.View):
                 # Append to list of all grid sprites to draw
                 self.grid.append(sprite)
 
-        # self.world = WorldGen()
+        self.world = WorldGen()
+        self.world.generate_screen()
         
         # self.curr_loaded = []
         # for i in range(c.ROW_COUNT):
@@ -109,8 +110,8 @@ class GameView(arcade.View):
         self.aggressive_hostiles_sprites.draw()
 
         # Load 1 row (TEMP)
-        # for i in range(len(self.curr_loaded)):
-        #     self.curr_loaded[i].draw()
+        for i in range(len(self.world.loaded)):
+            self.world.loaded[i].draw()
         
     def on_update(self, delta_time):
         '''
@@ -136,21 +137,20 @@ class GameView(arcade.View):
         '''
 
         # If the player presses a key, update the speed if able to move
-        move = True
         if (key == arcade.key.UP or
             key == arcade.key.DOWN or
             key == arcade.key.LEFT or
             key == arcade.key.RIGHT):
+            print(f"current row: {self.world.get_row(self.player.y)}")
 
             # Test if player is going to collide with something
             #for row in self.curr_loaded:
-            if not self.player.try_move(key, 'Obstacle', self.obstacles_sprites):#row):#'''self.obstacles_sprites'''
-                move = False
-                print("FALSE")
-            elif not self.player.try_move(key, 'Hostile', self.aggressive_hostiles_sprites):
-                from game_over_screen import GameOver
-                self.window.show_view(GameOver())
+            self.player.try_move(key, self.world, self.window)
+            #row):#'''self.obstacles_sprites'''
+            # elif not self.player.try_move(key, 'Hostile', self.aggressive_hostiles_sprites):
+            #     from game_over_screen import GameOver
+            #     self.window.show_view(GameOver())
 
             # If not, we are good to move!
-            if move == True:
-                self.player.move(key)
+            # if move == True:
+            #     self.player.move(key)
