@@ -1,6 +1,5 @@
 import arcade
 import constants as c
-from object import Object
 
 class Obstacle(arcade.SpriteSolidColor):
     '''

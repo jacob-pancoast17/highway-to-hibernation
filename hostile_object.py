@@ -1,8 +1,6 @@
 import arcade
 import constants as c
 from game_over_screen import GameOver
-from object import Object
-import time
 
 class Hostile(arcade.SpriteSolidColor):
     '''
