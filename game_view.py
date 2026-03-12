@@ -37,6 +37,8 @@ class GameView(arcade.View):
 
         self.setup()
 
+        self.isPaused = False
+
     def setup(self):
         '''
         setup is run whenever the window is initially created,
@@ -163,3 +165,7 @@ class GameView(arcade.View):
             # If not, we are good to move!
             if move:
                 self.player.move(key)
+        if(key == arcade.key.ESCAPE):
+            from pause_screen import Pause
+            #pass in the current game state into Pause()
+            self.window.show_view(Pause(self))
