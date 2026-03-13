@@ -15,6 +15,8 @@ class WorldGen():
     def __init__(self):
         '''
         Constructor
+        Sets a random seed for the perlin noise function and
+        calls the helper generate_array function
 
         param: 
             self
@@ -59,8 +61,8 @@ class WorldGen():
         self.rows[1] = 0
         self.rows[2] = 0
 
-        # For each row, excluding the first three which should be
-        # grass...
+        # For each row... (excluding the first three which 
+        # should be grass
         for i in range(c.ROW_COUNT - 3):
 
             # Offset the seed a bit depending on the iteration and
@@ -93,6 +95,17 @@ class WorldGen():
                 exit()
     
     def generate_screen(self):
+        '''
+        generate_screen generates a row for every row that should
+        appear on screen
+
+        param:
+            self
+        return
+            nothing
+        '''
+
+        #TODO: Right now only works not considering a moving screen
 
         for i in range(c.ROW_COUNT):
 
@@ -131,6 +144,17 @@ class WorldGen():
             exit()
     
     def generate_cars(self, row):
+        '''
+        generate_cars takes a row and generates it randomly based on
+        the "cars" quality -- moving objects across the screen
+
+        param:
+            self
+            row - a row index to be generated
+        return:
+            a SpriteList object containing all of the object sprites for
+                that row
+        '''
 
         hostiles = arcade.SpriteList()
 
@@ -209,23 +233,42 @@ class WorldGen():
         return hostiles
     
     def get_row(self, row):
+        '''
+        get_row takes a row and returns a list version of all the sprites
+        in that row (NOT a SpriteList) as a pyarcade SpriteList can only
+        contain sprites, but we need spaces that contain 'None'-- a blank
+        tile
+
+        param:
+            self
+            row - a row index to convert from a SpriteList to a list 
+        return:
+            the row as a list of sprite objects and Nones
+        '''
 
         return_list = []
 
+        # For every x position in the row
         for x in range(c.COLUMN_COUNT):
 
             there_was_a_sprite = False
 
             for sprite in self.loaded[row]:
-
+                
+                # For each sprite in the current row, check
+                # if it's x coord matches the current x
                 if sprite.x == x:
 
+                    # if it does, append the sprite
                     there_was_a_sprite = True
                     return_list.append(sprite)
 
+            # If not, append a "None"
             if not there_was_a_sprite:
                     
                 return_list.append(None)
 
+        # This creates a list of the form
+        # [Obstacle, None, None, None, Obstacle] for example
         return return_list
         
