@@ -163,8 +163,9 @@ class WorldGen():
 
         # For each tile, just generate a hostile object that kills you
 
+        moving_left_or_not = random.choice([True, False])
         hostiles.append(
-            Hostile(c.TILE_SIZE, 0, row, arcade.csscolor.RED, self.window, self.player, static=False))
+            Hostile(c.TILE_SIZE, arcade.csscolor.RED, row=row, static=False, left=moving_left_or_not))
         
         return hostiles
 
@@ -230,7 +231,7 @@ class WorldGen():
         for i in range(c.COLUMN_COUNT):
 
             hostiles.append(
-                Hostile(c.TILE_SIZE, i, row, arcade.csscolor.BLUE, self.window, self.player))
+                Hostile(c.TILE_SIZE, arcade.csscolor.BLUE, column=i, row=row))
         
         return hostiles
     

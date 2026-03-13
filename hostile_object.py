@@ -16,7 +16,7 @@ class Hostile(arcade.SpriteSolidColor):
     returns:
         nothing
     '''
-    def __init__ (self, size, column, row, color, window, player, static=True):
+    def __init__ (self, size, color, row, column=0, static=True, left=None):
         super().__init__(width = size,
             height = size,
             color = color)
@@ -28,10 +28,24 @@ class Hostile(arcade.SpriteSolidColor):
         self.angle = 0
 
         self.static = static
+        self.is_moving_left = left
 
+        # If this hostile item is a dynamic one...
         if self.static == False:
-            self.speed = random.uniform(0.1, 1.0)
+            # Start global timer
             self.timer = 0
+
+            # Choose a velocity depending on it's direction
+            if self.is_moving_left == False:
+                self.speed = random.uniform(0.1, 1.0)
+                
+            if self.is_moving_left == True:
+                self.speed = random.uniform(-0.1, -1.0)
+
+                self.center_x = (c.MARGIN + c.TILE_WIDTH) * 14 + c.MARGIN + c.TILE_WIDTH // 2
+                self.x = 14
+        
+            # Set the first time to move based on the speed
             self.next_move = self.speed
 
     def try_move(self, delta_time, window, player):
@@ -46,11 +60,12 @@ class Hostile(arcade.SpriteSolidColor):
 
             self.next_move += self.speed
 
-            if self.center_x >= c.WINDOW_WIDTH - c.TILE_WIDTH:
+            # if (self.center_x >= c.WINDOW_WIDTH - c.TILE_WIDTH or
+            #     self.center_x <= c.TILE_WIDTH):
                 
-                print("BYE")
+            #     print("BYE")
 
-            self.move()
+            self.move(self.is_moving_left)
             hit_list = arcade.check_for_collision(self,
                                                   player)
             if hit_list:
@@ -80,8 +95,12 @@ class Hostile(arcade.SpriteSolidColor):
             # return True
 
 
-    def move(self):
+    def move(self, is_moving_left):
 
-        self.center_x += c.VELOCITY_MULTIPLIER
-        self.x += 1
+        if is_moving_left:
+            self.center_x += c.VELOCITY_MULTIPLIER
+            self.x += 1
+        else:
+            self.center_x -= c.VELOCITY_MULTIPLIER
+            self.x -= 1
 
