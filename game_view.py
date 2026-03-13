@@ -26,13 +26,10 @@ class GameView(arcade.View):
         self.next_move = 0
 
         self.grid = None
-        self.obstacles_sprites = None
-        self.aggressive_hostiles_sprites = None
 
         self.player_sprite = None
 
         self.world = None
-        #self.curr_loaded = None
 
         self.setup()
 
@@ -47,16 +44,6 @@ class GameView(arcade.View):
 
         # Create grid
         self.grid = arcade.SpriteList()
-
-        # Create obstacles
-        self.obstacles_sprites = arcade.SpriteList()
-        rock = Obstacle(c.TILE_SIZE, 3, 6, arcade.csscolor.DARK_SLATE_GRAY)
-        self.obstacles_sprites.append(rock)
-
-        # Create hostiles
-        self.aggressive_hostiles_sprites = arcade.SpriteList()
-        car = Hostile(c.TILE_SIZE, 11, 6, arcade.csscolor.RED)
-        self.aggressive_hostiles_sprites.append(car)
 
         # Create player object and "list" of players--
         # pyarcade can only drawing using a SpriteList, so
@@ -86,7 +73,7 @@ class GameView(arcade.View):
                 # Append to list of all grid sprites to draw
                 self.grid.append(sprite)
 
-        self.world = WorldGen()
+        self.world = WorldGen(self.window, self.player)
         self.world.generate_screen()
         
         # self.curr_loaded = []
@@ -106,8 +93,6 @@ class GameView(arcade.View):
         # Draw the shapes representing our current grid
         self.grid.draw()
         self.player_sprite.draw() # Draw the player on TOP of the grid
-        #self.obstacles_sprites.draw()
-        self.aggressive_hostiles_sprites.draw()
 
         # Load 1 row (TEMP)
         for i in range(len(self.world.loaded)):
@@ -117,14 +102,18 @@ class GameView(arcade.View):
         '''
         Happens every frame
         '''
-        self.world_time += delta_time
-        speed = 0.5
+        curr_hostile_rows = self.world.get_hostile_rows()
 
-        if self.world_time >= self.next_move:
-            self.next_move += speed
-            for hostile in self.aggressive_hostiles_sprites:
-                if hostile.try_move(self.window, self.player):
-                    hostile.move()
+        for index in curr_hostile_rows:
+            self.world.loaded[index][0].try_move(delta_time, self.window, self.player)
+        # self.world_time += delta_time
+        # speed = 0.5
+
+        # if self.world_time >= self.next_move:
+        #     self.next_move += speed
+        #     for hostile in self.aggressive_hostiles_sprites:
+        #         if hostile.try_move(self.window, self.player):
+        #             hostile.move()
     
 
     def on_key_press(self, key, modifiers):

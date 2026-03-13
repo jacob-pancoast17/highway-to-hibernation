@@ -12,7 +12,7 @@ the world pseudo-randomly
 '''
 class WorldGen():
     
-    def __init__(self):
+    def __init__(self, window, player):
         '''
         Constructor
         Sets a random seed for the perlin noise function and
@@ -34,6 +34,9 @@ class WorldGen():
         self.generate_array()
 
         self.loaded = []
+
+        self.window = window
+        self.player = player
 
     def generate_array(self):
         '''
@@ -159,10 +162,9 @@ class WorldGen():
         hostiles = arcade.SpriteList()
 
         # For each tile, just generate a hostile object that kills you
-        for i in range(c.COLUMN_COUNT):
 
-            hostiles.append(
-                Hostile(c.TILE_SIZE, i, row, arcade.csscolor.RED))
+        hostiles.append(
+            Hostile(c.TILE_SIZE, 0, row, arcade.csscolor.RED, self.window, self.player, static=False))
         
         return hostiles
 
@@ -228,7 +230,7 @@ class WorldGen():
         for i in range(c.COLUMN_COUNT):
 
             hostiles.append(
-                Hostile(c.TILE_SIZE, i, row, arcade.csscolor.BLUE))
+                Hostile(c.TILE_SIZE, i, row, arcade.csscolor.BLUE, self.window, self.player))
         
         return hostiles
     
@@ -272,3 +274,14 @@ class WorldGen():
         # [Obstacle, None, None, None, Obstacle] for example
         return return_list
         
+    def get_hostile_rows(self):
+
+        hostiles = []
+
+        for i in range(len(self.loaded)):
+
+            if isinstance(self.loaded[i][0], Hostile):
+
+                hostiles.append(i)
+        
+        return hostiles

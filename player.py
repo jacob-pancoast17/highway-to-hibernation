@@ -95,27 +95,23 @@ class Player(arcade.SpriteSolidColor):
     
     def move(self, key):
 
-        if (key == arcade.key.UP and
-            self.center_y < c.WINDOW_HEIGHT - c.TILE_HEIGHT):
+        if (key == arcade.key.UP):
             #print("UP")
             self.center_y += c.VELOCITY_MULTIPLIER
             self.y += 1
 
-        elif (key == arcade.key.DOWN and
-              self.center_y > c.TILE_HEIGHT):
+        elif (key == arcade.key.DOWN):
             #print("DOWN")
             self.center_y -= c.VELOCITY_MULTIPLIER
             self.y -= 1
 
-        elif (key == arcade.key.LEFT and
-              self.center_x > c.TILE_HEIGHT):
+        elif (key == arcade.key.LEFT):
             #print("LEFT")
             print(self.center_x)
             self.center_x -= c.VELOCITY_MULTIPLIER
             self.x -= 1
 
-        elif (key == arcade.key.RIGHT and
-              self.center_x < c.WINDOW_WIDTH - c.TILE_HEIGHT):
+        elif (key == arcade.key.RIGHT):
             #print("RIGHT")
             self.center_x += c.VELOCITY_MULTIPLIER
             self.x += 1
