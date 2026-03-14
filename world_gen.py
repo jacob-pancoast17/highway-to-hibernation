@@ -163,11 +163,69 @@ class WorldGen():
 
         # For each tile, just generate a hostile object that kills you
 
-        moving_left_or_not = random.choice([True, False])
-        hostiles.append(
-            Hostile(c.TILE_SIZE, arcade.csscolor.RED, row=row, static=False, left=moving_left_or_not))
-        
+        moving_left = random.choice([True, False])
+        # Pick a random speed
+        self.speed = random.uniform(0.2, 1.0)
+
+        if not moving_left:
+            hostiles.append(
+                Hostile(c.TILE_SIZE, 0, row, arcade.csscolor.RED, self.speed, static=False, left=moving_left))
+        else:
+            hostiles.append(
+                Hostile(c.TILE_SIZE, 14, row, arcade.csscolor.RED, self.speed, static=False, left=moving_left))
+
         return hostiles
+    
+    def update_cars(self, row):
+
+        hostiles = arcade.SpriteList()
+
+        # For each car in the row
+        for car in self.loaded[row]:
+
+            # If it's still on screen, keep it
+            if not car.is_off_screen():
+                hostiles.append(car)
+
+            elif len(self.loaded[row]) > 1:
+                del car
+            
+        # After cleaning up the current cacrs we have in a row, 
+        # let's check if we should add a new one! 
+        spawn = random.choices([True, False], weights=[0, 100])
+        if not spawn:
+            return
+        
+        # First we need to determine  when the last in line 
+        # arrives (we don't want cars lapping each other)
+        last_arrival = hostiles[-1]
+
+        # Arrival time if going right
+        if last_arrival.left == False:
+            last_arrival_time = (c.COLUMN_COUNT - last_arrival.x) * last_arrival.speed
+        # vs left
+        else:
+            last_arrival_time = last_arrival.x * last_arrival.speed
+
+        # Now that we know when the next one arrives, let's
+        # pick a speed that won't cause this new car to lap
+        # the last arriving of the previous cars
+        next_avail_arrival_time = last_arrival_time + last_arrival.speed
+        # Max speed that would place the car arriving at the next availablee
+        max_speed = next_avail_arrival_time / c.COLUMN_COUNT
+
+        # Truncate that so we don't get any speed demons
+        if max_speed > 1.0:
+            max_speed = 1.0
+
+        new_speed = random.uniform(0.2, max_speed)
+
+        hostiles.append(
+            Hostile(c.TILE_SIZE, 14, row, arcade.csscolor.RED, static=False, left=last_arrival.left))
+        
+        # Replace currently loaded row with the updated one
+        self.loaded[row] = hostiles
+
 
     def generate_grassy(self, row):
         '''
@@ -231,7 +289,7 @@ class WorldGen():
         for i in range(c.COLUMN_COUNT):
 
             hostiles.append(
-                Hostile(c.TILE_SIZE, arcade.csscolor.BLUE, column=i, row=row))
+                Hostile(c.TILE_SIZE, i, row, arcade.csscolor.BLUE))
         
         return hostiles
     

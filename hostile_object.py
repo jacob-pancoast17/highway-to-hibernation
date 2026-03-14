@@ -1,6 +1,7 @@
 import arcade
 import constants as c
 from game_over_screen import GameOver
+import math
 import random
 import time
 
@@ -16,7 +17,7 @@ class Hostile(arcade.SpriteSolidColor):
     returns:
         nothing
     '''
-    def __init__ (self, size, color, row, column=0, static=True, left=None):
+    def __init__ (self, size, column, row, color, speed=0, static=True, left=None):
         super().__init__(width = size,
             height = size,
             color = color)
@@ -28,79 +29,52 @@ class Hostile(arcade.SpriteSolidColor):
         self.angle = 0
 
         self.static = static
-        self.is_moving_left = left
+        self.speed = speed
 
         # If this hostile item is a dynamic one...
         if self.static == False:
             # Start global timer
             self.timer = 0
-
-            # Choose a velocity depending on it's direction
-            if self.is_moving_left == False:
-                self.speed = random.uniform(0.1, 1.0)
-                
-            if self.is_moving_left == True:
-                self.speed = random.uniform(-0.1, -1.0)
-
-                self.center_x = (c.MARGIN + c.TILE_WIDTH) * 14 + c.MARGIN + c.TILE_WIDTH // 2
-                self.x = 14
+            self.is_moving_left = left
         
             # Set the first time to move based on the speed
             self.next_move = self.speed
 
     def try_move(self, delta_time, window, player):
+        #TODO: Delete object after moving off screen
 
+        # Don't move static objects
         if self.static:
 
             return
 
         self.timer += delta_time
 
+        # If the current timer exceeds the time to next move, then move
         if self.timer >= self.next_move:
 
+            # Set the next move
             self.next_move += self.speed
 
-            # if (self.center_x >= c.WINDOW_WIDTH - c.TILE_WIDTH or
-            #     self.center_x <= c.TILE_WIDTH):
-                
-            #     print("BYE")
+            # If moving right, increase x
+            if not self.is_moving_left:
+                self.center_x += c.VELOCITY_MULTIPLIER
+                self.x += 1
+            # Otherwise, decrease x
+            else:
+                self.center_x -= c.VELOCITY_MULTIPLIER
+                self.x -= 1
 
-            self.move(self.is_moving_left)
             hit_list = arcade.check_for_collision(self,
                                                   player)
             if hit_list:
 
                 from game_over_screen import GameOver
                 window.show_view(GameOver())
-            
-            # if self.center_y < 0:
-            #     temp = self.center_y
-            #     self.center_y = c.WINDOW_HEIGHT - (c.TILE_HEIGHT / 2) - 5
-            #     hit_list = arcade.check_for_collision(
-            #         self, 
-            #         player)
-            #     if hit_list:
-            #         window.show_view(GameOver())
-            #         return False
-            #     self.center_y = temp
-            # else:
-            #     self.center_y -= c.VELOCITY_MULTIPLIER
-            #     hit_list = arcade.check_for_collision(
-            #         self, 
-            #         player)
-            #     if hit_list:
-            #         window.show_view(GameOver())
-            #         return False
-            #     self.center_y += c.VELOCITY_MULTIPLIER
-            # return True
 
-
-    def move(self, is_moving_left):
-
-        if is_moving_left:
-            self.center_x += c.VELOCITY_MULTIPLIER
-            self.x += 1
+    def is_off_screen(self):
+        
+        if self.x < 0 or self.x > 14:
+            return True
         else:
-            self.center_x -= c.VELOCITY_MULTIPLIER
-            self.x -= 1
-
+            return False

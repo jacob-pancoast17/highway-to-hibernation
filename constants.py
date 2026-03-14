@@ -10,6 +10,8 @@ TILE_WIDTH = 30
 TILE_HEIGHT = 30
 TILE_SIZE = 30
 
+# Time
+TIME_BETWEEN_SPAWNS = 1.0
 
 # This sets the margin between each cell
 # and on the edges of the screen.

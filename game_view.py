@@ -30,6 +30,9 @@ class GameView(arcade.View):
         self.player_sprite = None
 
         self.world = None
+        self.world_time = 0
+        self.next_spawn_check = None
+        self.next_spawn_check = c.TIME_BETWEEN_SPAWNS
 
         self.setup()
 
@@ -75,6 +78,7 @@ class GameView(arcade.View):
 
         self.world = WorldGen(self.window, self.player)
         self.world.generate_screen()
+
         
         # self.curr_loaded = []
         # for i in range(c.ROW_COUNT):
@@ -102,10 +106,28 @@ class GameView(arcade.View):
         '''
         Happens every frame
         '''
+        self.world_time += delta_time
+        print(self.world_time)
+        print(self.next_spawn_check)
+
         curr_hostile_rows = self.world.get_hostile_rows()
 
-        for index in curr_hostile_rows:
-            self.world.loaded[index][0].try_move(delta_time, self.window, self.player)
+        for row in curr_hostile_rows:
+
+            # Try to move cars in each car row
+            if self.world.loaded[row][0].static == False:
+
+                for hostile in self.world.loaded[row]:
+                    hostile.try_move(delta_time, self.window, self.player)
+
+        # For every time between spawns, try to spawn
+        if self.world_time > self.next_spawn_check:
+            self.next_spawn_check += c.TIME_BETWEEN_SPAWNS
+            for row in curr_hostile_rows:
+
+                if self.world.loaded[row][0].static == False:
+                    print("TRYING A SPAWN")
+                    self.world.update_cars(row)
         # self.world_time += delta_time
         # speed = 0.5
 
