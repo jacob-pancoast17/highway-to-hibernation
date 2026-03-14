@@ -187,13 +187,15 @@ class WorldGen():
             if not car.is_off_screen():
                 hostiles.append(car)
 
-            elif len(self.loaded[row]) > 1:
-                del car
+            elif len(hostiles) < 2:
+                hostiles.append(car)
+
+        print(f"row {row}: how many cars? {len(hostiles)}")
             
         # After cleaning up the current cacrs we have in a row, 
         # let's check if we should add a new one! 
-        spawn = random.choices([True, False], weights=[0, 100])
-        if not spawn:
+        spawn = random.choices([True, False], weights=[20, 80])
+        if not spawn[0]:
             return
         
         # First we need to determine  when the last in line 
@@ -221,7 +223,7 @@ class WorldGen():
         new_speed = random.uniform(0.2, max_speed)
 
         hostiles.append(
-            Hostile(c.TILE_SIZE, 14, row, arcade.csscolor.RED, static=False, left=last_arrival.left))
+            Hostile(c.TILE_SIZE, 14, row, arcade.csscolor.RED, speed = new_speed, static=False, left=last_arrival.is_moving_left))
         
         # Replace currently loaded row with the updated one
         self.loaded[row] = hostiles

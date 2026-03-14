@@ -107,8 +107,6 @@ class GameView(arcade.View):
         Happens every frame
         '''
         self.world_time += delta_time
-        print(self.world_time)
-        print(self.next_spawn_check)
 
         curr_hostile_rows = self.world.get_hostile_rows()
 
@@ -126,7 +124,6 @@ class GameView(arcade.View):
             for row in curr_hostile_rows:
 
                 if self.world.loaded[row][0].static == False:
-                    print("TRYING A SPAWN")
                     self.world.update_cars(row)
         # self.world_time += delta_time
         # speed = 0.5
