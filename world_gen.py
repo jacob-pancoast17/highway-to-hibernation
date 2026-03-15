@@ -24,7 +24,8 @@ class WorldGen():
             nothing
         '''
         # Set a random seed for the perlin noise function
-        self.seed = random.random() * 1000
+        #self.seed = random.random() * 1000
+        self.seed = 0.1 * 1000
 
         # Fill a numpy vector with 15 zeros (this represents
         # each row on the current screen and gets filled with
@@ -165,7 +166,7 @@ class WorldGen():
 
         moving_left = random.choice([True, False])
         # Pick a random speed
-        self.speed = random.uniform(0.2, 1.0)
+        self.speed = random.uniform(c.LOWER_OBSTACLE_SPEED, c.UPPER_OBSTACLE_SPEED)
 
         if not moving_left:
             hostiles.append(
@@ -187,10 +188,16 @@ class WorldGen():
             if not car.is_off_screen():
                 hostiles.append(car)
 
-            elif len(hostiles) < 2:
+        index = 0
+        while len(hostiles) == 0:
+            
+            car = self.loaded[row][index]
+            if car.is_off_screen():
                 hostiles.append(car)
+            else:
+                index += 1
 
-        print(f"row {row}: how many cars? {len(hostiles)}")
+        #print(f"row {row}: how many cars? {len(hostiles)}")
             
         # After cleaning up the current cacrs we have in a row, 
         # let's check if we should add a new one! 
@@ -214,17 +221,25 @@ class WorldGen():
         # the last arriving of the previous cars
         next_avail_arrival_time = last_arrival_time + last_arrival.speed
         # Max speed that would place the car arriving at the next availablee
-        max_speed = next_avail_arrival_time / c.COLUMN_COUNT
+        min_speed = next_avail_arrival_time / c.COLUMN_COUNT
 
         # Truncate that so we don't get any speed demons
-        if max_speed > 1.0:
-            max_speed = 1.0
+        if min_speed < 0.2:
+            min_speed = 1.0
 
-        new_speed = random.uniform(0.2, max_speed)
+        new_speed = random.uniform(min_speed, c.UPPER_OBSTACLE_SPEED)
+        arrival = 15 * new_speed
+        #print(f"last arrival time in {last_arrival_time}, currently at x = {last_arrival.x}")
+        #print(f"next available arrival is {next_avail_arrival_time} due to speed of {last_arrival.speed}")
+        #print(f"adding a new car on row {row} with speed {new_speed} which will arrive in {arrival}")
 
-        hostiles.append(
-            Hostile(c.TILE_SIZE, 14, row, arcade.csscolor.RED, speed = new_speed, static=False, left=last_arrival.is_moving_left))
-        
+        if last_arrival.is_moving_left:
+            hostiles.append(
+                Hostile(c.TILE_SIZE, 14, row, arcade.csscolor.RED, speed = new_speed, static=False, left=True))
+        else:
+            hostiles.append(
+                Hostile(c.TILE_SIZE, 0, row, arcade.csscolor.RED, speed = new_speed, static=False, left=False))
+
         # Replace currently loaded row with the updated one
         self.loaded[row] = hostiles
 

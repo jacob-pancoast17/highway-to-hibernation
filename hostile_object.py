@@ -74,7 +74,9 @@ class Hostile(arcade.SpriteSolidColor):
 
     def is_off_screen(self):
         
-        if self.x < 0 or self.x > 14:
+        if (self.center_x < c.TILE_WIDTH or
+            self.center_x > c.WINDOW_WIDTH):
+            self.speed = 0
             return True
         else:
             return False
