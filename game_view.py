@@ -35,6 +35,15 @@ class GameView(arcade.View):
         self.player_sprite = None
         self.player = None
 
+        # A variable to store our gui camera object
+        self.gui_camera = None
+
+        # This variable will store our score as an integer.
+        self.score = 0
+
+        # This variable will store the text for score that we will draw to the screen.
+        self.score_text = None
+
         self.setup()
 
         self.isPaused = False
@@ -83,6 +92,15 @@ class GameView(arcade.View):
         # SPRITE version to the SpriteList (to match types)
         self.player_sprite.append(self.player.to_sprite())
 
+        # Initialize our gui camera, initial settings are the same as our world camera.
+        self.gui_camera = arcade.Camera2D()
+
+        # Reset our score to 0
+        self.score = 0
+
+        # Initialize our arcade.Text object for score
+        self.score_text = arcade.Text(f"Score: {self.score}", x=0, y=5)
+
         # Create the grid
         for row in range(c.ROW_COUNT):
 
@@ -114,6 +132,12 @@ class GameView(arcade.View):
         # Draw passive and aggressive hostiles
         self.passive_hostiles_sprites.draw()
         self.aggressive_hostiles_sprites.draw()
+
+        # Activate our GUI camera
+        self.gui_camera.use()
+
+        # Draw our Score
+        self.score_text.draw()
         
     def on_update(self, delta_time):
         '''
@@ -128,7 +152,11 @@ class GameView(arcade.View):
             for hostile in self.aggressive_hostile_objs:
                 hostile.try_move(self.window, self.player.to_sprite())
                 hostile.move()
-    
+        
+        # score (TODO: find way to increment)
+        self.score = 100
+        self.score_text.text = f"Score: {self.score}"
+        # TODO: implement honey jars (300 bonus points)
 
     def on_key_press(self, key, modifiers):
         '''
