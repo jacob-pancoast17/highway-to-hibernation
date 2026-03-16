@@ -124,6 +124,15 @@ class GameView(arcade.View):
                 # Append to list of all grid sprites to draw
                 self.grid.append(sprite)
         # TODO: add hunny jar generation
+        # CODE BELOW DOESN'T WORK
+        hunny = arcade.Sprite(
+            "sprites/hunny.png", 
+            scale=1, 
+            center_x =(c.MARGIN + c.TILE_WIDTH) * 6 + c.MARGIN + c.TILE_WIDTH // 2, 
+            center_y=(c.MARGIN + c.TILE_HEIGHT) * 6 + c.MARGIN + c.TILE_HEIGHT // 2,
+            angle=0)
+        self.hunny_list.append(hunny)
+
 
     def on_draw(self):
         """
@@ -164,7 +173,7 @@ class GameView(arcade.View):
                 hostile.move()
         
         hunny_hit_list = arcade.check_for_collision_with_list(
-            self.player_sprite, self.coin_list
+            self.player_sprite, self.hunny_list
         )
 
         for hunny in hunny_hit_list:
