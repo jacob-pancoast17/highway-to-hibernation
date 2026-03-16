@@ -35,6 +35,9 @@ class GameView(arcade.View):
         self.player_sprite = None
         self.player = None
 
+        # SpriteList for coins the player can collect
+        self.coin_list = None
+
         # A variable to store our gui camera object
         self.gui_camera = None
 
@@ -92,6 +95,9 @@ class GameView(arcade.View):
         # SPRITE version to the SpriteList (to match types)
         self.player_sprite.append(self.player.to_sprite())
 
+        # SpriteList for coins the player can collect
+        self.hunny_list = arcade.SpriteList()
+
         # Initialize our gui camera, initial settings are the same as our world camera.
         self.gui_camera = arcade.Camera2D()
 
@@ -117,6 +123,7 @@ class GameView(arcade.View):
 
                 # Append to list of all grid sprites to draw
                 self.grid.append(sprite)
+        # TODO: add hunny jar generation
 
     def on_draw(self):
         """
@@ -132,6 +139,9 @@ class GameView(arcade.View):
         # Draw passive and aggressive hostiles
         self.passive_hostiles_sprites.draw()
         self.aggressive_hostiles_sprites.draw()
+
+        # Draws hunny jars
+        self.hunny_list.draw()
 
         # Activate our GUI camera
         self.gui_camera.use()
@@ -153,8 +163,18 @@ class GameView(arcade.View):
                 hostile.try_move(self.window, self.player.to_sprite())
                 hostile.move()
         
+        hunny_hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.coin_list
+        )
+
+        for hunny in hunny_hit_list:
+            hunny.remove_from_sprite_lists()
+            self.score += 300
+            self.score_text.text = f"Score: {self.score}"
+        
         # score (TODO: find way to increment)
-        self.score = 100
+        if self.score == 0:
+            self.score = 100
         self.score_text.text = f"Score: {self.score}"
         # TODO: implement honey jars (300 bonus points)
 
