@@ -1,4 +1,6 @@
+''' Module representing the pause screen. '''
 import arcade
+from game_view import GameView
 import constants as c
 
 class Pause(arcade.View):
@@ -59,7 +61,7 @@ class Pause(arcade.View):
             anchor_x = 'center',
             anchor_y = 'center'
         )
-        #TODO: Change to text objects, same in start_screen
+        # TODO: Change to text objects, same in start_screen
         arcade.draw_text(
             "Press ENTER to reset",
             x = c.WINDOW_WIDTH / 2,
@@ -68,10 +70,8 @@ class Pause(arcade.View):
             anchor_x = 'center',
             anchor_y = 'center'
         )
-    def on_key_press(self, key, modifiers):
-        if(key == arcade.key.ESCAPE):
+    def on_key_press(self, key):
+        if key == arcade.key.ESCAPE:
             self.window.show_view(self.game_view)
-        if(key == arcade.key.ENTER):
-            from game_view import GameView
+        if key == arcade.key.ENTER:
             self.window.show_view(GameView())
-          

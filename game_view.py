@@ -1,14 +1,17 @@
+''' Module representing the main game view. '''
 import arcade
 import constants as c
 from hostile_object import Hostile
 from obstacle_object import Obstacle
 from player import Player
+from pause_screen import Pause
+from game_over_screen import GameOver
 
 '''
 GameView represents a window object
 '''
 class GameView(arcade.View):
-   
+
     def __init__(self):
         '''
         Constructor
@@ -46,7 +49,6 @@ class GameView(arcade.View):
 
         self.setup()
 
-        self.isPaused = False
 
     def setup(self):
         '''
@@ -138,7 +140,7 @@ class GameView(arcade.View):
 
         # Draw our Score
         self.score_text.draw()
-        
+
     def on_update(self, delta_time):
         '''
         Happens every frame
@@ -152,13 +154,13 @@ class GameView(arcade.View):
             for hostile in self.aggressive_hostile_objs:
                 hostile.try_move(self.window, self.player.to_sprite())
                 hostile.move()
-        
+
         # score (TODO: find way to increment)
         self.score = 100
         self.score_text.text = f"Score: {self.score}"
         # TODO: implement honey jars (300 bonus points)
 
-    def on_key_press(self, key, modifiers):
+    def on_key_press(self, key):
         '''
         on_key_press detects when a key is pressed
 
@@ -179,21 +181,18 @@ class GameView(arcade.View):
                 move = False
 
             if move:
-                # Test if player is going to collide with agressive hostile 
+                # Test if player is going to collide with agressive hostile
                 if not self.player.try_move(key, 'Hostile', self.aggressive_hostiles_sprites):
                     # If so, game over
-                    from game_over_screen import GameOver
                     self.window.show_view(GameOver())
                 # Test if player is going to collide with passive hostile
                 if not self.player.try_move(key, 'Hostile', self.passive_hostiles_sprites):
                     # If so, game over
-                    from game_over_screen import GameOver
                     self.window.show_view(GameOver())
 
             # If not, we are good to move!
             if move:
                 self.player.move(key)
-        if(key == arcade.key.ESCAPE):
-            from pause_screen import Pause
+        if key == arcade.key.ESCAPE:
             #pass in the current game state into Pause()
             self.window.show_view(Pause(self))

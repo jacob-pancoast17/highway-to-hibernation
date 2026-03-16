@@ -1,8 +1,8 @@
+''' Module representing hostile objects - both passive and aggressive. '''
 import arcade
 import constants as c
 from game_over_screen import GameOver
 from object import Object
-import time
 
 class Hostile(Object):
     '''
@@ -13,6 +13,7 @@ class Hostile(Object):
     returns:
         nothing
     '''
+    # pylint throws an error here but im going to keep it for now i dont break anything
     def __init__(self, size, x, y, color):
         super().__init__(size, x, y, color)
 

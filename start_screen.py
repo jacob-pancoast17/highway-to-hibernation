@@ -1,3 +1,4 @@
+''' Module representing the start screen. '''
 import arcade
 import arcade.gui
 import constants as c
@@ -7,7 +8,7 @@ from game_view import GameView
 StartScreen represents the start screen view
 '''
 class StartScreen(arcade.View):
-    
+
     def __init__(self):
         '''
         Constructor calls arcade 'View' superclass constructor
@@ -42,7 +43,7 @@ class StartScreen(arcade.View):
 
         # Initialize button and define on-click event
         @play_button.event("on_click")
-        def on_click_play(event):
+        def on_click_play():
             print("Awesome!")
             game_view = GameView()
             self.window.show_view(game_view)
@@ -70,7 +71,7 @@ class StartScreen(arcade.View):
         # Reset view
         self.window.default_camera.use()
         self.uimanager.enable()
-    
+
     def on_hide_view(self):
         '''
         on_hide_view defines events that happen when switching
@@ -95,5 +96,3 @@ class StartScreen(arcade.View):
         # Draw UI elements
         self.sprites.draw()
         self.uimanager.draw()
-        
-    

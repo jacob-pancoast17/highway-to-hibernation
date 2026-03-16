@@ -1,3 +1,4 @@
+''' Module representing objects (cubes) in the game. '''
 import arcade
 import constants as c
 
@@ -28,7 +29,7 @@ class Object():
 
         self.curr_x = row
         self.curr_y = column
-    
+
     '''
     to_sprite returns the object as a sprite to be drawn
 

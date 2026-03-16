@@ -1,5 +1,7 @@
+''' Module representing the game over screen. '''
 import arcade
 import constants as c
+from game_view import GameView
 
 '''
 GameOver represents the game over view
@@ -79,7 +81,6 @@ class GameOver(arcade.View):
            _modifiers - shift, ctrl, numlock, etc.
     '''
     def on_mouse_press(self, _x, _y, _button, _modifiers):
-        from game_view import GameView
         self.window.show_view(GameView())
 
     '''
@@ -90,6 +91,6 @@ class GameOver(arcade.View):
            symbol - key pressed
            modifiers - e.g. capslock or numlock
     '''
-    def on_key_press(self, symbol, modifier):
+    def on_key_press(self, symbol):
         if symbol == arcade.key.E:
             self.window.close()
