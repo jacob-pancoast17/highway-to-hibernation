@@ -3,10 +3,9 @@ import arcade
 import constants as c
 
 
-'''
-Player class: holds all information about the player, including position and sprite
-'''
+
 class Player():
+    '''Player class: holds all information about the player, including position and sprite'''
     def __init__(self, row, column):
         # For now just makes cubes
         # Right now this also ignores the angle parameter
@@ -23,12 +22,17 @@ class Player():
         self.curr_y = column
 
     def get_curr_x(self):
+        '''Returns the player's current x position in the grid'''
         return self.curr_x
 
     def get_curr_y(self):
+        '''Returns the player's current y position in the grid'''
         return self.curr_y
 
     def try_move(self, key, object_type, objects_sprite_list):
+        ''' Checks if player can move in the direction of the key pressed 
+            without going out of bounds or colliding with an obstacle or hostile. 
+            Returns true if the move is valid, false otherwise.'''
         if key == arcade.key.UP:
             if self.curr_y >= c.ROW_COUNT - 1:
                 return False
@@ -100,7 +104,7 @@ class Player():
             print("Good to go!")
             return True
     def move(self, key):
-
+        '''Moves the player in the direction of the key pressed, if the move is valid.'''
         if (key == arcade.key.UP and
             self.curr_y < c.ROW_COUNT - 1):
             #print("UP")
@@ -136,4 +140,5 @@ class Player():
         print(f"[{self.curr_x}, {self.curr_y}]")
 
     def to_sprite(self):
+        ''' Returns the player as a sprite to be drawn '''
         return self.obj

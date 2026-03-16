@@ -18,18 +18,20 @@ class Hostile(Object):
         super().__init__(size, x, y, color)
 
 
-    '''
-    Try move to test if the hostile collides with the player.
-    If it does, return true to end the game. If not, return false to move the hostile.
 
-    param:
-        self: the hostile object
-        window: the current game view window, used to end the game if there is a collision
-        player: the player object, used to test for collision
-    returns:
-        true if there is a collision, false if not
-    '''
     def try_move(self, window, player):
+        '''
+        Try move to test if the hostile collides with the player.
+        If it does, return true to end the game. If not, return false to move the hostile.
+
+        param:
+            self: the hostile object
+            window: the current game view window, used to end the game if there is a collision
+            player: the player object, used to test for collision
+        returns:
+            true if there is a collision, false if not
+        '''
+
         if self.obj.center_y < 0:
             temp = self.obj.center_y
             self.obj.center_y = c.WINDOW_HEIGHT - (c.TILE_HEIGHT / 2) - 5
@@ -48,10 +50,8 @@ class Hostile(Object):
         return False
 
 
-    '''
-    Move the hostile down the screen. If it goes off the screen, move it back to the top.
-    '''
     def move(self):
+        '''Move the hostile down the screen. If it goes off the screen, move it back to the top'''
         if self.obj.center_y < 0:
             self.obj.center_y = c.WINDOW_HEIGHT - (c.TILE_HEIGHT / 2) - 5
         else:

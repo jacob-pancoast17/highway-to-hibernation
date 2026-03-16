@@ -7,10 +7,8 @@ from player import Player
 from pause_screen import Pause
 from game_over_screen import GameOver
 
-'''
-GameView represents a window object
-'''
 class GameView(arcade.View):
+    '''GameView represents a window object'''
 
     def __init__(self):
         '''

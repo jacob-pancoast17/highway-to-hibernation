@@ -4,10 +4,11 @@ import arcade.gui
 import constants as c
 from game_view import GameView
 
-'''
-StartScreen represents the start screen view
-'''
+
 class StartScreen(arcade.View):
+    '''
+    StartScreen represents the start screen view
+    '''
 
     def __init__(self):
         '''
@@ -66,7 +67,7 @@ class StartScreen(arcade.View):
         return: nothing
         '''
         # Set background color
-        self.window.background_color == c.start_screen_background
+        # self.window.background_color == c.start_screen_background
 
         # Reset view
         self.window.default_camera.use()

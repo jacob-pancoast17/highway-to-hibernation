@@ -23,24 +23,25 @@ class Pause(arcade.View):
         self.sprites = arcade.SpriteList()
         self.sprites.append(self.pause_spr)
 
-    '''
-    on_show_view defines events that happen when switching
-    to the game over screen
 
-    param: self
-    return: nothing
-    '''
     def on_show_view(self):
+        '''
+        on_show_view defines events that happen when switching
+        to the game over screen
+        param: self
+        return: nothing
+        '''
         # Reset view
         self.window.default_camera.use()
 
-    '''
-    on_draw redraws the pause screen
 
-    param: self
-    return: nothing
-    '''
     def on_draw(self):
+        '''
+        on_draw redraws the pause screen
+
+        param: self
+        return: nothing
+        '''
         self.sprites.draw()
         #TODO: Change to text objects, same in start_screen
         arcade.draw_text(

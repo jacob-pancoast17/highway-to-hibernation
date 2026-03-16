@@ -30,13 +30,13 @@ class Object():
         self.curr_x = row
         self.curr_y = column
 
-    '''
-    to_sprite returns the object as a sprite to be drawn
 
-    param:
-        nothing
-    returns:
-        sprite version of the object
-    '''
     def to_sprite(self):
+        '''
+        to_sprite returns the object as a sprite to be drawn
+        param:
+            nothing
+        returns:
+            sprite version of the object
+        '''
         return self.obj
