@@ -1,21 +1,22 @@
+''' Module representing the player and movement'''
 import arcade
 import constants as c
 from hostile_object import Hostile
 from obstacle_object import Obstacle
 
-class Player(arcade.SpriteSolidColor):
-    def __init__(self, size, row, column, color):
+class Player(arcade.Sprite):
+    '''Player class: holds all information about the player, including position and sprite'''
+    def __init__(self, row, column):
         # For now just makes cubes
         # Right now this also ignores the angle parameter
-        super().__init__(width = size,
-            height = size,
-            color = color)
+        super().__init__(path_or_texture="sprites/bear.png",
+            scale = 1.25)
         
         self.center_x = (c.MARGIN + c.TILE_WIDTH) * column + c.MARGIN + c.TILE_WIDTH // 2
         self.x = column
         self.center_y = (c.MARGIN + c.TILE_HEIGHT) * row + c.MARGIN + c.TILE_HEIGHT // 2
         self.y = row
-        self.angle = 0
+        self.angle = 180.0
     
     def try_move(self, key, world, window):
         
@@ -66,7 +67,6 @@ class Player(arcade.SpriteSolidColor):
                         self.move(arcade.key.RIGHT)
                 
             return True
-        
         elif key == arcade.key.RIGHT:
             if self.center_x >= c.WINDOW_WIDTH - c.TILE_HEIGHT:
                 return False
@@ -91,8 +91,7 @@ class Player(arcade.SpriteSolidColor):
 
             from game_over_screen import GameOver
             window.show_view(GameOver())
-
-    
+        
     def move(self, key):
 
         if (key == arcade.key.UP):

@@ -1,3 +1,4 @@
+''' Main module to run the game. '''
 import arcade
 import constants as c
 from start_screen import StartScreen

@@ -1,3 +1,4 @@
+''' Module providing constants for the game. '''
 import arcade
 
 # Set how many rows and columns we will have

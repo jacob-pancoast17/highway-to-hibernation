@@ -1,15 +1,15 @@
+''' Module representing the main game view. '''
 import arcade
 import constants as c
 from hostile_object import Hostile
 from obstacle_object import Obstacle
 from player import Player
 from world_gen import WorldGen
+#from pause_screen import Pause
 
-'''
-GameView represents a window object
-'''
 class GameView(arcade.View):
-   
+    '''GameView represents a window object'''
+
     def __init__(self):
         '''
         Constructor
@@ -33,8 +33,19 @@ class GameView(arcade.View):
         self.world_time = 0
         self.next_spawn_check = None
         self.next_spawn_check = c.TIME_BETWEEN_SPAWNS
+        self.player = None
+
+        # A variable to store our gui camera object
+        self.gui_camera = None
+
+        # This variable will store our score as an integer.
+        self.score = 0
+
+        # This variable will store the text for score that we will draw to the screen.
+        self.score_text = None
 
         self.setup()
+
 
     def setup(self):
         '''
@@ -51,13 +62,22 @@ class GameView(arcade.View):
         # Create player object and "list" of players--
         # pyarcade can only drawing using a SpriteList, so
         # player has to be in a SpriteList
-        self.player = Player(c.TILE_WIDTH,
-                              c.STARTING_Y,
-                                c.STARTING_X, 
-                                color = arcade.color.GREEN)
+        self.player = Player(c.STARTING_Y,
+                             c.STARTING_X)
         self.player_sprite = arcade.SpriteList()
 
+        # Use the player class's to_sprite() to add the
+        # SPRITE version to the SpriteList (to match types)
         self.player_sprite.append(self.player)
+
+        # Initialize our gui camera, initial settings are the same as our world camera.
+        self.gui_camera = arcade.Camera2D()
+
+        # Reset our score to 0
+        self.score = 0
+
+        # Initialize our arcade.Text object for score
+        self.score_text = arcade.Text(f"Score: {self.score}", x=0, y=5)
 
         # Create the grid
         for row in range(c.ROW_COUNT):
