@@ -98,19 +98,23 @@ class Player(arcade.Sprite):
             #print("UP")
             self.center_y += c.VELOCITY_MULTIPLIER
             self.y += 1
+            self.angle = 180
 
         elif (key == arcade.key.DOWN):
             #print("DOWN")
             self.center_y -= c.VELOCITY_MULTIPLIER
             self.y -= 1
+            self.angle = 0
 
         elif (key == arcade.key.LEFT):
             #print("LEFT")
             print(self.center_x)
             self.center_x -= c.VELOCITY_MULTIPLIER
             self.x -= 1
+            self.angle = 90
 
         elif (key == arcade.key.RIGHT):
             #print("RIGHT")
             self.center_x += c.VELOCITY_MULTIPLIER
             self.x += 1
+            self.angle = -90
