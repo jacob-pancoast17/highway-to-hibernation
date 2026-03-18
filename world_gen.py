@@ -24,8 +24,8 @@ class WorldGen():
             nothing
         '''
         # Set a random seed for the perlin noise function
-        #self.seed = random.random() * 1000
-        self.seed = 0.1 * 1000
+        self.seed = random.random() * 1000
+        #self.seed = 0.1 * 1000
 
         # Fill a numpy vector with 15 zeros (this represents
         # each row on the current screen and gets filled with
