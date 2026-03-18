@@ -1,3 +1,4 @@
+'''This module represents world generation'''
 import arcade
 import constants as c
 from hostile_object import Hostile
@@ -6,11 +7,11 @@ import numpy as np
 from obstacle_object import Obstacle
 import random
 
-'''
-The WorldGen class is the engine that generates
-the world pseudo-randomly
-'''
 class WorldGen():
+    '''
+    The WorldGen class is the engine that generates
+    the world pseudo-randomly
+    '''
     
     def __init__(self, window, player):
         '''
@@ -267,6 +268,9 @@ class WorldGen():
         grass = np.random.normal(loc = 0, scale = 1.1, size = c.COLUMN_COUNT)
         grass = np.sort(grass)
 
+        # TODO: HONEY
+        honey = random.choices([True, False], weights=[20, 80])
+
         last_rock = None
         # For each cell in the row
         for i in range(c.COLUMN_COUNT):
@@ -285,15 +289,17 @@ class WorldGen():
 
             # Otherwise, make it a random chance to be a rock
             else:
-
-                if random.random() < .3:
+                chance = random.random()
+                if chance < .3:
 
                     if last_rock == None or last_rock.x != i-1:
                         last_rock = Obstacle(c.TILE_SIZE, i, row, arcade.csscolor.DARK_GRAY)
                         sprites.append(last_rock)
 
+                elif chance < .4 and honey:
+                    last_rock = Obstacle(c.TILE_SIZE, i, row, arcade.csscolor.GOLD)
                     
-        
+    
         return sprites
 
     def generate_river(self, row):
@@ -360,6 +366,14 @@ class WorldGen():
         return return_list
         
     def get_hostile_rows(self):
+        '''
+        get_hostile_rows returns all the hostile row indices
+
+        param:
+            self
+        return:
+            A list of all hostiles row indices
+        '''
 
         hostiles = []
 
