@@ -115,5 +115,3 @@ class Player(arcade.SpriteSolidColor):
             #print("RIGHT")
             self.center_x += c.VELOCITY_MULTIPLIER
             self.x += 1
-
-        print(f"[{self.x}, {self.y}]")

@@ -267,12 +267,17 @@ class WorldGen():
         grass = np.random.normal(loc = 0, scale = 1.1, size = c.COLUMN_COUNT)
         grass = np.sort(grass)
 
+        last_rock = None
         # For each cell in the row
         for i in range(c.COLUMN_COUNT):
 
+            # We should not spawn in a rock
+            if row == c.STARTING_Y and i == c.STARTING_X:
+                pass
+            
             # Make it so values samples from the normal curve towards the edges
             # are more likely to be trees (we want a border)
-            if (grass[i] < -1 or
+            elif (grass[i] < -1 or
                 grass[i] > 1):
 
                 sprites.append(
@@ -282,8 +287,12 @@ class WorldGen():
             else:
 
                 if random.random() < .3:
-                    sprites.append(
-                        Obstacle(c.TILE_SIZE, i, row, arcade.csscolor.DARK_GRAY))
+
+                    if last_rock == None or last_rock.x != i-1:
+                        last_rock = Obstacle(c.TILE_SIZE, i, row, arcade.csscolor.DARK_GRAY)
+                        sprites.append(last_rock)
+
+                    
         
         return sprites
 

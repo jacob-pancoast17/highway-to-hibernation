@@ -149,16 +149,7 @@ class GameView(arcade.View):
             key == arcade.key.DOWN or
             key == arcade.key.LEFT or
             key == arcade.key.RIGHT):
-            print(f"current row: {self.world.get_row(self.player.y)}")
 
             # Test if player is going to collide with something
-            #for row in self.curr_loaded:
             self.player.try_move(key, self.world, self.window)
-            #row):#'''self.obstacles_sprites'''
-            # elif not self.player.try_move(key, 'Hostile', self.aggressive_hostiles_sprites):
-            #     from game_over_screen import GameOver
-            #     self.window.show_view(GameOver())
-
-            # If not, we are good to move!
-            # if move == True:
-            #     self.player.move(key)
+            print(f"[{self.player.x}, {self.player.y}]")
