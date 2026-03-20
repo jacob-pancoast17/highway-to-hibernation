@@ -11,7 +11,7 @@ class Obstacle(arcade.Sprite):
     returns:
         nothing
     '''
-    def __init__ (self, texture, column, row, ):
+    def __init__ (self, texture, column, row):
         super().__init__(path_or_texture=texture)
         
         self.center_x = (c.MARGIN + c.TILE_WIDTH) * column + c.MARGIN + c.TILE_WIDTH // 2

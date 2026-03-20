@@ -29,6 +29,8 @@ WINDOW_WIDTH = (TILE_WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
 WINDOW_HEIGHT = (TILE_HEIGHT + MARGIN) * ROW_COUNT + MARGIN
 TITLE = "Highway to Hibernation"
 
+MIN_LILYPADS_PER_RIVER = 3
+
 # Colors
 background = arcade.csscolor.SEA_GREEN
 start_screen_background = arcade.csscolor.BLACK

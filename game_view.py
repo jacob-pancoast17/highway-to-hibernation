@@ -129,11 +129,14 @@ class GameView(arcade.View):
 
         # Draw the shapes representing our current grid
         self.grid.draw()
-        self.player_sprite.draw() # Draw the player on TOP of the grid
 
         # Load 1 row (TEMP)
         for i in range(len(self.world.loaded)):
             self.world.loaded[i].draw()
+        for i in range(len(self.world.addons)):
+            self.world.addons[i].draw()
+        
+        self.player_sprite.draw() # Draw the player on TOP of the grid
         
     def on_update(self, delta_time):
         '''

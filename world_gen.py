@@ -36,6 +36,7 @@ class WorldGen():
         self.generate_array()
 
         self.loaded = []
+        self.addons = []
 
         self.window = window
         self.player = player
@@ -114,9 +115,11 @@ class WorldGen():
 
         for i in range(c.ROW_COUNT):
 
-            row = self.generate_row(i)
-            print(row)
-            self.loaded.append(row)
+            bottom_row = self.generate_row(i)
+            self.loaded.append(bottom_row)
+
+            top_row = self.generate_addons(i)
+            self.addons.append(top_row)
 
     def generate_row(self, row):
         '''
@@ -149,6 +152,23 @@ class WorldGen():
 
             print("PROBLEM IN GENERATION.")
             exit()
+
+    def generate_addons(self, row):
+
+        # For river
+        if self.rows[row] == 1:
+
+            # Choose between lilypads or logs
+            type = random.choices(['Lilypads', 'Logs'])
+
+            if type[0] == 'Lilypads':
+
+                return self.generate_lilypads(row)
+            else:
+                return arcade.SpriteList()
+        else:
+
+            return arcade.SpriteList()
     
     def generate_cars(self, row):
         '''
@@ -297,10 +317,6 @@ class WorldGen():
                     if last_rock == None or last_rock.x != i-1:
                         last_rock = Obstacle('sprites/rock2.png', i, row)
                         sprites.append(last_rock)
-
-                #elif chance < .4 and honey:
-                #    last_rock = Obstacle(c.TILE_SIZE, i, row, arcade.csscolor.GOLD)
-                    
     
         return sprites
 
@@ -324,27 +340,28 @@ class WorldGen():
 
             river.append(
                 Hostile("sprites/water.png", i, row))
-            
-        # Call appropriate helper function to define specific types
-        #type = random.choices(['Lilypads', 'Logs'])
-        if type[0] == 'Lilypads':
-            #river = self.generate_lilypads(river)
-            pass
-        else:
-            pass
-            #generate_logs(river)
         
         return river
     
-    def generate_lilypads(self, river):
-        print("generating lilypads!")
-        for water_tile in river:
-            if random.random() < .2:
-                water_tile = arcade.SpriteSolidColor(c.TILE_WIDTH,
-                                                     c.TILE_HEIGHT,
-                                                     color=arcade.color.GREEN_YELLOW,
-                                                     center_x=water_tile.center_x,
-                                                     center_y=water_tile.center_y)
+    def generate_lilypads(self, row):
+
+        lilypads = arcade.SpriteList()
+        atLeastOne = False
+
+        while atLeastOne == False:
+            for i in range(15):
+
+                if random.random() < .2:
+
+                    lilypads.append(Obstacle('sprites/lilypad.png',
+                                            i,
+                                            row))
+                    
+            if len(lilypads) > c.MIN_LILYPADS_PER_RIVER:
+
+                atLeastOne = True
+                
+        return lilypads
     
     def get_row(self, row):
         '''
@@ -368,6 +385,46 @@ class WorldGen():
             there_was_a_sprite = False
 
             for sprite in self.loaded[row]:
+                
+                # For each sprite in the current row, check
+                # if it's x coord matches the current x
+                if sprite.x == x:
+
+                    # if it does, append the sprite
+                    there_was_a_sprite = True
+                    return_list.append(sprite)
+
+            # If not, append a "None"
+            if not there_was_a_sprite:
+                    
+                return_list.append(None)
+
+        # This creates a list of the form
+        # [Obstacle, None, None, None, Obstacle] for example
+        return return_list
+    
+    def get_addon(self, row):
+        '''
+        get_row takes a row and returns a list version of all the sprites
+        in that row (NOT a SpriteList) as a pyarcade SpriteList can only
+        contain sprites, but we need spaces that contain 'None'-- a blank
+        tile
+
+        param:
+            self
+            row - a row index to convert from a SpriteList to a list 
+        return:
+            the row as a list of sprite objects and Nones
+        '''
+
+        return_list = []
+
+        # For every x position in the row
+        for x in range(c.COLUMN_COUNT):
+
+            there_was_a_sprite = False
+
+            for sprite in self.addons[row]:
                 
                 # For each sprite in the current row, check
                 # if it's x coord matches the current x

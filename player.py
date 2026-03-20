@@ -27,12 +27,19 @@ class Player(arcade.Sprite):
                 return
             
             self.move(arcade.key.UP)
+
             next_row = world.get_row(self.y)
+            next_addon = world.get_addon(self.y)
+
             next_cell = next_row[self.x]
+            next_addon1 = next_addon[self.x]
+
             if next_cell is not None:
                 hit_list = arcade.check_for_collision(self,
-                                                  next_row[self.x])
-                if hit_list: 
+                                                  next_cell)
+                not_hit_list = arcade.check_for_collisions(self,
+                                                           next_addon1)
+                if hit_list and not not_hit_list: 
                     if self.hit(next_cell, window) == True:
                         self.move(arcade.key.DOWN)
                     
