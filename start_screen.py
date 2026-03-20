@@ -29,7 +29,7 @@ class StartScreen(arcade.View):
         title = arcade.Sprite("sprites/title.png")
         title.center_x = c.WINDOW_WIDTH / 2
         title.center_y = c.WINDOW_HEIGHT * 3 / 4
-        title.scale = 1.0
+        title.scale = 0.85
         self.sprites.append(title)
 
         # Load play button
