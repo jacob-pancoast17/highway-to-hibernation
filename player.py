@@ -1,140 +1,120 @@
+''' Module representing the player and movement'''
 import arcade
 import constants as c
+from hostile_object import Hostile
+from obstacle_object import Obstacle
 
-class Player():
+class Player(arcade.Sprite):
+    '''Player class: holds all information about the player, including position and sprite'''
     def __init__(self, row, column):
         # For now just makes cubes
         # Right now this also ignores the angle parameter
-
+        super().__init__(path_or_texture="sprites/bear.png",
+            scale = 1.25)
         
-        self.obj = arcade.Sprite(
-            path_or_texture= "sprites/bear.png",
-            scale = 1.25,
-            center_x = (c.MARGIN + c.TILE_WIDTH) * row + c.MARGIN + c.TILE_WIDTH // 2,
-            center_y = (c.MARGIN + c.TILE_HEIGHT) * column + c.MARGIN + c.TILE_HEIGHT // 2,
-            angle = 180.0
-        )
-        
-
-        self.curr_x = row
-        self.curr_y = column
-
-    def get_curr_x(self):
-        return self.curr_x
+        self.center_x = (c.MARGIN + c.TILE_WIDTH) * column + c.MARGIN + c.TILE_WIDTH // 2
+        self.x = column
+        self.center_y = (c.MARGIN + c.TILE_HEIGHT) * row + c.MARGIN + c.TILE_HEIGHT // 2
+        self.y = row
+        self.angle = 180.0
     
-    def get_curr_y(self):
-        return self.curr_y
-    
-    def try_move(self, key, object_type, objects_sprite_list):
+    def try_move(self, key, world, window):
         
         if key == arcade.key.UP:
-            if self.curr_y >= c.ROW_COUNT - 1:
-                return False
             
-            elif (object_type == 'Obstacle' or
-                  object_type == 'Hostile'):
-                self.obj.center_y += c.VELOCITY_MULTIPLIER
-                hit_list = arcade.check_for_collision_with_list(
-                    self.obj,
-                    objects_sprite_list
-                )
-                self.obj.center_y -= c.VELOCITY_MULTIPLIER
-                if hit_list:
-                    return False
-
-            print("Good to go!")
-                
-            return True
+            # Do not let the user move above the window
+            if self.center_y >= c.WINDOW_HEIGHT - c.TILE_HEIGHT:
+                return
+            
+            self.move(arcade.key.UP)
+            next_row = world.get_row(self.y)
+            next_cell = next_row[self.x]
+            if next_cell is not None:
+                hit_list = arcade.check_for_collision(self,
+                                                  next_row[self.x])
+                if hit_list: 
+                    if self.hit(next_cell, window) == True:
+                        self.move(arcade.key.DOWN)
+                    
         
         elif key == arcade.key.DOWN:
-            if self.curr_y <= 0:
-                return False
+
+            if self.center_y <= c.TILE_HEIGHT:
+                return
             
-            elif (object_type == 'Obstacle' or
-                  object_type == 'Hostile'):
-                self.obj.center_y -= c.VELOCITY_MULTIPLIER
-                hit_list = arcade.check_for_collision_with_list(
-                    self.obj,
-                    objects_sprite_list
-                )
-                self.obj.center_y += c.VELOCITY_MULTIPLIER
-                if hit_list:
-                    return False
-            print("Good to go!")
-                
-            return True
+            self.move(arcade.key.DOWN)
+            next_row = world.get_row(self.y)
+            next_cell = next_row[self.x]
+            if next_cell is not None:
+                hit_list = arcade.check_for_collision(self,
+                                                  next_row[self.x])
+                if hit_list: 
+                    if self.hit(next_cell, window) == True:
+                        self.move(arcade.key.UP)
         
         elif key == arcade.key.LEFT:
-            if self.curr_x <= 0:
+            if self.center_x <= c.TILE_HEIGHT:
                 return False
             
-            elif (object_type == 'Obstacle' or
-                  object_type == 'Hostile'):
-                self.obj.center_x -= c.VELOCITY_MULTIPLIER
-                hit_list = arcade.check_for_collision_with_list(
-                    self.obj,
-                    objects_sprite_list
-                )
-                self.obj.center_x += c.VELOCITY_MULTIPLIER
-                if hit_list:
-                    return False
-            print("Good to go!")
+            self.move(arcade.key.LEFT)
+            row = world.get_row(self.y)
+            next_cell = row[self.x]
+            if next_cell is not None:
+                hit_list = arcade.check_for_collision(self,
+                                                  row[self.x])
+                if hit_list: 
+                    if self.hit(next_cell, window) == True:
+                        self.move(arcade.key.RIGHT)
                 
+            return True
+        elif key == arcade.key.RIGHT:
+            if self.center_x >= c.WINDOW_WIDTH - c.TILE_HEIGHT:
+                return False
+            
+            self.move(arcade.key.RIGHT)
+            row = world.get_row(self.y)
+            next_cell = row[self.x]
+            if next_cell is not None:
+                hit_list = arcade.check_for_collision(self,
+                                                  row[self.x])
+                if hit_list: 
+                    if self.hit(next_cell, window) == True:
+                        self.move(arcade.key.LEFT)
+        
+    def hit(self, next_cell, window):
+        
+        if isinstance(next_cell, Obstacle):
+
             return True
         
-        elif key == arcade.key.RIGHT:
-            if self.curr_x >= c.COLUMN_COUNT - 1:
-                return False
-            
-            elif (object_type == 'Obstacle' or
-                  object_type == 'Hostile'):
-                self.obj.center_x += c.VELOCITY_MULTIPLIER
-                hit_list = arcade.check_for_collision_with_list(
-                    self.obj,
-                    objects_sprite_list
-                )
-                self.obj.center_x -= c.VELOCITY_MULTIPLIER
-                if hit_list:
-                    return False
-            print("Good to go!")
-                
-            return True
-    
+        elif isinstance(next_cell, Hostile):
+
+            from game_over_screen import GameOver
+            window.show_view(GameOver())
+        
     def move(self, key):
 
-        if (key == arcade.key.UP and
-            self.curr_y < c.ROW_COUNT - 1):
+        if (key == arcade.key.UP):
             #print("UP")
-            self.obj.center_y += c.VELOCITY_MULTIPLIER
-            self.curr_y += 1
-            self.obj.change_angle = 180
-            self.obj.angle = self.obj.change_angle
+            self.center_y += c.VELOCITY_MULTIPLIER
+            self.y += 1
+            self.angle = 180
 
-        elif (key == arcade.key.DOWN and
-              self.curr_y > 0):
+        elif (key == arcade.key.DOWN):
             #print("DOWN")
-            self.obj.center_y -= c.VELOCITY_MULTIPLIER
-            self.curr_y -= 1
-            self.obj.change_angle = 0
-            self.obj.angle = self.obj.change_angle
+            self.center_y -= c.VELOCITY_MULTIPLIER
+            self.y -= 1
+            self.angle = 0
 
-        elif (key == arcade.key.LEFT and
-              self.curr_x > 0):
+        elif (key == arcade.key.LEFT):
             #print("LEFT")
-            self.obj.center_x -= c.VELOCITY_MULTIPLIER
-            self.curr_x -= 1
-            self.obj.change_angle = 90
-            self.obj.angle = self.obj.change_angle
+            print(self.center_x)
+            self.center_x -= c.VELOCITY_MULTIPLIER
+            self.x -= 1
+            self.angle = 90
 
-        elif (key == arcade.key.RIGHT and
-              self.curr_x < c.COLUMN_COUNT - 1):
+        elif (key == arcade.key.RIGHT):
             #print("RIGHT")
-            self.obj.center_x += c.VELOCITY_MULTIPLIER
-            self.curr_x += 1
-            self.obj.change_angle = 270
-            self.obj.angle = self.obj.change_angle
-
-        print(f"[{self.curr_x}, {self.curr_y}]")
-
-    def to_sprite(self):
-        return self.obj
+            self.center_x += c.VELOCITY_MULTIPLIER
+            self.x += 1
+            self.angle = -90

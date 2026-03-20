@@ -1,57 +1,82 @@
 import arcade
 import constants as c
 from game_over_screen import GameOver
-from object import Object
+import math
+import random
 import time
 
-class Hostile(Object):
+class Hostile(arcade.SpriteSolidColor):
     '''
     Constructor creates a hostile object which "is-an" object
 
     param: 
         same as object parameters
+        window - a pyarcade window object, allows alterable screen
+        player - player object
+        static - a boolean if the object moves or not
     returns:
         nothing
     '''
-    def __init__(self, size, x, y, color):
-        super().__init__(size, x, y, color)
+    def __init__ (self, size, column, row, color, speed=0, static=True, left=None):
+        super().__init__(width = size,
+            height = size,
+            color = color)
+        
+        self.center_x = (c.MARGIN + c.TILE_WIDTH) * column + c.MARGIN + c.TILE_WIDTH // 2
+        self.x = column
+        self.center_y = (c.MARGIN + c.TILE_HEIGHT) * row + c.MARGIN + c.TILE_HEIGHT // 2
+        self.y = row
+        self.angle = 0
 
+        self.static = static
+        self.speed = speed
 
-    '''
-    Try move to test if the hostile collides with the player.
-    If it does, return true to end the game. If not, return false to move the hostile.
+        # If this hostile item is a dynamic one...
+        if self.static == False:
+            # Start global timer
+            self.timer = 0
+            self.is_moving_left = left
+        
+            # Set the first time to move based on the speed
+            self.next_move = self.speed
 
-    param:
-        self: the hostile object
-        window: the current game view window, used to end the game if there is a collision
-        player: the player object, used to test for collision
-    returns:
-        true if there is a collision, false if not
-    '''
-    def try_move(self, window, player):
-        if self.obj.center_y < 0:
-            temp = self.obj.center_y
-            self.obj.center_y = c.WINDOW_HEIGHT - (c.TILE_HEIGHT / 2) - 5
-            hit = arcade.check_for_collision(self.to_sprite(), player)
-            self.obj.center_y = temp
-            if hit:
+    def try_move(self, delta_time, window, player):
+        #TODO: Delete object after moving off screen
+
+        # Don't move static objects
+        if self.static:
+
+            return
+
+        self.timer += delta_time
+
+        # If the current timer exceeds the time to next move, then move
+        if self.timer >= self.next_move:
+
+            # Set the next move
+            self.next_move += self.speed
+
+            # If moving right, increase x
+            if not self.is_moving_left:
+                self.center_x += c.VELOCITY_MULTIPLIER
+                self.x += 1
+            # Otherwise, decrease x
+            else:
+                self.center_x -= c.VELOCITY_MULTIPLIER
+                self.x -= 1
+
+            hit_list = arcade.check_for_collision(self,
+                                                  player)
+            if hit_list:
+
+                from game_over_screen import GameOver
                 window.show_view(GameOver())
-                return True
-        else:
-            self.obj.center_y -= c.VELOCITY_MULTIPLIER
-            hit = arcade.check_for_collision(self.to_sprite(), player)
-            self.obj.center_y += c.VELOCITY_MULTIPLIER
-            if hit:
-                window.show_view(GameOver())
-                return True
-        return False
 
-
-    '''
-    Move the hostile down the screen. If it goes off the screen, move it back to the top.
-    '''
-    def move(self):
-        if self.obj.center_y < 0:
-            self.obj.center_y = c.WINDOW_HEIGHT - (c.TILE_HEIGHT / 2) - 5
+    def is_off_screen(self):
+        
+        if (self.center_x < c.TILE_WIDTH or
+            self.center_x > c.WINDOW_WIDTH):
+            self.speed = 0
+            return True
         else:
-            self.obj.center_y -= c.VELOCITY_MULTIPLIER
+            return False

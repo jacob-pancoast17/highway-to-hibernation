@@ -1,3 +1,4 @@
+''' Module providing constants for the game. '''
 import arcade
 
 # Set how many rows and columns we will have
@@ -10,6 +11,10 @@ TILE_WIDTH = 30
 TILE_HEIGHT = 30
 TILE_SIZE = 30
 
+# Modifiers
+TIME_BETWEEN_SPAWNS = 1.0
+UPPER_OBSTACLE_SPEED = 1.0 # Tiles per second
+LOWER_OBSTACLE_SPEED = 0.2 # Tiles per second
 
 # This sets the margin between each cell
 # and on the edges of the screen.
