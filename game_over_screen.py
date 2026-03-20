@@ -35,7 +35,9 @@ class GameOver(arcade.View):
 
         #TODO: Change to text objects, same in start_screen
         arcade.draw_text(
-            "GAME OVER",
+            "YOU ARE DEAD",
+            font_name="Edit Undo BRK",
+            color= c.blood_mwahaha,
             x = c.WINDOW_WIDTH / 2,
             y = c.WINDOW_HEIGHT * 3 / 4,
             font_size = 50,
