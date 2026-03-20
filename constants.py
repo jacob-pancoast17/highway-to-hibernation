@@ -18,7 +18,7 @@ LOWER_OBSTACLE_SPEED = 0.2 # Tiles per second
 
 # This sets the margin between each cell
 # and on the edges of the screen.
-MARGIN = 5
+MARGIN = 0
 
 # Player info
 VELOCITY_MULTIPLIER = TILE_HEIGHT + MARGIN
