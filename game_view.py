@@ -4,6 +4,7 @@ import constants as c
 from hostile_object import Hostile
 from obstacle_object import Obstacle
 from player import Player
+import random
 from world_gen import WorldGen
 #from pause_screen import Pause
 
@@ -85,9 +86,21 @@ class GameView(arcade.View):
             for column in range(c.COLUMN_COUNT):
 
                 # Append a new cell
-                sprite = arcade.SpriteSolidColor(c.TILE_WIDTH,
-                                                  c.TILE_HEIGHT,
-                                                    color=arcade.color.WHITE)
+                grass_texture = random.choices(
+                    ['sprites/grass_1.png',
+                    'sprites/grass_2.png',
+                    'sprites/grass_3.png',
+                    'sprites/flowers_1.png',
+                    'sprites/flowers_2.png',
+                    'sprites/flowers_3.png'],
+                    weights = [0.22,
+                     0.22,
+                     0.22,
+                     0.11,
+                     0.11,
+                     0.11]
+                )
+                sprite = arcade.Sprite(grass_texture[0])
 
                 # Set the cell's center based on grid position
                 sprite.center_x = (c.MARGIN + c.TILE_WIDTH) * column + c.MARGIN + c.TILE_WIDTH // 2
