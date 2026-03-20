@@ -287,7 +287,7 @@ class WorldGen():
                 grass[i] > 1):
 
                 sprites.append(
-                    Obstacle(c.TILE_SIZE, i, row, arcade.csscolor.DARK_GREEN))
+                    Obstacle('sprites/log_mushrooms.png', i, row))
 
             # Otherwise, make it a random chance to be a rock
             else:
@@ -295,7 +295,7 @@ class WorldGen():
                 if chance < .3:
 
                     if last_rock == None or last_rock.x != i-1:
-                        last_rock = Obstacle(c.TILE_SIZE, i, row, arcade.csscolor.DARK_GRAY)
+                        last_rock = Obstacle('sprites/rock2.png', i, row)
                         sprites.append(last_rock)
 
                 #elif chance < .4 and honey:
