@@ -71,7 +71,8 @@ class Pause(arcade.View):
             anchor_x = 'center',
             anchor_y = 'center'
         )
-    def on_key_press(self, key):
+
+    def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:
             self.window.show_view(self.game_view)
         if key == arcade.key.ENTER:

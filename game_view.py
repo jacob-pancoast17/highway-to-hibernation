@@ -173,3 +173,8 @@ class GameView(arcade.View):
             # Test if player is going to collide with something
             self.player.try_move(key, self.world, self.window)
             print(f"[{self.player.x}, {self.player.y}]")
+
+        elif (key == arcade.key.ESCAPE):
+            from pause_screen import Pause
+            #pass in the current game state into Pause()
+            self.window.show_view(Pause(self))

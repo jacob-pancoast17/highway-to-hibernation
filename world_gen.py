@@ -114,7 +114,9 @@ class WorldGen():
 
         for i in range(c.ROW_COUNT):
 
-            self.loaded.append(self.generate_row(i))
+            row = self.generate_row(i)
+            print(row)
+            self.loaded.append(row)
 
     def generate_row(self, row):
         '''
@@ -171,10 +173,10 @@ class WorldGen():
 
         if not moving_left:
             hostiles.append(
-                Hostile(c.TILE_SIZE, 0, row, arcade.csscolor.RED, self.speed, static=False, left=moving_left))
+                Hostile("sprites/rock1.png", 0, row, self.speed, static=False, left=moving_left))
         else:
             hostiles.append(
-                Hostile(c.TILE_SIZE, 14, row, arcade.csscolor.RED, self.speed, static=False, left=moving_left))
+                Hostile("sprites/rock1.png", 14, row, self.speed, static=False, left=moving_left))
 
         return hostiles
     
@@ -236,10 +238,10 @@ class WorldGen():
 
         if last_arrival.is_moving_left:
             hostiles.append(
-                Hostile(c.TILE_SIZE, 14, row, arcade.csscolor.RED, speed = new_speed, static=False, left=True))
+                Hostile("sprites/rock1.png", 14, row, speed = new_speed, static=False, left=True))
         else:
             hostiles.append(
-                Hostile(c.TILE_SIZE, 0, row, arcade.csscolor.RED, speed = new_speed, static=False, left=False))
+                Hostile("sprites/rock1.png", 0, row, speed = new_speed, static=False, left=False))
 
         # Replace currently loaded row with the updated one
         self.loaded[row] = hostiles
@@ -269,7 +271,7 @@ class WorldGen():
         grass = np.sort(grass)
 
         # TODO: HONEY
-        honey = random.choices([True, False], weights=[20, 80])
+        #honey = random.choices([True, False], weights=[20, 80])
 
         last_rock = None
         # For each cell in the row
@@ -296,8 +298,8 @@ class WorldGen():
                         last_rock = Obstacle(c.TILE_SIZE, i, row, arcade.csscolor.DARK_GRAY)
                         sprites.append(last_rock)
 
-                elif chance < .4 and honey:
-                    last_rock = Obstacle(c.TILE_SIZE, i, row, arcade.csscolor.GOLD)
+                #elif chance < .4 and honey:
+                #    last_rock = Obstacle(c.TILE_SIZE, i, row, arcade.csscolor.GOLD)
                     
     
         return sprites
@@ -315,15 +317,34 @@ class WorldGen():
                 that row
         '''
 
-        hostiles = arcade.SpriteList()
+        river = arcade.SpriteList()
 
-        # For each tile, just generate a hostile object that kills you
+        # Generate the whole river as hostile objects
         for i in range(c.COLUMN_COUNT):
 
-            hostiles.append(
-                Hostile(c.TILE_SIZE, i, row, arcade.csscolor.BLUE))
+            river.append(
+                Hostile("sprites/water.png", i, row))
+            
+        # Call appropriate helper function to define specific types
+        #type = random.choices(['Lilypads', 'Logs'])
+        if type[0] == 'Lilypads':
+            #river = self.generate_lilypads(river)
+            pass
+        else:
+            pass
+            #generate_logs(river)
         
-        return hostiles
+        return river
+    
+    def generate_lilypads(self, river):
+        print("generating lilypads!")
+        for water_tile in river:
+            if random.random() < .2:
+                water_tile = arcade.SpriteSolidColor(c.TILE_WIDTH,
+                                                     c.TILE_HEIGHT,
+                                                     color=arcade.color.GREEN_YELLOW,
+                                                     center_x=water_tile.center_x,
+                                                     center_y=water_tile.center_y)
     
     def get_row(self, row):
         '''
@@ -379,7 +400,7 @@ class WorldGen():
 
         for i in range(len(self.loaded)):
 
-            if isinstance(self.loaded[i][0], Hostile):
+            if self.rows[i] == 1 or self.rows[i] == -1:
 
                 hostiles.append(i)
         

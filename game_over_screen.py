@@ -83,6 +83,6 @@ class GameOver(arcade.View):
      #      symbol - key pressed
      #      modifiers - e.g. capslock or numlock
 
-    def on_key_press(self, symbol):
+    def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.E:
             self.window.close()
