@@ -46,6 +46,7 @@ class Pause(arcade.View):
         #TODO: Change to text objects, same in start_screen
         arcade.draw_text(
             "PAUSE",
+            font_name="Edit Undo BRK",
             x = c.WINDOW_WIDTH / 2,
             y = c.WINDOW_HEIGHT * 3 / 5.3,
             font_size = 50,
@@ -56,6 +57,7 @@ class Pause(arcade.View):
         #TODO: Change to text objects, same in start_screen
         arcade.draw_text(
             "Press ESC to continue",
+            font_name="Edit Undo BRK",
             x = c.WINDOW_WIDTH / 2,
             y = c.WINDOW_HEIGHT / 2.1,
             font_size = 17,
@@ -65,6 +67,7 @@ class Pause(arcade.View):
         # TODO: Change to text objects, same in start_screen
         arcade.draw_text(
             "Press ENTER to reset",
+            font_name="Edit Undo BRK",
             x = c.WINDOW_WIDTH / 2,
             y = c.WINDOW_HEIGHT / 2.4,
             font_size = 17,
