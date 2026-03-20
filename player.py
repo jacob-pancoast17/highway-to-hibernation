@@ -24,7 +24,7 @@ class Player(arcade.Sprite):
             
             # Do not let the user move above the window
             if self.center_y >= c.WINDOW_HEIGHT - c.TILE_HEIGHT:
-                return
+                return False
             
             self.move(arcade.key.UP)
             next_row = world.get_row(self.y)
@@ -35,12 +35,11 @@ class Player(arcade.Sprite):
                 if hit_list: 
                     if self.hit(next_cell, window) == True:
                         self.move(arcade.key.DOWN)
-                    
-        
+            return True
         elif key == arcade.key.DOWN:
 
             if self.center_y <= c.TILE_HEIGHT:
-                return
+                return False
             
             self.move(arcade.key.DOWN)
             next_row = world.get_row(self.y)
@@ -51,7 +50,7 @@ class Player(arcade.Sprite):
                 if hit_list: 
                     if self.hit(next_cell, window) == True:
                         self.move(arcade.key.UP)
-        
+            return True
         elif key == arcade.key.LEFT:
             if self.center_x <= c.TILE_HEIGHT:
                 return False
@@ -65,7 +64,6 @@ class Player(arcade.Sprite):
                 if hit_list: 
                     if self.hit(next_cell, window) == True:
                         self.move(arcade.key.RIGHT)
-                
             return True
         elif key == arcade.key.RIGHT:
             if self.center_x >= c.WINDOW_WIDTH - c.TILE_HEIGHT:
@@ -80,6 +78,7 @@ class Player(arcade.Sprite):
                 if hit_list: 
                     if self.hit(next_cell, window) == True:
                         self.move(arcade.key.LEFT)
+            return True
         
     def hit(self, next_cell, window):
         
