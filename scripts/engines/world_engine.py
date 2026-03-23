@@ -1,6 +1,6 @@
 '''This module represents world generation'''
 import arcade
-import constants as c
+from scripts import constants as c
 from objects.hostile_object import Hostile
 from noise import pnoise1
 import numpy as np
