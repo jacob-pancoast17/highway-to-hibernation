@@ -28,7 +28,7 @@ class TimeEngine():
 
         # Set the first spawn check
         self.next_spawn_check = c.TIME_BETWEEN_SPAWNS
-    
+
     def pass_time(self, time):
         '''
         pass_time takes the elapsed time since the last on_update call

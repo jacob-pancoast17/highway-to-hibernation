@@ -2,6 +2,7 @@
 import arcade
 import constants as c
 from objects.player import Player
+from screens.pause_screen import Pause
 from engines.texture_engine import TextureEngine
 from engines.time_engine import TimeEngine
 from engines.world_engine import WorldEngine
@@ -72,8 +73,8 @@ class GameView(arcade.View):
 
         # Initialize our arcade.Text object for score
         self.score_text = arcade.Text(
-            f"Score: {self.score}", 
-            x=5, 
+            f"Score: {self.score}",
+            x=5,
             y=5,
             font_name="Edit Undo BRK",
             font_size=25,
@@ -86,17 +87,17 @@ class GameView(arcade.View):
         self.clear()
 
         self.texture_engine.draw_all_sprites()
-        
+
         # Load score text
         self.score_text.draw()
-        
+
     def on_update(self, delta_time):
         '''
         Happens every frame
         '''
 
         self.time_engine.pass_time(delta_time)
-        
+
 
     def on_key_press(self, key, modifiers):
         '''
@@ -115,10 +116,10 @@ class GameView(arcade.View):
 
             # Test if player is going to collide with something
             did_move = self.player.try_move(key, self.world, self.window)
-            if(did_move):
+            if did_move:
                 #print("made it!")
-                if(self.player.y > self.farthest_y):
-                    self.farthest_y = self.player.y 
+                if self.player.y > self.farthest_y:
+                    self.farthest_y = self.player.y
                     self.score += 100
                     #TODO delete print statement
                     print("SCORE:")
@@ -126,7 +127,6 @@ class GameView(arcade.View):
                     self.score_text.text = f"Score: {self.score}"
             print(f"[{self.player.x}, {self.player.y}]")
 
-        elif (key == arcade.key.ESCAPE):
-            from screens.pause_screen import Pause
+        elif key == arcade.key.ESCAPE:
             # Pass in the current game state into Pause()
             self.window.show_view(Pause(self))

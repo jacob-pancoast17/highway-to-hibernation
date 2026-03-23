@@ -1,5 +1,6 @@
 ''' Module representing the game over screen. '''
 import arcade
+from game_view import GameView
 import constants as c
 
 
@@ -76,7 +77,6 @@ class GameOver(arcade.View):
      #     _button - button on mouse pressed
      #     _modifiers - shift, ctrl, numlock, etc.
     def on_mouse_press(self, _x, _y, _button, _modifiers):
-        from game_view import GameView
         self.window.show_view(GameView())
 
 

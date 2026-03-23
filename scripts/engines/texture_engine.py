@@ -1,7 +1,7 @@
 '''This module loads and manages textures'''
 import arcade
-import constants as c
 import random
+import constants as c
 
 class TextureEngine():
     '''
@@ -18,7 +18,7 @@ class TextureEngine():
             world - a world engine
             player - a player
         '''
-        
+
         self.world = world
         self.player = arcade.SpriteList()
         self.player.append(player)
@@ -52,7 +52,7 @@ class TextureEngine():
                     'sprites/flowers_3.png'],
                     weights = [0.22, 0.22, 0.22,
                                0.11, 0.11, 0.11])
-                
+
                 cell = arcade.Sprite(grass_texture[0])
 
                 # Set the cell's center based on grid position
@@ -61,9 +61,9 @@ class TextureEngine():
 
                 # Append to list of all grid sprites to draw
                 grid.append(cell)
-        
+
         return grid
-    
+
     def draw_all_rows(self):
         '''
         draw_all_rows is a helper function that draws all
@@ -94,7 +94,7 @@ class TextureEngine():
         for i in range(len(self.world.platforms)):
 
             self.world.platforms[i].draw()
-    
+
     def draw_all_sprites(self):
         '''
         draw_all_sprites draws the currently loaded

@@ -12,7 +12,7 @@ class WorldEngine():
     The WorldGen class is the engine that generates
     the world pseudo-randomly
     '''
-    
+
     def __init__(self, window, player):
         '''
         Constructor
@@ -67,7 +67,7 @@ class WorldEngine():
         self.rows[1] = 0
         self.rows[2] = 0
 
-        # For each row... (excluding the first three which 
+        # For each row... (excluding the first three which
         # should be grass
         for i in range(c.ROW_COUNT - 3):
 
@@ -95,11 +95,11 @@ class WorldEngine():
 
                 # 1 : Road
                 self.rows[i + 3] = 1
-                
+
             else:
                 print("ERROR GENERATING ARRAY IN WORLD_GEN.PY")
                 exit()
-    
+
     def generate_screen(self):
         '''
         generate_screen generates a row for every row that should
@@ -139,21 +139,24 @@ class WorldEngine():
         if self.rows[row] == -1:
 
             return self.generate_cars(row)
-        
+
         elif self.rows[row] == 0:
 
             return self.generate_grassy(row)
-        
+
         elif self.rows[row] == 1:
 
             return self.generate_river(row)
-          
+
         else:
 
             print("PROBLEM IN GENERATION.")
             exit()
 
     def generate_platforms(self, row):
+        '''
+        generates platforms
+        '''
 
         # For river
         if self.rows[row] == 1:
@@ -168,16 +171,16 @@ class WorldEngine():
                 logs = self.generate_logs(row)
 
                 return logs
-            
+
         # for grassy
         elif self.rows[row] == 0:
 
             return self.generate_honey(row)
-        
+
         else:
 
             return arcade.SpriteList()
-    
+
     def generate_cars(self, row):
         '''
         generate_cars takes a row and generates it randomly based on
@@ -207,8 +210,13 @@ class WorldEngine():
                 Hostile("sprites/rock1.png", 14, row, self.speed, static=False, left=moving_left))
 
         return hostiles
-    
+
     def update_cars(self, row):
+        '''
+        update_cars takes a row and updates the cars in that row by trying
+        to move them and then trying to spawn new ones if we are at the next
+        spawn check
+        '''
 
         hostiles = arcade.SpriteList()
 
@@ -221,21 +229,21 @@ class WorldEngine():
 
         index = 0
         while len(hostiles) == 0:
-            
+
             car = self.loaded[row][index]
             if car.is_off_screen():
                 hostiles.append(car)
             else:
                 index += 1
 
-            
-        # After cleaning up the current cacrs we have in a row, 
-        # let's check if we should add a new one! 
+
+        # After cleaning up the current cacrs we have in a row,
+        # let's check if we should add a new one!
         spawn = random.choices([True, False], weights=[20, 80])
         if not spawn[0]:
             return
-        
-        # First we need to determine  when the last in line 
+
+        # First we need to determine  when the last in line
         # arrives (we don't want cars lapping each other)
         last_arrival = hostiles[-1]
 
@@ -265,8 +273,10 @@ class WorldEngine():
 
         arrival = 15 * new_speed
         #print(f"last arrival time in {last_arrival_time}, currently at x = {last_arrival.x}")
-        #print(f"next available arrival is {next_avail_arrival_time} due to speed of {last_arrival.speed}")
-        #print(f"adding a new car on row {row} with speed {new_speed} which will arrive in {arrival}")
+        #print(f"next available arrival is
+        #  {next_avail_arrival_time} due to speed of {last_arrival.speed}")
+        # print(f"adding a new car on row {row} with
+        #   speed {new_speed} which will arrive in {arrival}")
 
         if last_arrival.is_moving_left:
             hostiles.append(
@@ -310,7 +320,7 @@ class WorldEngine():
             # We should not spawn in a rock
             if row == c.STARTING_Y and i == c.STARTING_X:
                 pass
-            
+
             # Make it so values samples from the normal curve towards the edges
             # are more likely to be trees (we want a border)
             elif (grass[i] < -1 or
@@ -327,10 +337,14 @@ class WorldEngine():
                     if last_rock == None or last_rock.x != i-1:
                         last_rock = Obstacle('sprites/rock2.png', i, row)
                         sprites.append(last_rock)
-    
+
         return sprites
-    
+
     def generate_honey(self, row):
+        """
+        generate_honey takes a row and generates it randomly
+        to spawn honey that gives you points if you get it
+        """
 
         # Will honey spawn in this row?
         if random.random() < .25:
@@ -346,7 +360,7 @@ class WorldEngine():
                 if cell == None:
 
                     spawnable_spots.append(i)
-            
+
             # Pick a random one and put it there
             x = random.choices(spawnable_spots)
 
@@ -355,9 +369,9 @@ class WorldEngine():
                                             row)
             hunny.scale = .025
             honey.append(hunny)
-            
+
             return honey
-        
+
         # If no honey spawn, just return a blank list
         else:
 
@@ -383,15 +397,19 @@ class WorldEngine():
 
             river.append(
                 Hostile("sprites/water.png", i, row))
-        
+
         return river
-    
+
     def generate_lilypads(self, row):
+        """
+        generate_lilypads takes a row and generates a lilypad that you
+        can walk on to cross the river, with a random chance of spawning in each
+        """
 
         lilypads = arcade.SpriteList()
-        atLeastOne = False
+        at_least_one = False
 
-        while atLeastOne == False:
+        while at_least_one == False:
             for i in range(15):
 
                 if random.random() < .2:
@@ -399,14 +417,19 @@ class WorldEngine():
                     lilypads.append(Obstacle('sprites/lilypad.png',
                                             i,
                                             row))
-                    
+
             if len(lilypads) > c.MIN_LILYPADS_PER_RIVER:
 
-                atLeastOne = True
-                
+                at_least_one = True
+
         return lilypads
-    
+
     def generate_logs(self, row):
+        '''
+        generate_logs takes a row and generates a line of water that 
+        kills you with logs that move across the screen that you can 
+        jump on to cross
+        '''
 
         logs = []
         x = 0
@@ -416,13 +439,13 @@ class WorldEngine():
 
             # Try to spawn a log if  probablility
             if random.random() < 0.25:
-            
+
                 if logs and logs[-1][0].x != x - 1:
 
                     pass
 
                 else:
-                    
+
                     if x <= 11:
                         length = random.randint(c.SMALLEST_LOG,c.BIGGEST_LOG)
                     else:
@@ -436,24 +459,24 @@ class WorldEngine():
                                             x + i,
                                             row))
                         print(f"part of log in row {row} at {x+i}")
-                    
+
                     logs.append(log)
                     x += length
-            
+
             else:
 
                 x += 1
 
         list = arcade.SpriteList()
-        
+
         for log in logs:
 
             for sprite in log:
 
                 list.append(sprite)
-        
+
         return list
-    
+
     def get_row(self, row):
         '''
         get_row takes a row and returns a list version of all the sprites
@@ -476,7 +499,7 @@ class WorldEngine():
             there_was_a_sprite = False
 
             for sprite in self.loaded[row]:
-                
+
                 # For each sprite in the current row, check
                 # if it's x coord matches the current x
                 if sprite.x == x:
@@ -487,13 +510,13 @@ class WorldEngine():
 
             # If not, append a "None"
             if not there_was_a_sprite:
-                    
+
                 return_list.append(None)
 
         # This creates a list of the form
         # [Obstacle, None, None, None, Obstacle] for example
         return return_list
-    
+
     def get_platform(self, row):
         '''
         get_row takes a row and returns a list version of all the sprites
@@ -516,7 +539,7 @@ class WorldEngine():
             there_was_a_sprite = False
 
             for sprite in self.platforms[row]:
-                
+
                 # For each sprite in the current row, check
                 # if it's x coord matches the current x
                 if sprite.x == x:
@@ -527,13 +550,13 @@ class WorldEngine():
 
             # If not, append a "None"
             if not there_was_a_sprite:
-                    
+
                 return_list.append(None)
 
         # This creates a list of the form
         # [Obstacle, None, None, None, Obstacle] for example
         return return_list
-        
+
     def get_car_rows(self):
         '''
         get_car_rows returns all the indices of current car rows
@@ -551,5 +574,5 @@ class WorldEngine():
             if self.rows[i] == -1:
 
                 cars.append(i)
-        
+
         return cars
