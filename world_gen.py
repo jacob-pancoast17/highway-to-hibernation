@@ -36,7 +36,7 @@ class WorldGen():
         self.generate_array()
 
         self.loaded = []
-        self.addons = []
+        self.platforms = []
 
         self.window = window
         self.player = player
@@ -118,8 +118,8 @@ class WorldGen():
             bottom_row = self.generate_row(i)
             self.loaded.append(bottom_row)
 
-            top_row = self.generate_addons(i)
-            self.addons.append(top_row)
+            top_row = self.generate_platforms(i)
+            self.platforms.append(top_row)
 
     def generate_row(self, row):
         '''
@@ -153,7 +153,7 @@ class WorldGen():
             print("PROBLEM IN GENERATION.")
             exit()
 
-    def generate_addons(self, row):
+    def generate_platforms(self, row):
 
         # For river
         if self.rows[row] == 1:
@@ -403,7 +403,7 @@ class WorldGen():
         # [Obstacle, None, None, None, Obstacle] for example
         return return_list
     
-    def get_addon(self, row):
+    def get_platform(self, row):
         '''
         get_row takes a row and returns a list version of all the sprites
         in that row (NOT a SpriteList) as a pyarcade SpriteList can only
@@ -424,7 +424,7 @@ class WorldGen():
 
             there_was_a_sprite = False
 
-            for sprite in self.addons[row]:
+            for sprite in self.platforms[row]:
                 
                 # For each sprite in the current row, check
                 # if it's x coord matches the current x

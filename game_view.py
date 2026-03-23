@@ -130,11 +130,11 @@ class GameView(arcade.View):
         # Draw the shapes representing our current grid
         self.grid.draw()
 
-        # Load 1 row (TEMP)
         for i in range(len(self.world.loaded)):
             self.world.loaded[i].draw()
-        for i in range(len(self.world.addons)):
-            self.world.addons[i].draw()
+
+        for i in range(len(self.world.platforms)):
+            self.world.platforms[i].draw()
         
         self.player_sprite.draw() # Draw the player on TOP of the grid
         

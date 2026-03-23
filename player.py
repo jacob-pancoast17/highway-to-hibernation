@@ -20,79 +20,43 @@ class Player(arcade.Sprite):
     
     def try_move(self, key, world, window):
         
-        if key == arcade.key.UP:
-            
-            # Do not let the user move above the window
-            if self.center_y >= c.WINDOW_HEIGHT - c.TILE_HEIGHT:
-                return
-            
-            self.move(arcade.key.UP)
+        # Try to move
+        self.move(key)
 
-            next_row = world.get_row(self.y)
-            next_addon = world.get_addon(self.y)
-
-            next_cell = next_row[self.x]
-            next_addon1 = next_addon[self.x]
-
-            if next_cell is not None:
-                hit_list = arcade.check_for_collision(self,
-                                                  next_cell)
-                not_hit_list = arcade.check_for_collisions(self,
-                                                           next_addon1)
-                if hit_list and not not_hit_list: 
-                    if self.hit(next_cell, window) == True:
-                        self.move(arcade.key.DOWN)
-                    
-        
-        elif key == arcade.key.DOWN:
-
-            if self.center_y <= c.TILE_HEIGHT:
-                return
+        # Do not let the user move outside the window
+        if (self.center_y >= c.WINDOW_HEIGHT or
+            self.center_y <= 0 or 
+            self.center_x <= 0 or
+            self.center_x >= c.WINDOW_WIDTH):
             
-            self.move(arcade.key.DOWN)
-            next_row = world.get_row(self.y)
-            next_cell = next_row[self.x]
-            if next_cell is not None:
-                hit_list = arcade.check_for_collision(self,
-                                                  next_row[self.x])
-                if hit_list: 
-                    if self.hit(next_cell, window) == True:
-                        self.move(arcade.key.UP)
-        
-        elif key == arcade.key.LEFT:
-            if self.center_x <= c.TILE_HEIGHT:
-                return False
-            
-            self.move(arcade.key.LEFT)
-            row = world.get_row(self.y)
-            next_cell = row[self.x]
-            if next_cell is not None:
-                hit_list = arcade.check_for_collision(self,
-                                                  row[self.x])
-                if hit_list: 
-                    if self.hit(next_cell, window) == True:
-                        self.move(arcade.key.RIGHT)
-                
+            self.move_back(key)
+            return False
+
+        # Obtain information about the next row
+        next_cell = world.get_row(self.y)[self.x]
+        next_platform = world.get_platform(self.y)[self.x]
+
+
+        # If the next cell is a platform, we can move
+        if next_platform is not None:
+
             return True
-        elif key == arcade.key.RIGHT:
-            if self.center_x >= c.WINDOW_WIDTH - c.TILE_HEIGHT:
-                return False
-            
-            self.move(arcade.key.RIGHT)
-            row = world.get_row(self.y)
-            next_cell = row[self.x]
-            if next_cell is not None:
-                hit_list = arcade.check_for_collision(self,
-                                                  row[self.x])
-                if hit_list: 
-                    if self.hit(next_cell, window) == True:
-                        self.move(arcade.key.LEFT)
         
+        # Otherwise, figure out what we are colliding with
+        if (next_cell is not None and
+            arcade.check_for_collision(self, next_cell)):
+
+            # Define the type of hit
+            self.hit(next_cell, window)
+
+            # If this line is reached, the hit type was obstacle
+            self.move_back(key)
+                    
     def hit(self, next_cell, window):
         
         if isinstance(next_cell, Obstacle):
 
-            return True
+            return
         
         elif isinstance(next_cell, Hostile):
 
@@ -115,7 +79,6 @@ class Player(arcade.Sprite):
 
         elif (key == arcade.key.LEFT):
             #print("LEFT")
-            print(self.center_x)
             self.center_x -= c.VELOCITY_MULTIPLIER
             self.x -= 1
             self.angle = 90
@@ -124,4 +87,34 @@ class Player(arcade.Sprite):
             #print("RIGHT")
             self.center_x += c.VELOCITY_MULTIPLIER
             self.x += 1
+            self.angle = -90
+    
+    def move_back(self, key):
+
+        # If up, move back down
+        if (key == arcade.key.UP):
+
+            self.center_y -= c.VELOCITY_MULTIPLIER
+            self.y -= 1
+            self.angle = 180
+            
+        # If down, move back up
+        elif (key == arcade.key.DOWN):            
+
+            self.center_y += c.VELOCITY_MULTIPLIER
+            self.y += 1
+            self.angle = 0
+
+        # If left, move back right
+        elif (key == arcade.key.LEFT):
+            
+            self.center_x += c.VELOCITY_MULTIPLIER
+            self.x += 1
+            self.angle = 90
+            
+        # If right, move back left
+        elif (key == arcade.key.RIGHT):
+
+            self.center_x -= c.VELOCITY_MULTIPLIER
+            self.x -= 1
             self.angle = -90
