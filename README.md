@@ -38,25 +38,27 @@ Enjoy!
 Use of PyArcade, noise from Python library. Font sourced from https://www.1001fonts.com/edit-undo-font.html
 
 
+---
+
 ### Table of Contents:
-> pycache
+> * pycache
 > 
-> fonts
+> * fonts
 >
 > * edit-undo.brk.ttf
 >
-> scripts
-> * engines
+> * scripts
+>> * engines
 >>> * texture_engine.py
 >>> * time_engine.py
 >>> * world_engine.py
 >
-> * objects
+>> * objects
 >>> * hostile_object.py
 >>> * obstacle_object.py
 >>> * player.py
 >
-> * screens
+>> * screens
 >>> * game_over_screen.py
 >>> * pause_screen.py
 >>> * start_screen.py
@@ -64,11 +66,11 @@ Use of PyArcade, noise from Python library. Font sourced from https://www.1001fo
 > * game_view.py
 > * main.py
 >
-> sprites
+> * sprites
 >>> * List of png/gif used in game
 >
-> .gitignore
+> * .gitignore
 >
-> README.md
+> * README.md
 >
-> requirements.txt
+> * requirements.txt
