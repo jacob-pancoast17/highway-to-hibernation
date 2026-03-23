@@ -339,7 +339,7 @@ class WorldEngine():
                 grass[i] > 1):
 
                 sprites.append(
-                    Obstacle('sprites/log_mushrooms.png', i, row))
+                    Obstacle('sprites/tree1_no_bush.png', i, row))
 
             # Otherwise, make it a random chance to be a rock
             else:
@@ -454,7 +454,7 @@ class WorldEngine():
 
                     for i in range(length):
 
-                        log.append(Obstacle('sprites/rock1_mossy.png',
+                        log.append(Obstacle('sprites/water_log.png',
                                             x + i,
                                             row))
                         print(f"part of log in row {row} at {x+i}")
