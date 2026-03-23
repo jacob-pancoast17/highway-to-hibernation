@@ -52,6 +52,11 @@ class Player(arcade.Sprite):
 
             # If this line is reached, the hit type was obstacle
             self.move_back(key)
+
+            # return False
+            return False
+        # return True
+        return True
                     
     def hit(self, next_cell, window):
         
