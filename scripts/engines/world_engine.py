@@ -37,9 +37,13 @@ class WorldEngine():
 
         self.loaded = []
         self.platforms = []
+        self.collectibles = []
 
         self.window = window
         self.player = player
+
+        # SpriteList for honey the player can collect
+        self.hunny_list = arcade.SpriteList()
 
     def generate_array(self):
         '''
@@ -118,8 +122,11 @@ class WorldEngine():
             bottom_row = self.generate_row(i)
             self.loaded.append(bottom_row)
 
-            top_row = self.generate_platforms(i)
-            self.platforms.append(top_row)
+            middle_row = self.generate_platforms(i)
+            self.platforms.append(middle_row)
+
+            top_row = self.generate_collectible(i)
+            self.collectibles.append(top_row)
 
     def generate_row(self, row):
         '''
@@ -167,14 +174,29 @@ class WorldEngine():
             else:
                 logs = self.generate_logs(row)
 
-                return logs
-            
-        # for grassy
-        elif self.rows[row] == 0:
+                return logs   
+        
+        else:
+
+            return arcade.SpriteList()
+        
+    def generate_collectible(self, row):
+        '''
+        generate_collectible is a helper function that takes a row index 
+        and generates the collectibles in that row by calling a child generate function
+        based on what type of collectible it should be
+
+        param: 
+            self
+            row - the current row to be generated
+        return:
+            a SpriteList object from child function
+        '''
+        if self.rows[row] == 0:
 
             return self.generate_honey(row)
         
-        else:
+        else: 
 
             return arcade.SpriteList()
     
@@ -353,7 +375,7 @@ class WorldEngine():
             hunny = Obstacle('sprites/hunny.png',
                                             x[0],
                                             row)
-            hunny.scale = .025
+
             honey.append(hunny)
             
             return honey
