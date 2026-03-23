@@ -9,6 +9,8 @@
 >
 > Michael Jajkiewicz
 
+---
+
 ### Game overview:
 Seeker is arcade style game similar to Frogger or Crossyroad. Collect honey, dodge obstacles, and get a high score!
 
@@ -35,6 +37,7 @@ Enjoy!
 ---
 
 ### Frameworks:
+All programming done in Python.
 Use of PyArcade, noise from Python library. Font sourced from https://www.1001fonts.com/edit-undo-font.html
 
 
