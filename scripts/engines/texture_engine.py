@@ -95,6 +95,21 @@ class TextureEngine():
 
             self.world.platforms[i].draw()
     
+    def draw_all_collectibles(self):
+        '''
+        draw_all_collectibles is a helper function that
+        draws all currently loaded rows of collectibles 
+        in the world engine
+
+        param: 
+            self
+        returns:
+            nothing
+        '''
+        for i in range(len(self.world.collectibles)):
+
+            self.world.collectibles[i].draw()
+    
     def draw_all_sprites(self):
         '''
         draw_all_sprites draws the currently loaded
@@ -109,4 +124,5 @@ class TextureEngine():
         self.grid.draw()
         self.draw_all_rows()
         self.draw_all_platforms()
+        self.draw_all_collectibles()
         self.player.draw()
