@@ -51,6 +51,27 @@ class TimeEngine():
         if self.world_time > self.next_spawn_check:
 
             self.spawn_hostiles()
+    
+    def try_move_log(self, delta_time):
+        '''
+        try_to_move_log takes the elapsed time and tests if
+        we can move log objects. If we can, move them
+
+        param:
+            self
+            delta_time - the time since the last on_update call
+        returns:
+            nothing
+        '''
+        # Get the current log rows
+        curr_log_rows = self.world.get_log_rows()
+
+        # Try to move each log in each row
+        for row in curr_log_rows:
+
+            for log in self.world.loaded[row]:
+
+                log.try_move(delta_time, self.window, self.world.player)
 
     def try_to_move_hostiles(self, delta_time):
         '''

@@ -6,6 +6,7 @@ from noise import pnoise1
 import numpy as np
 from objects.obstacle_object import Obstacle
 import random
+from objects.platform_object import Platform
 
 class WorldEngine():
     '''
@@ -32,7 +33,7 @@ class WorldEngine():
         # each row on the current screen and gets filled with
         # values that will represent what "type" the row is--
         # e.g. road, river, grass, etc.
-        self.rows = np.zeros(c.ROW_COUNT)
+        self.rows = []
         self.generate_array()
 
         self.loaded = []
@@ -55,17 +56,11 @@ class WorldEngine():
         # TODO: This code currently only works if not considering the
         # fact that that the screen moves. Fix that
 
-        # Legend for rows vector
-        # -------
-        # -1 : River
-        #  0 : Grass
-        #  1 : Road
-
         # Make sure the first three rows are always grass at the
         # beginning of the game
-        self.rows[0] = 0
-        self.rows[1] = 0
-        self.rows[2] = 0
+        self.rows.append('Grassy')
+        self.rows.append('Grassy')
+        self.rows.append('Grassy')
 
         # For each row... (excluding the first three which 
         # should be grass
@@ -79,22 +74,27 @@ class WorldEngine():
             # Depending on the noise function's value, set the
             # appropriate value based on the legend
             if (noise > -1 and
-                noise < -0.1):
+                noise < -0.5):
 
-                # -1 : River
-                self.rows[i + 3] = -1
+                # River with lilypads
+                self.rows.append("River_Lilypads")
 
+            elif(noise> -0.5 and 
+                 noise < -0.1):
+                
+                # River with logs
+                self.rows.append("River_Logs")
             elif (noise > -0.1 and
                 noise < 0.1):
 
-                # 0 : Grass
-                self.rows[i + 3] = 0
+                # Grassy
+                self.rows.append("Grassy")
 
             elif (noise > 0.1 and
                 noise < 1):
 
-                # 1 : Road
-                self.rows[i + 3] = 1
+                # Road
+                self.rows.append("Road")
                 
             else:
                 print("ERROR GENERATING ARRAY IN WORLD_GEN.PY")
@@ -136,18 +136,17 @@ class WorldEngine():
         '''
 
         # Based on the legend
-        if self.rows[row] == -1:
+        if self.rows[row] == "Road":
 
             return self.generate_cars(row)
         
-        elif self.rows[row] == 0:
+        elif self.rows[row] == "Grassy":
 
             return self.generate_grassy(row)
         
-        elif self.rows[row] == 1:
+        elif self.rows[row] == "River_Lilypads" or "River_Logs":
 
             return self.generate_river(row)
-          
         else:
 
             print("PROBLEM IN GENERATION.")
@@ -155,22 +154,18 @@ class WorldEngine():
 
     def generate_platforms(self, row):
 
-        # For river
-        if self.rows[row] == 1:
+        # Use self.row[row] to figure out if the row generated was with lilypads or logs
 
-            # Choose between lilypads or logs
-            type = random.choices(['Lilypads', 'Logs'])
+        if self.rows[row] == 'River_Lilypads':
 
-            if type[0] == 'Lilypads':
+            return self.generate_lilypads(row)
+        elif self.rows[row] == 'River_Logs':
+            logs = self.generate_logs(row)
 
-                return self.generate_lilypads(row)
-            else:
-                logs = self.generate_logs(row)
-
-                return logs
+            return logs
             
         # for grassy
-        elif self.rows[row] == 0:
+        elif self.rows[row] == "Grassy":
 
             return self.generate_honey(row)
         
@@ -432,7 +427,7 @@ class WorldEngine():
 
                     for i in range(length):
 
-                        log.append(Obstacle('sprites/rock1_mossy.png',
+                        log.append(Platform('sprites/rock1_mossy.png',
                                             x + i,
                                             row))
                         print(f"part of log in row {row} at {x+i}")
@@ -546,10 +541,30 @@ class WorldEngine():
 
         cars = []
 
-        for i in range(len(self.loaded)):
+        for i in range(c.ROW_COUNT):
 
-            if self.rows[i] == -1:
+            if self.rows[i] == "Road":
 
                 cars.append(i)
         
         return cars
+
+    def get_log_rows(self):
+            '''
+            get_log_rows returns all the indices of current log rows
+
+            param:
+                self
+            return:
+                A list of all log row indices
+            '''
+
+            logs = []
+
+            for i in range(len(self.loaded)):
+
+                if self.rows[i] == "River_Logs":
+
+                    logs.append(i)
+            
+            return logs

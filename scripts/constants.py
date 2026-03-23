@@ -31,6 +31,11 @@ TIME_BETWEEN_SPAWNS = 1.0
 UPPER_OBSTACLE_SPEED = 1.0 # Tiles per second
 LOWER_OBSTACLE_SPEED = 0.2 # Tiles per second
 
+## Log Speed
+LOG_SPEED_SLOW = 0.2
+LOG_SPEED_MED = 0.5
+LOG_SPEED_FAST= 1.0
+
 # Colors
 background = arcade.csscolor.SEA_GREEN
 start_screen_background = arcade.csscolor.BLACK
