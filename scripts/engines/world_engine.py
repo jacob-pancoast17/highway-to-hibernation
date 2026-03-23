@@ -165,8 +165,15 @@ class WorldEngine():
 
                 return self.generate_lilypads(row)
             else:
-                
-                return self.generate_logs(row)
+                logs = self.generate_logs(row)
+
+                return logs
+            
+        # for grassy
+        elif self.rows[row] == 0:
+
+            return self.generate_honey(row)
+        
         else:
 
             return arcade.SpriteList()
@@ -295,8 +302,6 @@ class WorldEngine():
         grass = np.random.normal(loc = 0, scale = 1.1, size = c.COLUMN_COUNT)
         grass = np.sort(grass)
 
-        # TODO: HONEY
-        #honey = random.choices([True, False], weights=[20, 80])
 
         last_rock = None
         # For each cell in the row
@@ -324,6 +329,39 @@ class WorldEngine():
                         sprites.append(last_rock)
     
         return sprites
+    
+    def generate_honey(self, row):
+
+        # Will honey spawn in this row?
+        if random.random() < .25:
+
+            spawnable_spots = []
+            honey = arcade.SpriteList()
+
+            # Mark spawnable spots
+            for i in range(len(self.get_row(row))):
+
+                cell = self.get_row(row)[i]
+
+                if cell == None:
+
+                    spawnable_spots.append(i)
+            
+            # Pick a random one and put it there
+            x = random.choices(spawnable_spots)
+
+            hunny = Obstacle('sprites/hunny.png',
+                                            x[0],
+                                            row)
+            hunny.scale = .025
+            honey.append(hunny)
+            
+            return honey
+        
+        # If no honey spawn, just return a blank list
+        else:
+
+            return arcade.SpriteList()
 
     def generate_river(self, row):
         '''
@@ -374,23 +412,33 @@ class WorldEngine():
         x = 0
 
         # For each spot before the end
-        while x != 15:
+        while x < 15:
 
-            print(f"x: {x}")
-
-            # Try to spawn a log
+            # Try to spawn a log if  probablility
             if random.random() < 0.25:
+            
+                if logs and logs[-1][0].x != x - 1:
 
-                length = random.randint(c.SMALLEST_LOG,c.BIGGEST_LOG)
-                print(length)
+                    pass
 
-                for i in range(length):
+                else:
+                    
+                    if x <= 11:
+                        length = random.randint(c.SMALLEST_LOG,c.BIGGEST_LOG)
+                    else:
+                        length = random.randint(c.SMALLEST_LOG, 15 - x)
 
                     log = arcade.SpriteList()
-                    log.append(Obstacle('sprites/rock1_mossy.png',
-                                        x,
-                                        row))
-                    x += 1
+
+                    for i in range(length):
+
+                        log.append(Obstacle('sprites/rock1_mossy.png',
+                                            x + i,
+                                            row))
+                        print(f"part of log in row {row} at {x+i}")
+                    
+                    logs.append(log)
+                    x += length
             
             else:
 
@@ -405,14 +453,6 @@ class WorldEngine():
                 list.append(sprite)
         
         return list
-
-        for i in range(15):
-
-            logs.append(Obstacle('sprites/rock1_mossy.png',
-                                    i,
-                                    row))
-                
-        return logs
     
     def get_row(self, row):
         '''

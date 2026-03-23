@@ -3,6 +3,7 @@ import arcade
 import constants as c
 from objects.hostile_object import Hostile
 from objects.obstacle_object import Obstacle
+import time
 
 class Player(arcade.Sprite):
     '''Player class: holds all information about the player, including position and sprite'''
