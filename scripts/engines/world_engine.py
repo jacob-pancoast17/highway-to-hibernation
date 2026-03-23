@@ -7,7 +7,7 @@ import numpy as np
 from objects.obstacle_object import Obstacle
 import random
 
-class WorldGen():
+class WorldEngine():
     '''
     The WorldGen class is the engine that generates
     the world pseudo-randomly

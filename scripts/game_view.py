@@ -4,7 +4,7 @@ import constants as c
 from objects.player import Player
 from engines.texture_engine import TextureEngine
 from engines.time_engine import TimeEngine
-from world_gen import WorldGen
+from engines.world_engine import WorldEngine
 #from pause_screen import Pause
 
 class GameView(arcade.View):
@@ -53,7 +53,7 @@ class GameView(arcade.View):
 
         self.player = Player(c.STARTING_Y, c.STARTING_X)
 
-        self.world = WorldGen(self.window, self.player)
+        self.world = WorldEngine(self.window, self.player)
         self.world.generate_screen()
 
         self.texture_engine = TextureEngine(self.world, self.player)
