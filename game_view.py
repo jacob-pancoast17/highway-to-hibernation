@@ -36,6 +36,9 @@ class GameView(arcade.View):
         self.next_spawn_check = c.TIME_BETWEEN_SPAWNS
         self.player = None
 
+        # SpriteList for coins the player can collect
+        self.coin_list = None
+
         # A variable to store our gui camera object
         self.gui_camera = None
 
@@ -70,6 +73,9 @@ class GameView(arcade.View):
         # Use the player class's to_sprite() to add the
         # SPRITE version to the SpriteList (to match types)
         self.player_sprite.append(self.player)
+
+        # SpriteList for coins the player can collect
+        self.hunny_list = arcade.SpriteList()
 
         # Initialize our gui camera, initial settings are the same as our world camera.
         self.gui_camera = arcade.Camera2D()
@@ -181,6 +187,29 @@ class GameView(arcade.View):
         #         if hostile.try_move(self.window, self.player):
         #             hostile.move()
     
+        speed = 0.5
+
+        # Move aggressive hostile every 0.5 seconds
+        if self.world_time >= self.next_move:
+            self.next_move += speed
+            for hostile in self.aggressive_hostile_objs:
+                hostile.try_move(self.window, self.player.to_sprite())
+                hostile.move()
+        
+        hunny_hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.hunny_list
+        )
+
+        for hunny in hunny_hit_list:
+            hunny.remove_from_sprite_lists()
+            self.score += 300
+            self.score_text.text = f"Score: {self.score}"
+        
+        # score (TODO: find way to increment)
+        if self.score == 0:
+            self.score = 100
+        self.score_text.text = f"Score: {self.score}"
+        # TODO: implement honey jars (300 bonus points)
 
     def on_key_press(self, key, modifiers):
         '''
