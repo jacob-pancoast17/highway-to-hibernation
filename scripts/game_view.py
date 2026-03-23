@@ -60,7 +60,6 @@ class GameView(arcade.View):
 
         self.time_engine = TimeEngine(self.world, self.window)
 
-
         # Initialize our gui camera, initial settings are the same as our world camera.
         self.gui_camera = arcade.Camera2D()
 
@@ -96,6 +95,18 @@ class GameView(arcade.View):
         '''
 
         self.time_engine.pass_time(delta_time)
+
+        # checks for collision between player and collectibles
+        hunny_hit_list = arcade.check_for_collision_with_list(
+            self.player, self.world.collectibles)
+
+        # for each collectible the player walks through
+        for hunny in hunny_hit_list:
+            
+            hunny.remove_from_sprite_lists()
+
+            # score increases
+            self.score += 300
         
 
     def on_key_press(self, key, modifiers):
