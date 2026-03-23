@@ -63,7 +63,7 @@ class Hostile(arcade.Sprite):
                                                   player)
             if hit_list:
 
-                from scripts.screens.game_over_screen import GameOver
+                from screens.game_over_screen import GameOver
                 window.show_view(GameOver())
 
     def is_off_screen(self):

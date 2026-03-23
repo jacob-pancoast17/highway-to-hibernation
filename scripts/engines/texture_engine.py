@@ -1,18 +1,40 @@
+'''This module loads and manages textures'''
 import arcade
 import constants as c
 import random
 
 class TextureEngine():
+    '''
+    The TextureEngine manages textures, loads them, and
+    draws every frame
+    '''
 
     def __init__(self, world, player):
+        '''
+        Constructor
+
+        param:
+            self
+            world - a world engine
+            player - a player
+        '''
         
         self.world = world
         self.player = arcade.SpriteList()
         self.player.append(player)
 
+        # Create the grid
         self.grid = self.create_grid()
 
     def create_grid(self):
+        '''
+        create_grid creates the grid of grass sprites
+
+        param:
+            self
+        returns:
+            a list of sprites corresponding to the grid cells
+        '''
 
         grid = arcade.SpriteList()
 
@@ -43,18 +65,46 @@ class TextureEngine():
         return grid
     
     def draw_all_rows(self):
+        '''
+        draw_all_rows is a helper function that draws all
+        currently loaded rows of the world engine
+
+        param: 
+            self
+        returns:
+            nothing
+        '''
 
         for i in range(len(self.world.loaded)):
 
             self.world.loaded[i].draw()
 
     def draw_all_platforms(self):
+        '''
+        draw_all_platforms is a helper function that
+        draws all currently loaded rows of platforms 
+        in the world engine
+
+        param: 
+            self
+        returns:
+            nothing
+        '''
 
         for i in range(len(self.world.platforms)):
 
             self.world.platforms[i].draw()
     
     def draw_all_sprites(self):
+        '''
+        draw_all_sprites draws the currently loaded
+        world
+
+        param: 
+            self
+        returns:
+            nothing
+        '''
 
         self.grid.draw()
         self.draw_all_rows()
