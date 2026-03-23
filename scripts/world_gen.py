@@ -1,10 +1,10 @@
 '''This module represents world generation'''
 import arcade
 import constants as c
-from hostile_object import Hostile
+from objects.hostile_object import Hostile
 from noise import pnoise1
 import numpy as np
-from obstacle_object import Obstacle
+from objects.obstacle_object import Obstacle
 import random
 
 class WorldGen():
@@ -220,7 +220,6 @@ class WorldGen():
             else:
                 index += 1
 
-        #print(f"row {row}: how many cars? {len(hostiles)}")
             
         # After cleaning up the current cacrs we have in a row, 
         # let's check if we should add a new one! 
@@ -243,14 +242,19 @@ class WorldGen():
         # pick a speed that won't cause this new car to lap
         # the last arriving of the previous cars
         next_avail_arrival_time = last_arrival_time + last_arrival.speed
-        # Max speed that would place the car arriving at the next availablee
+        # Max speed that would place the car arriving at the next available
         min_speed = next_avail_arrival_time / c.COLUMN_COUNT
 
-        # Truncate that so we don't get any speed demons
-        if min_speed < 0.2:
-            min_speed = 1.0
+        # Truncate that so we don't get any turtles
+        if min_speed < c.LOWER_OBSTACLE_SPEED:
+            min_speed = c.LOWER_OBSTACLE_SPEED
 
         new_speed = random.uniform(min_speed, c.UPPER_OBSTACLE_SPEED)
+
+        # Truncate THAT so we don't get any speed demons
+        if new_speed > c.UPPER_OBSTACLE_SPEED:
+            new_speed = c.UPPER_OBSTACLE_SPEED
+
         arrival = 15 * new_speed
         #print(f"last arrival time in {last_arrival_time}, currently at x = {last_arrival.x}")
         #print(f"next available arrival is {next_avail_arrival_time} due to speed of {last_arrival.speed}")
@@ -443,22 +447,22 @@ class WorldGen():
         # [Obstacle, None, None, None, Obstacle] for example
         return return_list
         
-    def get_hostile_rows(self):
+    def get_car_rows(self):
         '''
-        get_hostile_rows returns all the hostile row indices
+        get_car_rows returns all the indices of current car rows
 
         param:
             self
         return:
-            A list of all hostiles row indices
+            A list of all car row indices
         '''
 
-        hostiles = []
+        cars = []
 
         for i in range(len(self.loaded)):
 
-            if self.rows[i] == 1 or self.rows[i] == -1:
+            if self.rows[i] == -1:
 
-                hostiles.append(i)
+                cars.append(i)
         
-        return hostiles
+        return cars

@@ -1,8 +1,8 @@
 ''' Module representing the player and movement'''
 import arcade
 import constants as c
-from hostile_object import Hostile
-from obstacle_object import Obstacle
+from objects.hostile_object import Hostile
+from objects.obstacle_object import Obstacle
 
 class Player(arcade.Sprite):
     '''Player class: holds all information about the player, including position and sprite'''
@@ -60,7 +60,7 @@ class Player(arcade.Sprite):
         
         elif isinstance(next_cell, Hostile):
 
-            from game_over_screen import GameOver
+            from screens.game_over_screen import GameOver
             window.show_view(GameOver())
         
     def move(self, key):
