@@ -165,7 +165,8 @@ class WorldEngine():
 
                 return self.generate_lilypads(row)
             else:
-                return arcade.SpriteList()
+                
+                return self.generate_logs(row)
         else:
 
             return arcade.SpriteList()
@@ -366,6 +367,52 @@ class WorldEngine():
                 atLeastOne = True
                 
         return lilypads
+    
+    def generate_logs(self, row):
+
+        logs = []
+        x = 0
+
+        # For each spot before the end
+        while x != 15:
+
+            print(f"x: {x}")
+
+            # Try to spawn a log
+            if random.random() < 0.25:
+
+                length = random.randint(c.SMALLEST_LOG,c.BIGGEST_LOG)
+                print(length)
+
+                for i in range(length):
+
+                    log = arcade.SpriteList()
+                    log.append(Obstacle('sprites/rock1_mossy.png',
+                                        x,
+                                        row))
+                    x += 1
+            
+            else:
+
+                x += 1
+
+        list = arcade.SpriteList()
+        
+        for log in logs:
+
+            for sprite in log:
+
+                list.append(sprite)
+        
+        return list
+
+        for i in range(15):
+
+            logs.append(Obstacle('sprites/rock1_mossy.png',
+                                    i,
+                                    row))
+                
+        return logs
     
     def get_row(self, row):
         '''

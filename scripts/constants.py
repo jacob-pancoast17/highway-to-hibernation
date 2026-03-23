@@ -23,6 +23,8 @@ STARTING_Y = 0
 # Generation details
 ## River
 MIN_LILYPADS_PER_RIVER = 3
+SMALLEST_LOG = 1
+BIGGEST_LOG = 4
 
 ## Cars
 TIME_BETWEEN_SPAWNS = 1.0
