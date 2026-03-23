@@ -77,8 +77,17 @@ class GameView(arcade.View):
         # Reset our score to 0
         self.score = 0
 
+        # Farthest y value that the player reaches (used for score)
+        self.farthest_y = 0
+
         # Initialize our arcade.Text object for score
-        self.score_text = arcade.Text(f"Score: {self.score}", x=0, y=5)
+        self.score_text = arcade.Text(
+            f"Score: {self.score}", 
+            x=5, 
+            y=5,
+            font_name="Edit Undo BRK",
+            font_size=25,
+            bold= True)
 
         # Create the grid
         for row in range(c.ROW_COUNT):
@@ -111,7 +120,6 @@ class GameView(arcade.View):
 
         self.world = WorldGen(self.window, self.player)
         self.world.generate_screen()
-
         
         # self.curr_loaded = []
         # for i in range(c.ROW_COUNT):
@@ -137,6 +145,9 @@ class GameView(arcade.View):
             self.world.platforms[i].draw()
         
         self.player_sprite.draw() # Draw the player on TOP of the grid
+        
+        # Load score text
+        self.score_text.draw()
         
     def on_update(self, delta_time):
         '''
@@ -187,10 +198,19 @@ class GameView(arcade.View):
             key == arcade.key.RIGHT):
 
             # Test if player is going to collide with something
-            self.player.try_move(key, self.world, self.window)
+            did_move = self.player.try_move(key, self.world, self.window)
+            if(did_move):
+                #print("made it!")
+                if(self.player.y > self.farthest_y):
+                    self.farthest_y = self.player.y 
+                    self.score += 100
+                    #TODO delete print statement
+                    print("SCORE:")
+                    print(self.score)
+                    self.score_text.text = f"Score: {self.score}"
             print(f"[{self.player.x}, {self.player.y}]")
 
         elif (key == arcade.key.ESCAPE):
             from pause_screen import Pause
-            #pass in the current game state into Pause()
+            # Pass in the current game state into Pause()
             self.window.show_view(Pause(self))

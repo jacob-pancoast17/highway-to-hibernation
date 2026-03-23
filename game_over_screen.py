@@ -35,7 +35,9 @@ class GameOver(arcade.View):
 
         #TODO: Change to text objects, same in start_screen
         arcade.draw_text(
-            "GAME OVER",
+            "YOU ARE DEAD",
+            font_name="Edit Undo BRK",
+            color= c.blood_mwahaha,
             x = c.WINDOW_WIDTH / 2,
             y = c.WINDOW_HEIGHT * 3 / 4,
             font_size = 50,
@@ -46,6 +48,7 @@ class GameOver(arcade.View):
         #TODO: Change to text objects, same in start_screen
         arcade.draw_text(
             "Click to play again",
+            font_name="Edit Undo BRK",
             x = c.WINDOW_WIDTH / 2,
             y = c.WINDOW_HEIGHT / 2,
             font_size = 20,
@@ -55,7 +58,8 @@ class GameOver(arcade.View):
 
         #TODO: Change to text objects, same in start_screen
         arcade.draw_text(
-            "or press 'E' to exit the program.",
+            "or press 'Q' to quit",
+            font_name="Edit Undo BRK",
             x = c.WINDOW_WIDTH / 2,
             y = (c.WINDOW_HEIGHT / 2)-30,
             font_size = 20,
@@ -84,5 +88,5 @@ class GameOver(arcade.View):
      #      modifiers - e.g. capslock or numlock
 
     def on_key_press(self, symbol, modifiers):
-        if symbol == arcade.key.E:
+        if symbol == arcade.key.Q:
             self.window.close()
