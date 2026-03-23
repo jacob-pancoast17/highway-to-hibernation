@@ -11,22 +11,22 @@
 
 ---
 
-### Game overview:
+## Game overview:
 Seeker is arcade style game similar to Frogger or Crossyroad. Collect honey, dodge obstacles, and get a high score!
 
 ---
 
-### Objective:
+## Objective:
 Move your bear to safety! Avoid moving rock obstacles, falling into the water, and dodge rocks and trees. Hop as far as you can and collect honey for some tasty bonuses! 
 
 ---
 
-### Controls:
+## Controls:
 Use the arrow keys up, down, left, and right to maneuver the bear. Press escape to view the pause menu, and escape again to continue playing or enter to reset the game. If you die, you can click the screen to play again or press "q" to quit the game entirely.
 
 ---
 
-###  How to run: 
+##  How to run: 
 Must install requirements:
 ` pip install requirements.txt `
 
@@ -36,14 +36,14 @@ Enjoy!
 
 ---
 
-### Frameworks:
+## Frameworks:
 All programming done in Python.
 Use of PyArcade, noise from Python library. Font sourced from https://www.1001fonts.com/edit-undo-font.html
 
 
 ---
 
-### Table of Contents:
+## Table of Contents:
 > * pycache
 > 
 > * fonts
