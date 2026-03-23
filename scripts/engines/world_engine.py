@@ -1,13 +1,13 @@
 '''This module represents world generation'''
 import arcade
 import constants as c
-from hostile_object import Hostile
+from objects.hostile_object import Hostile
 from noise import pnoise1
 import numpy as np
-from obstacle_object import Obstacle
+from objects.obstacle_object import Obstacle
 import random
 
-class WorldGen():
+class WorldEngine():
     '''
     The WorldGen class is the engine that generates
     the world pseudo-randomly
@@ -36,7 +36,7 @@ class WorldGen():
         self.generate_array()
 
         self.loaded = []
-        self.addons = []
+        self.platforms = []
 
         self.window = window
         self.player = player
@@ -118,8 +118,8 @@ class WorldGen():
             bottom_row = self.generate_row(i)
             self.loaded.append(bottom_row)
 
-            top_row = self.generate_addons(i)
-            self.addons.append(top_row)
+            top_row = self.generate_platforms(i)
+            self.platforms.append(top_row)
 
     def generate_row(self, row):
         '''
@@ -153,7 +153,7 @@ class WorldGen():
             print("PROBLEM IN GENERATION.")
             exit()
 
-    def generate_addons(self, row):
+    def generate_platforms(self, row):
 
         # For river
         if self.rows[row] == 1:
@@ -165,7 +165,15 @@ class WorldGen():
 
                 return self.generate_lilypads(row)
             else:
-                return arcade.SpriteList()
+                logs = self.generate_logs(row)
+
+                return logs
+            
+        # for grassy
+        elif self.rows[row] == 0:
+
+            return self.generate_honey(row)
+        
         else:
 
             return arcade.SpriteList()
@@ -220,7 +228,6 @@ class WorldGen():
             else:
                 index += 1
 
-        #print(f"row {row}: how many cars? {len(hostiles)}")
             
         # After cleaning up the current cacrs we have in a row, 
         # let's check if we should add a new one! 
@@ -243,14 +250,19 @@ class WorldGen():
         # pick a speed that won't cause this new car to lap
         # the last arriving of the previous cars
         next_avail_arrival_time = last_arrival_time + last_arrival.speed
-        # Max speed that would place the car arriving at the next availablee
+        # Max speed that would place the car arriving at the next available
         min_speed = next_avail_arrival_time / c.COLUMN_COUNT
 
-        # Truncate that so we don't get any speed demons
-        if min_speed < 0.2:
-            min_speed = 1.0
+        # Truncate that so we don't get any turtles
+        if min_speed < c.LOWER_OBSTACLE_SPEED:
+            min_speed = c.LOWER_OBSTACLE_SPEED
 
         new_speed = random.uniform(min_speed, c.UPPER_OBSTACLE_SPEED)
+
+        # Truncate THAT so we don't get any speed demons
+        if new_speed > c.UPPER_OBSTACLE_SPEED:
+            new_speed = c.UPPER_OBSTACLE_SPEED
+
         arrival = 15 * new_speed
         #print(f"last arrival time in {last_arrival_time}, currently at x = {last_arrival.x}")
         #print(f"next available arrival is {next_avail_arrival_time} due to speed of {last_arrival.speed}")
@@ -290,8 +302,6 @@ class WorldGen():
         grass = np.random.normal(loc = 0, scale = 1.1, size = c.COLUMN_COUNT)
         grass = np.sort(grass)
 
-        # TODO: HONEY
-        #honey = random.choices([True, False], weights=[20, 80])
 
         last_rock = None
         # For each cell in the row
@@ -319,6 +329,39 @@ class WorldGen():
                         sprites.append(last_rock)
     
         return sprites
+    
+    def generate_honey(self, row):
+
+        # Will honey spawn in this row?
+        if random.random() < .25:
+
+            spawnable_spots = []
+            honey = arcade.SpriteList()
+
+            # Mark spawnable spots
+            for i in range(len(self.get_row(row))):
+
+                cell = self.get_row(row)[i]
+
+                if cell == None:
+
+                    spawnable_spots.append(i)
+            
+            # Pick a random one and put it there
+            x = random.choices(spawnable_spots)
+
+            hunny = Obstacle('sprites/hunny.png',
+                                            x[0],
+                                            row)
+            hunny.scale = .025
+            honey.append(hunny)
+            
+            return honey
+        
+        # If no honey spawn, just return a blank list
+        else:
+
+            return arcade.SpriteList()
 
     def generate_river(self, row):
         '''
@@ -363,6 +406,54 @@ class WorldGen():
                 
         return lilypads
     
+    def generate_logs(self, row):
+
+        logs = []
+        x = 0
+
+        # For each spot before the end
+        while x < 15:
+
+            # Try to spawn a log if  probablility
+            if random.random() < 0.25:
+            
+                if logs and logs[-1][0].x != x - 1:
+
+                    pass
+
+                else:
+                    
+                    if x <= 11:
+                        length = random.randint(c.SMALLEST_LOG,c.BIGGEST_LOG)
+                    else:
+                        length = random.randint(c.SMALLEST_LOG, 15 - x)
+
+                    log = arcade.SpriteList()
+
+                    for i in range(length):
+
+                        log.append(Obstacle('sprites/rock1_mossy.png',
+                                            x + i,
+                                            row))
+                        print(f"part of log in row {row} at {x+i}")
+                    
+                    logs.append(log)
+                    x += length
+            
+            else:
+
+                x += 1
+
+        list = arcade.SpriteList()
+        
+        for log in logs:
+
+            for sprite in log:
+
+                list.append(sprite)
+        
+        return list
+    
     def get_row(self, row):
         '''
         get_row takes a row and returns a list version of all the sprites
@@ -403,7 +494,7 @@ class WorldGen():
         # [Obstacle, None, None, None, Obstacle] for example
         return return_list
     
-    def get_addon(self, row):
+    def get_platform(self, row):
         '''
         get_row takes a row and returns a list version of all the sprites
         in that row (NOT a SpriteList) as a pyarcade SpriteList can only
@@ -424,7 +515,7 @@ class WorldGen():
 
             there_was_a_sprite = False
 
-            for sprite in self.addons[row]:
+            for sprite in self.platforms[row]:
                 
                 # For each sprite in the current row, check
                 # if it's x coord matches the current x
@@ -443,22 +534,22 @@ class WorldGen():
         # [Obstacle, None, None, None, Obstacle] for example
         return return_list
         
-    def get_hostile_rows(self):
+    def get_car_rows(self):
         '''
-        get_hostile_rows returns all the hostile row indices
+        get_car_rows returns all the indices of current car rows
 
         param:
             self
         return:
-            A list of all hostiles row indices
+            A list of all car row indices
         '''
 
-        hostiles = []
+        cars = []
 
         for i in range(len(self.loaded)):
 
-            if self.rows[i] == 1 or self.rows[i] == -1:
+            if self.rows[i] == -1:
 
-                hostiles.append(i)
+                cars.append(i)
         
-        return hostiles
+        return cars
