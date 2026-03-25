@@ -10,8 +10,7 @@ class Player(arcade.Sprite):
     def __init__(self, row, column):
         # For now just makes cubes
         # Right now this also ignores the angle parameter
-        super().__init__(path_or_texture="sprites/bear_2.png",
-            scale = 1.25)
+        super().__init__(path_or_texture="sprites/bear_2.png")
         
         self.center_x = (c.MARGIN + c.TILE_WIDTH) * column + c.MARGIN + c.TILE_WIDTH // 2
         self.x = column
