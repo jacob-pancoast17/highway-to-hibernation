@@ -98,7 +98,7 @@ class GameView(arcade.View):
 
         # checks for collision between player and collectibles
         hunny_hit_list = arcade.check_for_collision_with_list(
-            self.player, self.world.collectibles)
+            self.player, self.world.hunny_list)
 
         # for each collectible the player walks through
         for hunny in hunny_hit_list:
@@ -107,6 +107,9 @@ class GameView(arcade.View):
 
             # score increases
             self.score += 300
+            print("SCORE:")
+            print(self.score)
+            self.score_text.text = f"Score: {self.score}"
         
 
     def on_key_press(self, key, modifiers):

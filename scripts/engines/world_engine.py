@@ -376,9 +376,9 @@ class WorldEngine():
                                             x[0],
                                             row)
 
-            honey.append(hunny)
+            self.hunny_list.append(hunny)
             
-            return honey
+            return self.hunny_list
         
         # If no honey spawn, just return a blank list
         else:
