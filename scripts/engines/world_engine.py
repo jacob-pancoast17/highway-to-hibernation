@@ -338,8 +338,15 @@ class WorldEngine():
             elif (grass[i] < -1 or
                 grass[i] > 1):
 
+                # Append a new grass cell
+                tree_texture = random.choices(
+                    ['sprites/tree1_no_bush.png',
+                    'sprites/tree2_no_bush.png',
+                    'sprites/tree3_no_bush.png'],
+                    weights = [0.33, 0.34, 0.33])
+
                 sprites.append(
-                    Obstacle('sprites/tree1_no_bush.png', i, row))
+                    Obstacle(tree_texture[0], i, row))
                 
                 sprites[-1].scale = 0.95
                 sprites[-1].center_y = c.TILE_HEIGHT * row + c.TILE_HEIGHT * 0.95
@@ -350,7 +357,19 @@ class WorldEngine():
                 if chance < .3:
 
                     if last_rock == None or last_rock.x != i-1:
-                        last_rock = Obstacle('sprites/rock2.png', i, row)
+                        rock_texture = random.choices(
+                            ['sprites/rock1.png',
+                            'sprites/rock2.png',
+                            'sprites/rock3.png',
+                            'sprites/rock1_mossy.png',
+                            'sprites/rock2_mossy.png',
+                            'sprites/rock3_mossy.png',
+                            'sprites/log.png',
+                            'sprites/log_mossy.png',
+                            'sprites/log_mushrooms.png'],
+                            weights = [0.18, 0.18, 0.18, 0.08, 0.08, 0.08, 0.12, 0.06, 0.04])
+
+                        last_rock = Obstacle(rock_texture[0], i, row)
                         sprites.append(last_rock)
     
         return sprites
@@ -361,7 +380,6 @@ class WorldEngine():
         if random.random() < .25:
 
             spawnable_spots = []
-            honey = arcade.SpriteList()
 
             # Mark spawnable spots
             for i in range(len(self.get_row(row))):
