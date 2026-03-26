@@ -341,7 +341,8 @@ class WorldEngine():
                 sprites.append(
                     Obstacle('sprites/tree1_no_bush.png', i, row))
                 
-                sprites[-1].center_y = c.TILE_HEIGHT * row + c.TILE_HEIGHT * .75
+                sprites[-1].scale = 0.95
+                sprites[-1].center_y = c.TILE_HEIGHT * row + c.TILE_HEIGHT * 0.95
 
             # Otherwise, make it a random chance to be a rock
             else:
