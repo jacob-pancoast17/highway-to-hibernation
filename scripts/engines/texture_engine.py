@@ -75,7 +75,7 @@ class TextureEngine():
             nothing
         '''
 
-        for i in range(len(self.world.loaded)):
+        for i in range(len(self.world.loaded)-1, -1, -1):
 
             self.world.loaded[i].draw()
 
