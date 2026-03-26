@@ -12,9 +12,9 @@ class Player(arcade.Sprite):
         # Right now this also ignores the angle parameter
         super().__init__(path_or_texture="sprites/bear_2.png")
         
-        self.center_x = (c.MARGIN + c.TILE_WIDTH) * column + c.MARGIN + c.TILE_WIDTH // 2
+        self.center_x = c.TILE_WIDTH * column + c.TILE_WIDTH // 2
         self.x = column
-        self.center_y = (c.MARGIN + c.TILE_HEIGHT) * row + c.MARGIN + c.TILE_HEIGHT // 2
+        self.center_y = c.TILE_HEIGHT * row + c.TILE_HEIGHT // 2
         self.y = row
         self.angle = 180.0
     

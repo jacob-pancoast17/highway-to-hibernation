@@ -56,8 +56,8 @@ class TextureEngine():
                 cell = arcade.Sprite(grass_texture[0])
 
                 # Set the cell's center based on grid position
-                cell.center_x = (c.MARGIN + c.TILE_WIDTH) * column + c.MARGIN + c.TILE_WIDTH // 2
-                cell.center_y = (c.MARGIN + c.TILE_HEIGHT) * row + c.MARGIN + c.TILE_HEIGHT // 2
+                cell.center_x = c.TILE_WIDTH * column + c.TILE_WIDTH // 2
+                cell.center_y = c.TILE_HEIGHT * row + c.TILE_HEIGHT // 2
 
                 # Append to list of all grid sprites to draw
                 grid.append(cell)
