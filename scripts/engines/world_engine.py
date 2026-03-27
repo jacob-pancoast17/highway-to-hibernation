@@ -127,17 +127,17 @@ class WorldEngine():
             self.collectibles.append(top_row)
     
     def update_screen(self, new_row_index):
-        # Generate a new row 
-        new_row = self.generate_row(new_row_index)
-        new_platform  = self.generate_platforms(new_row_index)
-        new_collectible = self.generate_collectible(new_row_index)
-        self.loaded_indices.append(new_row_index)
-
         # Delete the first row
         self.loaded.pop(0)
         self.platforms.pop(0)
         self.collectibles.pop(0)
         self.loaded_indices.pop(0)
+        
+        # Generate a new row 
+        new_row = self.generate_row(new_row_index)
+        new_platform  = self.generate_platforms(new_row_index)
+        new_collectible = self.generate_collectible(new_row_index)
+        self.loaded_indices.append(new_row_index)
 
         # Move everything else down (iterate over rows - 1 because 
         # we have 1 less row)

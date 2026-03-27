@@ -82,7 +82,7 @@ class GameView(arcade.View):
             bold= True)
         
         self.current_bottom_of_screen = 0
-        self.current_top_of_screen = c.ROW_COUNT
+        self.current_top_of_screen = c.ROW_COUNT - 1
 
     def on_draw(self):
         """
@@ -144,7 +144,8 @@ class GameView(arcade.View):
                     self.score_text.text = f"Score: {self.score}"
 
                 print(self.current_bottom_of_screen)
-                if (self.player.y > self.current_bottom_of_screen + 2 and
+                if (self.player.y > self.current_bottom_of_screen + (c.DIST_UNTIL_STAY_PUT - 1) and
+                    self.current_top_of_screen != c.LEVEL_SIZE - 1 and
                     key == arcade.key.UP):
                     self.move_screen_up()
 
@@ -157,8 +158,10 @@ class GameView(arcade.View):
 
     def move_screen_up(self):
 
-        self.world.update_screen(self.current_top_of_screen)
+        self.world.update_screen(self.current_top_of_screen + 1)
         print("updated screen")
 
         self.current_bottom_of_screen += 1
         self.current_top_of_screen += 1
+
+        
