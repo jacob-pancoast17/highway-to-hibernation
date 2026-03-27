@@ -405,6 +405,7 @@ class WorldEngine():
 
         logs = []
         x = 0
+        moving_left = random.choice([True, False])
 
         # For each spot before the end
         while x < 15:
@@ -429,7 +430,10 @@ class WorldEngine():
 
                         log.append(Platform('sprites/rock1_mossy.png',
                                             x + i,
-                                            row))
+                                            row,
+                                            speed= c.LOG_SPEED_MED,
+                                            static= False,
+                                            left= moving_left))
                         print(f"part of log in row {row} at {x+i}")
                     
                     logs.append(log)
@@ -448,6 +452,47 @@ class WorldEngine():
                 list.append(sprite)
         
         return list
+    
+    def update_logs(self, row):
+
+        platforms = arcade.SpriteList()
+
+        # For each log in the row
+        for log in self.platforms[row]:
+
+            # If it's still on screen, keep it
+            if not log.is_off_screen():
+                platforms.append(log)
+
+        index = 0
+        while len(platforms) == 0:
+            
+            log = self.platforms[row][index]
+            if log.is_off_screen():
+                platforms.append(log)
+            else:
+                index += 1
+
+            
+        # After cleaning up the current logs we have in a row, 
+        # let's check if we should add a new one! 
+        spawn = random.choices([True, False], weights=[20, 80])
+        if not spawn[0]:
+            return
+        
+        # First we need to determine  when the last in line 
+        # arrives (we don't want logs lapping each other)
+        last_arrival = platforms[-1]
+
+        if last_arrival.is_moving_left:
+            platforms.append(
+                Platform("sprites/rock1.png", 14, row, speed = c.LOG_SPEED_MED, static=False, left=True))
+        else:
+            platforms.append(
+                Platform("sprites/rock1.png", 0, row, speed = c.LOG_SPEED_MED, static=False, left=False))
+
+        # Replace currently loaded row with the updated one
+        self.platforms[row] = platforms
     
     def get_row(self, row):
         '''
@@ -561,7 +606,7 @@ class WorldEngine():
 
             logs = []
 
-            for i in range(len(self.loaded)):
+            for i in range(len(self.platforms)):
 
                 if self.rows[i] == "River_Logs":
 

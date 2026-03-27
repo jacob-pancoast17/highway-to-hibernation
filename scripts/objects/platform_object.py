@@ -25,7 +25,7 @@ class Platform(arcade.Sprite):
         self.static = static
         self.speed = speed
 
-        # If this hostile item is a dynamic one...
+        # If this platform item is a dynamic one...
         if self.static == False:
             # Start global timer
             self.timer = 0
