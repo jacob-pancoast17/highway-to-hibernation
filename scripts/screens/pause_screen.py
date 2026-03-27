@@ -1,7 +1,6 @@
 ''' Module representing the pause screen. '''
 import arcade
-from game_view import GameView
-import constants as c
+from scripts import constants as c
 
 class Pause(arcade.View):
     '''
@@ -79,4 +78,4 @@ class Pause(arcade.View):
         if key == arcade.key.ESCAPE:
             self.window.show_view(self.game_view)
         if key == arcade.key.ENTER:
-            self.window.show_view(GameView())
+            self.window.show_view(self.game_view.__class__())

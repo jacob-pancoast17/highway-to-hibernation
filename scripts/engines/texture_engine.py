@@ -2,7 +2,7 @@
 import random
 import arcade
 
-import constants as c
+from scripts import constants as c
 
 class TextureEngine():
     '''

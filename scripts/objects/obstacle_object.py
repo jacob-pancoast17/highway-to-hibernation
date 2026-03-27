@@ -1,6 +1,6 @@
 ''' Module representing obstacle objects in the game. '''
 import arcade
-import constants as c
+from scripts import constants as c
 
 class Obstacle(arcade.Sprite):
     '''

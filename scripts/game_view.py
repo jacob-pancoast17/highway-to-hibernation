@@ -1,11 +1,12 @@
 ''' Module representing the main game view. '''
 import arcade
-import constants as c
-from objects.player import Player
-from screens.pause_screen import Pause
-from engines.texture_engine import TextureEngine
-from engines.time_engine import TimeEngine
-from engines.world_engine import WorldEngine
+from scripts import constants as c
+from scripts.objects.player import Player
+from scripts.screens.pause_screen import Pause
+from scripts.screens.game_over_screen import GameOver
+from scripts.engines.texture_engine import TextureEngine
+from scripts.engines.time_engine import TimeEngine
+from scripts.engines.world_engine import WorldEngine
 #from pause_screen import Pause
 
 class GameView(arcade.View):
@@ -116,15 +117,19 @@ class GameView(arcade.View):
 
             # Test if player is going to collide with something
             did_move = self.player.try_move(key, self.world, self.window)
+
+            if self.player.dead:
+                self.window.show_view(GameOver(self))
+                return
+
             if did_move:
-                #print("made it!")
                 if self.player.y > self.farthest_y:
                     self.farthest_y = self.player.y
                     self.score += 100
-                    #TODO delete print statement
                     print("SCORE:")
                     print(self.score)
                     self.score_text.text = f"Score: {self.score}"
+
             print(f"[{self.player.x}, {self.player.y}]")
 
         elif key == arcade.key.ESCAPE:
