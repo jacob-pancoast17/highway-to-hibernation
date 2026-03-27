@@ -41,7 +41,6 @@ class TimeEngine():
         returns:
             nothing
         '''
-
         self.world_time += time
 
         # Try to move hostile objects and attempt to spawn
@@ -51,6 +50,7 @@ class TimeEngine():
         if self.world_time > self.next_spawn_check:
 
             self.spawn_hostiles()
+        
 
     def try_to_move_hostiles(self, delta_time):
         '''
@@ -66,11 +66,12 @@ class TimeEngine():
 
         # Get the current hostile rows
         curr_car_rows = self.world.get_car_rows()
+        #print(f"curr car rows: {curr_car_rows}")
 
         # Try to move each car in each row
         for row in curr_car_rows:
 
-            for car in self.world.loaded[row]:
+            for car in self.world.loaded[row - self.world.loaded_indices[0]]:
 
                 car.try_move(delta_time, self.window, self.world.player)
 

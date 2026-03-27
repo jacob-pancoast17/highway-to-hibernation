@@ -74,10 +74,9 @@ class TextureEngine():
         returns:
             nothing
         '''
+        for row in reversed(self.world.loaded):
 
-        for i in range(len(self.world.loaded)-1, -1, -1):
-
-            self.world.loaded[i].draw()
+            row.draw()
 
     def draw_all_platforms(self):
         '''
@@ -91,9 +90,9 @@ class TextureEngine():
             nothing
         '''
 
-        for i in range(len(self.world.platforms)):
+        for platforms in reversed(self.world.platforms):
 
-            self.world.platforms[i].draw()
+            platforms.draw()
     
     def draw_all_collectibles(self):
         '''
@@ -106,9 +105,9 @@ class TextureEngine():
         returns:
             nothing
         '''
-        for i in range(len(self.world.collectibles)):
+        for collectibles in reversed(self.world.collectibles):
 
-            self.world.collectibles[i].draw()
+            collectibles.draw()
     
     def draw_all_sprites(self):
         '''

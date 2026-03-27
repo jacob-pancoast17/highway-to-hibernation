@@ -38,6 +38,9 @@ class GameView(arcade.View):
         # This variable will store the text for score that we will draw to the screen.
         self.score_text = None
 
+        self.current_bottom_of_screen = None
+        self.current_top_of_screen = None
+
         self.setup()
 
 
@@ -77,6 +80,9 @@ class GameView(arcade.View):
             font_name="Edit Undo BRK",
             font_size=25,
             bold= True)
+        
+        self.current_bottom_of_screen = 0
+        self.current_top_of_screen = c.ROW_COUNT
 
     def on_draw(self):
         """
@@ -135,12 +141,24 @@ class GameView(arcade.View):
                     self.farthest_y = self.player.y 
                     self.score += 100
                     #TODO delete print statement
-                    print("SCORE:")
-                    print(self.score)
                     self.score_text.text = f"Score: {self.score}"
+
+                print(self.current_bottom_of_screen)
+                if (self.player.y > self.current_bottom_of_screen + 2 and
+                    key == arcade.key.UP):
+                    self.move_screen_up()
+
             print(f"[{self.player.x}, {self.player.y}]")
 
         elif (key == arcade.key.ESCAPE):
             from screens.pause_screen import Pause
             # Pass in the current game state into Pause()
             self.window.show_view(Pause(self))
+
+    def move_screen_up(self):
+
+        self.world.update_screen(self.current_top_of_screen)
+        print("updated screen")
+
+        self.current_bottom_of_screen += 1
+        self.current_top_of_screen += 1

@@ -19,6 +19,8 @@ STARTING_X = 7
 STARTING_Y = 0
 
 # Generation details
+LEVEL_SIZE = 300
+
 ## River
 MIN_LILYPADS_PER_RIVER = 3
 SMALLEST_LOG = 1

@@ -6,6 +6,7 @@ from noise import pnoise1
 import numpy as np
 from objects.obstacle_object import Obstacle
 import random
+from objects.platform_object import Platform
 
 class WorldEngine():
     '''
@@ -28,13 +29,10 @@ class WorldEngine():
         self.seed = random.random() * 1000
         #self.seed = 0.1 * 1000
 
-        # Fill a numpy vector with 15 zeros (this represents
-        # each row on the current screen and gets filled with
-        # values that will represent what "type" the row is--
-        # e.g. road, river, grass, etc.
-        self.rows = np.zeros(c.ROW_COUNT)
+        self.rows = []
         self.generate_array()
 
+        self.loaded_indices = []
         self.loaded = []
         self.platforms = []
         self.collectibles = []
@@ -59,21 +57,15 @@ class WorldEngine():
         # TODO: This code currently only works if not considering the
         # fact that that the screen moves. Fix that
 
-        # Legend for rows vector
-        # -------
-        # -1 : River
-        #  0 : Grass
-        #  1 : Road
-
         # Make sure the first three rows are always grass at the
         # beginning of the game
-        self.rows[0] = 0
-        self.rows[1] = 0
-        self.rows[2] = 0
+        self.rows.append('Grassy')
+        self.rows.append('Grassy')
+        self.rows.append('Grassy')
 
         # For each row... (excluding the first three which 
         # should be grass
-        for i in range(c.ROW_COUNT - 3):
+        for i in range(c.LEVEL_SIZE - 3):
 
             # Offset the seed a bit depending on the iteration and
             # find the value on the perlin noise wave
@@ -83,22 +75,27 @@ class WorldEngine():
             # Depending on the noise function's value, set the
             # appropriate value based on the legend
             if (noise > -1 and
-                noise < -0.1):
+                noise < -0.5):
 
-                # -1 : River
-                self.rows[i + 3] = -1
+                # River with lilypads
+                self.rows.append("River_Lilypads")
 
+            elif(noise> -0.5 and 
+                 noise < -0.1):
+                
+                # River with logs
+                self.rows.append("River_Logs")
             elif (noise > -0.1 and
                 noise < 0.1):
 
-                # 0 : Grass
-                self.rows[i + 3] = 0
+                # Grassy
+                self.rows.append("Grassy")
 
             elif (noise > 0.1 and
                 noise < 1):
 
-                # 1 : Road
-                self.rows[i + 3] = 1
+                # Road
+                self.rows.append("Road")
                 
             else:
                 print("ERROR GENERATING ARRAY IN WORLD_GEN.PY")
@@ -118,6 +115,7 @@ class WorldEngine():
         #TODO: Right now only works not considering a moving screen
 
         for i in range(c.ROW_COUNT):
+            self.loaded_indices.append(i)
 
             bottom_row = self.generate_row(i)
             self.loaded.append(bottom_row)
@@ -127,6 +125,40 @@ class WorldEngine():
 
             top_row = self.generate_collectible(i)
             self.collectibles.append(top_row)
+    
+    def update_screen(self, new_row_index):
+        # Generate a new row 
+        new_row = self.generate_row(new_row_index)
+        new_platform  = self.generate_platforms(new_row_index)
+        new_collectible = self.generate_collectible(new_row_index)
+        self.loaded_indices.append(new_row_index)
+
+        # Delete the first row
+        self.loaded.pop(0)
+        self.platforms.pop(0)
+        self.collectibles.pop(0)
+        self.loaded_indices.pop(0)
+
+        # Move everything else down (iterate over rows - 1 because 
+        # we have 1 less row)
+        for i in range(c.ROW_COUNT - 1):
+            self.loaded[i].move(change_x = 0,
+                                change_y = -c.TILE_HEIGHT)
+            self.platforms[i].move(change_x = 0,
+                                change_y = -c.TILE_HEIGHT)
+            self.collectibles[i].move(change_x = 0,
+                                change_y = -c.TILE_HEIGHT)
+        self.player.center_y -= c.VELOCITY_MULTIPLIER
+        self.player.angle = 180
+
+        # Add the new row
+        self.loaded.append(new_row)
+        self.platforms.append(new_platform)
+        self.collectibles.append(new_collectible)
+
+        print(f"added that to row {new_row_index}")
+        print(f"loaded is currently {self.loaded_indices}")
+        print(f"the index in self.loaded should be {new_row_index - self.loaded_indices[0]}")
 
     def generate_row(self, row):
         '''
@@ -141,20 +173,18 @@ class WorldEngine():
         return:
             a SpriteList object from child function
         '''
-
-        # Based on the legend
-        if self.rows[row] == -1:
+        print(f"row {row}")
+        if self.rows[row] == "Road":
 
             return self.generate_cars(row)
         
-        elif self.rows[row] == 0:
+        elif self.rows[row] == "Grassy":
 
             return self.generate_grassy(row)
         
-        elif self.rows[row] == 1:
+        elif self.rows[row] == "River_Lilypads" or "River_Logs":
 
             return self.generate_river(row)
-          
         else:
 
             print("PROBLEM IN GENERATION.")
@@ -162,19 +192,15 @@ class WorldEngine():
 
     def generate_platforms(self, row):
 
-        # For river
-        if self.rows[row] == 1:
+        # Use self.row[row] to figure out if the row generated was with lilypads or logs
 
-            # Choose between lilypads or logs
-            type = random.choices(['Lilypads', 'Logs'])
+        if self.rows[row] == 'River_Lilypads':
 
-            if type[0] == 'Lilypads':
+            return self.generate_lilypads(row)
+        elif self.rows[row] == 'River_Logs':
+            logs = self.generate_logs(row)
 
-                return self.generate_lilypads(row)
-            else:
-                logs = self.generate_logs(row)
-
-                return logs   
+            return logs   
         
         else:
 
@@ -223,10 +249,10 @@ class WorldEngine():
 
         if not moving_left:
             hostiles.append(
-                Hostile("sprites/rock1.png", 0, row, self.speed, static=False, left=moving_left))
+                Hostile("sprites/rock1.png", 0, row - self.loaded_indices[0], self.speed, static=False, left=moving_left))
         else:
             hostiles.append(
-                Hostile("sprites/rock1.png", 14, row, self.speed, static=False, left=moving_left))
+                Hostile("sprites/rock1.png", 14, row - self.loaded_indices[0], self.speed, static=False, left=moving_left))
 
         return hostiles
     
@@ -235,7 +261,7 @@ class WorldEngine():
         hostiles = arcade.SpriteList()
 
         # For each car in the row
-        for car in self.loaded[row]:
+        for car in self.loaded[row - self.loaded_indices[0]]:
 
             # If it's still on screen, keep it
             if not car.is_off_screen():
@@ -244,7 +270,7 @@ class WorldEngine():
         index = 0
         while len(hostiles) == 0:
             
-            car = self.loaded[row][index]
+            car = self.loaded[row - self.loaded_indices[0]][index]
             if car.is_off_screen():
                 hostiles.append(car)
             else:
@@ -292,13 +318,13 @@ class WorldEngine():
 
         if last_arrival.is_moving_left:
             hostiles.append(
-                Hostile("sprites/rock1.png", 14, row, speed = new_speed, static=False, left=True))
+                Hostile("sprites/rock1.png", 14, row - self.loaded_indices[0], speed = new_speed, static=False, left=True))
         else:
             hostiles.append(
-                Hostile("sprites/rock1.png", 0, row, speed = new_speed, static=False, left=False))
+                Hostile("sprites/rock1.png", 0, row - self.loaded_indices[0], speed = new_speed, static=False, left=False))
 
         # Replace currently loaded row with the updated one
-        self.loaded[row] = hostiles
+        self.loaded[row - self.loaded_indices[0]] = hostiles
 
 
     def generate_grassy(self, row):
@@ -346,10 +372,10 @@ class WorldEngine():
                     weights = [0.33, 0.34, 0.33])
 
                 sprites.append(
-                    Obstacle(tree_texture[0], i, row))
+                    Obstacle(tree_texture[0], i, row - self.loaded_indices[0]))
                 
                 sprites[-1].scale = 0.95
-                sprites[-1].center_y = c.TILE_HEIGHT * row + c.TILE_HEIGHT * 0.95
+                sprites[-1].center_y = c.TILE_HEIGHT * (row - self.loaded_indices[0]) + c.TILE_HEIGHT * 0.95
 
             # Otherwise, make it a random chance to be a rock
             else:
@@ -369,7 +395,7 @@ class WorldEngine():
                             'sprites/log_mushrooms.png'],
                             weights = [0.18, 0.18, 0.18, 0.08, 0.08, 0.08, 0.12, 0.06, 0.04])
 
-                        last_rock = Obstacle(rock_texture[0], i, row)
+                        last_rock = Obstacle(rock_texture[0], i, row - self.loaded_indices[0])
                         sprites.append(last_rock)
     
         return sprites
@@ -395,7 +421,7 @@ class WorldEngine():
 
             hunny = Obstacle('sprites/hunny.png',
                                             x[0],
-                                            row)
+                                            row - self.loaded_indices[0])
 
             self.hunny_list.append(hunny)
             
@@ -425,7 +451,7 @@ class WorldEngine():
         for i in range(c.COLUMN_COUNT):
 
             river.append(
-                Hostile("sprites/water.png", i, row))
+                Hostile("sprites/water.png", i, row - self.loaded_indices[0]))
         
         return river
     
@@ -441,7 +467,7 @@ class WorldEngine():
 
                     lilypads.append(Obstacle('sprites/lilypad.png',
                                             i,
-                                            row))
+                                            row - self.loaded_indices[0]))
                     
             if len(lilypads) > c.MIN_LILYPADS_PER_RIVER:
 
@@ -477,8 +503,8 @@ class WorldEngine():
 
                         log.append(Obstacle('sprites/water_log.png',
                                             x + i,
-                                            row))
-                        print(f"part of log in row {row} at {x+i}")
+                                            row - self.loaded_indices[0]))
+                        #print(f"part of log in row {row} at {x+i}")
                     
                     logs.append(log)
                     x += length
@@ -518,7 +544,7 @@ class WorldEngine():
 
             there_was_a_sprite = False
 
-            for sprite in self.loaded[row]:
+            for sprite in self.loaded[row - self.loaded_indices[0]]:
                 
                 # For each sprite in the current row, check
                 # if it's x coord matches the current x
@@ -558,7 +584,7 @@ class WorldEngine():
 
             there_was_a_sprite = False
 
-            for sprite in self.platforms[row]:
+            for sprite in self.platforms[row - self.loaded_indices[0]]:
                 
                 # For each sprite in the current row, check
                 # if it's x coord matches the current x
@@ -589,10 +615,30 @@ class WorldEngine():
 
         cars = []
 
-        for i in range(len(self.loaded)):
+        for i in self.loaded_indices:
 
-            if self.rows[i] == -1:
+            if self.rows[i] == "Road":
 
                 cars.append(i)
         
         return cars
+
+    def get_log_rows(self):
+            '''
+            get_log_rows returns all the indices of current log rows
+
+            param:
+                self
+            return:
+                A list of all log row indices
+            '''
+
+            logs = []
+
+            for i in range(len(self.loaded)):
+
+                if self.rows[i] == "River_Logs":
+
+                    logs.append(i)
+            
+            return logs
