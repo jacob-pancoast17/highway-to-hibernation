@@ -32,9 +32,6 @@ class GameView(arcade.View):
         # A variable to store our gui camera object
         self.gui_camera = None
 
-        # This variable will store our score as an integer.
-        self.score = 0
-
         # This variable will store the text for score that we will draw to the screen.
         self.score_text = None
 
@@ -139,9 +136,8 @@ class GameView(arcade.View):
                 #print("made it!")
                 if(self.player.y > self.farthest_y):
                     self.farthest_y = self.player.y 
-                    self.score += 100
-                    #TODO delete print statement
-                    self.score_text.text = f"Score: {self.score}"
+                    self.player.score += 100
+                    self.score_text.text = f"Score: {self.player.score}"
 
                 print(self.current_bottom_of_screen)
                 if (self.player.y > self.current_bottom_of_screen + (c.DIST_UNTIL_STAY_PUT - 1) and

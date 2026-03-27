@@ -1,6 +1,7 @@
 '''This module represents world generation'''
 import arcade
 import constants as c
+from objects.den_object import Den
 from objects.hostile_object import Hostile
 from noise import pnoise1
 import numpy as np
@@ -57,15 +58,14 @@ class WorldEngine():
         # TODO: This code currently only works if not considering the
         # fact that that the screen moves. Fix that
 
-        # Make sure the first three rows are always grass at the
+        # Make sure the first rows are always grass at the
         # beginning of the game
-        self.rows.append('Grassy')
-        self.rows.append('Grassy')
-        self.rows.append('Grassy')
+        for i in range(c.NUM_START_GRASSY_ROWS):
+            self.rows.append('Grassy')
 
         # For each row... (excluding the first three which 
         # should be grass
-        for i in range(c.LEVEL_SIZE - 3):
+        for i in range(c.LEVEL_SIZE - c.NUM_START_GRASSY_ROWS - c.NUM_ENDING_GRASSY_ROWS):
 
             # Offset the seed a bit depending on the iteration and
             # find the value on the perlin noise wave
@@ -100,6 +100,12 @@ class WorldEngine():
             else:
                 print("ERROR GENERATING ARRAY IN WORLD_GEN.PY")
                 exit()
+
+        # Make sure the first last rows are always grass at the
+        # beginning of the game
+        for i in range(c.NUM_ENDING_GRASSY_ROWS):
+  
+            self.rows.append('Victory')
     
     def generate_screen(self):
         '''
@@ -132,7 +138,7 @@ class WorldEngine():
         self.platforms.pop(0)
         self.collectibles.pop(0)
         self.loaded_indices.pop(0)
-        
+
         # Generate a new row 
         new_row = self.generate_row(new_row_index)
         new_platform  = self.generate_platforms(new_row_index)
@@ -173,7 +179,6 @@ class WorldEngine():
         return:
             a SpriteList object from child function
         '''
-        print(f"row {row}")
         if self.rows[row] == "Road":
 
             return self.generate_cars(row)
@@ -182,9 +187,16 @@ class WorldEngine():
 
             return self.generate_grassy(row)
         
-        elif self.rows[row] == "River_Lilypads" or "River_Logs":
-
+        elif (self.rows[row] == "River_Lilypads" or
+              self.rows[row] =="River_Logs"):
+            
             return self.generate_river(row)
+        
+        elif self.rows[row] == "Victory":
+
+            return self.generate_victory(row)
+
+        
         else:
 
             print("PROBLEM IN GENERATION.")
@@ -522,6 +534,85 @@ class WorldEngine():
                 list.append(sprite)
         
         return list
+    
+    def generate_victory(self, row):
+        '''
+        generate_victory takes a row and generates it randomly based on
+        the "victory" quality -- surrounded by trees, with randomly placed
+        rocks (similar to grassy). If the row is the last one in the game,
+        place the victory cell, the "den"
+
+        param:
+            self
+            row - a row index to be generated
+        return:
+            a SpriteList object containing all of the object sprites for
+                that row
+        '''
+
+        sprites = arcade.SpriteList()
+
+        # Generate a normal curve with a mean of 0 and a st. dev. of 1.1
+        # and sample it c.COLUMN_COUNT times, then sort it. This is done
+        # to get a "normal" distribution of values so that ones towards the
+        # edges can be set to be trees
+        grass = np.random.normal(loc = 0, scale = 1.1, size = c.COLUMN_COUNT)
+        grass = np.sort(grass)
+
+
+        last_rock = None
+        # For each cell in the row
+        for i in range(c.COLUMN_COUNT):
+
+            # The victory square should not be a rock
+            if row == c.ENDING_Y and i == c.ENDING_X:
+                den = Den('sprites/bear_2.png', i, row - self.loaded_indices[0])
+                sprites.append(den)
+
+            # Always a clear path to end
+            elif i == c.ENDING_X:
+                pass
+            
+            # Make it so values samples from the normal curve towards the edges
+            # are more likely to be trees (we want a border)
+            elif (grass[i] < -1 or
+                grass[i] > 1):
+
+                # Append a new grass cell
+                tree_texture = random.choices(
+                    ['sprites/tree1_no_bush.png',
+                    'sprites/tree2_no_bush.png',
+                    'sprites/tree3_no_bush.png'],
+                    weights = [0.33, 0.34, 0.33])
+
+                sprites.append(
+                    Obstacle(tree_texture[0], i, row - self.loaded_indices[0]))
+                
+                sprites[-1].scale = 0.95
+                sprites[-1].center_y = c.TILE_HEIGHT * (row - self.loaded_indices[0]) + c.TILE_HEIGHT * 0.95
+
+            # Otherwise, make it a random chance to be a rock
+            else:
+                chance = random.random()
+                if chance < .1:
+
+                    if last_rock == None or last_rock.x != i-1:
+                        rock_texture = random.choices(
+                            ['sprites/rock1.png',
+                            'sprites/rock2.png',
+                            'sprites/rock3.png',
+                            'sprites/rock1_mossy.png',
+                            'sprites/rock2_mossy.png',
+                            'sprites/rock3_mossy.png',
+                            'sprites/log.png',
+                            'sprites/log_mossy.png',
+                            'sprites/log_mushrooms.png'],
+                            weights = [0.18, 0.18, 0.18, 0.08, 0.08, 0.08, 0.12, 0.06, 0.04])
+
+                        last_rock = Obstacle(rock_texture[0], i, row - self.loaded_indices[0])
+                        sprites.append(last_rock)
+    
+        return sprites
     
     def get_row(self, row):
         '''
