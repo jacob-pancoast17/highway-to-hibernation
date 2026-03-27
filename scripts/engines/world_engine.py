@@ -715,21 +715,63 @@ class WorldEngine():
         return cars
 
     def get_log_rows(self):
-            '''
-            get_log_rows returns all the indices of current log rows
+        '''
+        get_log_rows returns all the indices of current log rows
 
-            param:
-                self
-            return:
-                A list of all log row indices
-            '''
+        param:
+            self
+        return:
+            A list of all log row indices
+        '''
 
-            logs = []
+        logs = []
 
-            for i in range(len(self.loaded)):
+        for i in range(len(self.loaded)):
 
-                if self.rows[i] == "River_Logs":
+            if self.rows[i] == "River_Logs":
 
-                    logs.append(i)
+                logs.append(i)
+        
+        return logs
+    
+    def drunkards_walk(x, y):
+        '''
+        drunkards_walk returns the tiles in a given row which need to be empty
+
+        param:
+            x
+            y
+        returns:
+            a list of coordinates in a row that must be empty
+        '''
+        path = []
+        
+        while y < 14:
+            a = random.choices(['up', 'left', 'right'],
+                            weights = [1/3, 1/3, 1/3])
             
-            return logs
+            if a[0] == 'up':
+
+                y += 1
+
+                if not((x, y) in path):
+
+                    path.append((x, y))
+                    return path
+                
+            elif a[0] == 'right' and x != 14:
+
+                x += 1
+
+                if not((x, y) in path):
+
+                    path.append((x, y))
+
+            elif a[0] == 'left' and x != 0:
+
+                x += -1
+
+                if not((x, y) in path):
+
+                    path.append((x, y))
+
