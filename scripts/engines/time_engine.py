@@ -1,5 +1,5 @@
 '''This module contains the engine that manages timing and spawns'''
-import constants as c
+from scripts import constants as c
 
 class TimeEngine():
     '''

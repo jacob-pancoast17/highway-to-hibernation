@@ -1,10 +1,9 @@
 ''' Module representing the player and movement'''
 import arcade
-from screens.game_over_screen import GameOver
-import constants as c
+from scripts import constants as c
 from objects.den_object import Den
-from objects.hostile_object import Hostile
-from objects.obstacle_object import Obstacle
+from scripts.objects.hostile_object import Hostile
+from scripts.objects.obstacle_object import Obstacle
 
 class Player(arcade.Sprite):
     '''Player class: holds all information about the player, including position and sprite'''
@@ -17,6 +16,7 @@ class Player(arcade.Sprite):
         self.center_y = c.TILE_HEIGHT * row + c.TILE_HEIGHT // 2
         self.y = row
         self.angle = 180.0
+        self.dead = False
 
         self.score = 0
     

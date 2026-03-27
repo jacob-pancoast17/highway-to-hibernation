@@ -1,7 +1,6 @@
 ''' Hostile object class, which is an object that can kill the player on contact.'''
 import arcade
-from screens.game_over_screen import GameOver
-import constants as c
+from scripts import constants as c
 
 class Hostile(arcade.Sprite):
     '''
@@ -27,14 +26,10 @@ class Hostile(arcade.Sprite):
         self.static = static
         self.speed = speed
 
-        # If this hostile item is a dynamic one...
-        self.static = False
-        if self.static:
-            # Start global timer
+        # Set movement values for moving hostiles
+        if not self.static:
             self.timer = 0
             self.is_moving_left = left
-
-            # Set the first time to move based on the speed
             self.next_move = self.speed
 
     def try_move(self, delta_time, window, player):
@@ -66,11 +61,9 @@ class Hostile(arcade.Sprite):
                 self.center_x -= c.VELOCITY_MULTIPLIER
                 self.x -= 1
 
-            hit_list = arcade.check_for_collision(self,
-                                                  player)
+            hit_list = arcade.check_for_collision(self, player)
             if hit_list:
-
-                window.show_view(GameOver())
+                player.dead = True
 
     def is_off_screen(self):
         '''

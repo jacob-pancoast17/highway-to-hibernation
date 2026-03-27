@@ -1,7 +1,6 @@
 ''' Module representing the game over screen. '''
 import arcade
-from game_view import GameView
-import constants as c
+from scripts import constants as c
 
 
 class GameOver(arcade.View):
@@ -10,9 +9,9 @@ class GameOver(arcade.View):
     # param: self
     # return: nothing
 
-    def __init__(self):
+    def __init__(self, previous_view):
         super().__init__()
-
+        self.previous_view = previous_view
 
     # on_show_view defines events that happen when switching to the game over screen
     # param: self
@@ -77,7 +76,7 @@ class GameOver(arcade.View):
      #     _button - button on mouse pressed
      #     _modifiers - shift, ctrl, numlock, etc.
     def on_mouse_press(self, _x, _y, _button, _modifiers):
-        self.window.show_view(GameView())
+        self.window.show_view(self.previous_view.__class__())
 
 
     # on_key_press detects when the E key is pressed

@@ -1,8 +1,8 @@
 ''' Module representing the start screen. '''
 import arcade
 import arcade.gui
-import constants as c
-from game_view import GameView
+from scripts import constants as c
+from scripts.game_view import GameView
 
 
 class StartScreen(arcade.View):
