@@ -30,7 +30,9 @@ Use the arrow keys up, down, left, and right to maneuver the bear. Press escape 
 Must install requirements:
 ` pip install requirements.txt `
 
-Go to `main.py` and run
+To run:
+` python3 -m scripts.main `
+
 
 Enjoy!
 
