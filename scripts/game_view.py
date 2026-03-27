@@ -33,11 +33,11 @@ class GameView(arcade.View):
         # A variable to store our gui camera object
         self.gui_camera = None
 
-        # This variable will store our score as an integer.
-        self.score = 0
-
         # This variable will store the text for score that we will draw to the screen.
         self.score_text = None
+
+        self.current_bottom_of_screen = None
+        self.current_top_of_screen = None
 
         self.setup()
 
@@ -61,7 +61,6 @@ class GameView(arcade.View):
 
         self.time_engine = TimeEngine(self.world, self.window)
 
-
         # Initialize our gui camera, initial settings are the same as our world camera.
         self.gui_camera = arcade.Camera2D()
 
@@ -79,6 +78,9 @@ class GameView(arcade.View):
             font_name="Edit Undo BRK",
             font_size=25,
             bold= True)
+        
+        self.current_bottom_of_screen = 0
+        self.current_top_of_screen = c.ROW_COUNT - 1
 
     def on_draw(self):
         """
@@ -98,6 +100,21 @@ class GameView(arcade.View):
 
         self.time_engine.pass_time(delta_time)
 
+        # checks for collision between player and collectibles
+        hunny_hit_list = arcade.check_for_collision_with_list(
+            self.player, self.world.hunny_list)
+
+        # for each collectible the player walks through
+        for hunny in hunny_hit_list:
+            
+            hunny.remove_from_sprite_lists()
+
+            # score increases
+            self.score += 300
+            print("SCORE:")
+            print(self.score)
+            self.score_text.text = f"Score: {self.score}"
+        
 
     def on_key_press(self, key, modifiers):
         '''
@@ -118,15 +135,29 @@ class GameView(arcade.View):
             did_move = self.player.try_move(key, self.world, self.window)
             if did_move:
                 #print("made it!")
-                if self.player.y > self.farthest_y:
-                    self.farthest_y = self.player.y
-                    self.score += 100
-                    #TODO delete print statement
-                    print("SCORE:")
-                    print(self.score)
-                    self.score_text.text = f"Score: {self.score}"
+                if(self.player.y > self.farthest_y):
+                    self.farthest_y = self.player.y 
+                    self.player.score += 100
+                    self.score_text.text = f"Score: {self.player.score}"
+
+                print(self.current_bottom_of_screen)
+                if (self.player.y > self.current_bottom_of_screen + (c.DIST_UNTIL_STAY_PUT - 1) and
+                    self.current_top_of_screen != c.LEVEL_SIZE - 1 and
+                    key == arcade.key.UP):
+                    self.move_screen_up()
+
             print(f"[{self.player.x}, {self.player.y}]")
 
         elif key == arcade.key.ESCAPE:
             # Pass in the current game state into Pause()
             self.window.show_view(Pause(self))
+
+    def move_screen_up(self):
+
+        self.world.update_screen(self.current_top_of_screen + 1)
+        print("updated screen")
+
+        self.current_bottom_of_screen += 1
+        self.current_top_of_screen += 1
+
+        

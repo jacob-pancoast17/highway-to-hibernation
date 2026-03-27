@@ -1,11 +1,13 @@
 '''This module represents world generation'''
 import arcade
 from scripts import constants as c
+from objects.den_object import Den
 from objects.hostile_object import Hostile
 from noise import pnoise1
 import numpy as np
 from objects.obstacle_object import Obstacle
 import random
+from objects.platform_object import Platform
 
 class WorldEngine():
     '''
@@ -28,18 +30,19 @@ class WorldEngine():
         self.seed = random.random() * 1000
         #self.seed = 0.1 * 1000
 
-        # Fill a numpy vector with 15 zeros (this represents
-        # each row on the current screen and gets filled with
-        # values that will represent what "type" the row is--
-        # e.g. road, river, grass, etc.
-        self.rows = np.zeros(c.ROW_COUNT)
+        self.rows = []
         self.generate_array()
 
+        self.loaded_indices = []
         self.loaded = []
         self.platforms = []
+        self.collectibles = []
 
         self.window = window
         self.player = player
+
+        # SpriteList for honey the player can collect
+        self.hunny_list = arcade.SpriteList()
 
     def generate_array(self):
         '''
@@ -55,21 +58,14 @@ class WorldEngine():
         # TODO: This code currently only works if not considering the
         # fact that that the screen moves. Fix that
 
-        # Legend for rows vector
-        # -------
-        # -1 : River
-        #  0 : Grass
-        #  1 : Road
-
-        # Make sure the first three rows are always grass at the
+        # Make sure the first rows are always grass at the
         # beginning of the game
-        self.rows[0] = 0
-        self.rows[1] = 0
-        self.rows[2] = 0
+        for i in range(c.NUM_START_GRASSY_ROWS):
+            self.rows.append('Grassy')
 
         # For each row... (excluding the first three which
         # should be grass
-        for i in range(c.ROW_COUNT - 3):
+        for i in range(c.LEVEL_SIZE - c.NUM_START_GRASSY_ROWS - c.NUM_ENDING_GRASSY_ROWS):
 
             # Offset the seed a bit depending on the iteration and
             # find the value on the perlin noise wave
@@ -79,27 +75,38 @@ class WorldEngine():
             # Depending on the noise function's value, set the
             # appropriate value based on the legend
             if (noise > -1 and
-                noise < -0.1):
+                noise < -0.5):
 
-                # -1 : River
-                self.rows[i + 3] = -1
+                # River with lilypads
+                self.rows.append("River_Lilypads")
 
+            elif(noise> -0.5 and 
+                 noise < -0.1):
+                
+                # River with logs
+                self.rows.append("River_Logs")
             elif (noise > -0.1 and
                 noise < 0.1):
 
-                # 0 : Grass
-                self.rows[i + 3] = 0
+                # Grassy
+                self.rows.append("Grassy")
 
             elif (noise > 0.1 and
                 noise < 1):
 
-                # 1 : Road
-                self.rows[i + 3] = 1
-
+                # Road
+                self.rows.append("Road")
+                
             else:
                 print("ERROR GENERATING ARRAY IN WORLD_GEN.PY")
                 exit()
 
+        # Make sure the first last rows are always grass at the
+        # beginning of the game
+        for i in range(c.NUM_ENDING_GRASSY_ROWS):
+  
+            self.rows.append('Victory')
+    
     def generate_screen(self):
         '''
         generate_screen generates a row for every row that should
@@ -114,12 +121,50 @@ class WorldEngine():
         #TODO: Right now only works not considering a moving screen
 
         for i in range(c.ROW_COUNT):
+            self.loaded_indices.append(i)
 
             bottom_row = self.generate_row(i)
             self.loaded.append(bottom_row)
 
-            top_row = self.generate_platforms(i)
-            self.platforms.append(top_row)
+            middle_row = self.generate_platforms(i)
+            self.platforms.append(middle_row)
+
+            top_row = self.generate_collectible(i)
+            self.collectibles.append(top_row)
+    
+    def update_screen(self, new_row_index):
+        # Delete the first row
+        self.loaded.pop(0)
+        self.platforms.pop(0)
+        self.collectibles.pop(0)
+        self.loaded_indices.pop(0)
+
+        # Generate a new row 
+        new_row = self.generate_row(new_row_index)
+        new_platform  = self.generate_platforms(new_row_index)
+        new_collectible = self.generate_collectible(new_row_index)
+        self.loaded_indices.append(new_row_index)
+
+        # Move everything else down (iterate over rows - 1 because 
+        # we have 1 less row)
+        for i in range(c.ROW_COUNT - 1):
+            self.loaded[i].move(change_x = 0,
+                                change_y = -c.TILE_HEIGHT)
+            self.platforms[i].move(change_x = 0,
+                                change_y = -c.TILE_HEIGHT)
+            self.collectibles[i].move(change_x = 0,
+                                change_y = -c.TILE_HEIGHT)
+        self.player.center_y -= c.VELOCITY_MULTIPLIER
+        self.player.angle = 180
+
+        # Add the new row
+        self.loaded.append(new_row)
+        self.platforms.append(new_platform)
+        self.collectibles.append(new_collectible)
+
+        print(f"added that to row {new_row_index}")
+        print(f"loaded is currently {self.loaded_indices}")
+        print(f"the index in self.loaded should be {new_row_index - self.loaded_indices[0]}")
 
     def generate_row(self, row):
         '''
@@ -134,20 +179,24 @@ class WorldEngine():
         return:
             a SpriteList object from child function
         '''
-
-        # Based on the legend
-        if self.rows[row] == -1:
+        if self.rows[row] == "Road":
 
             return self.generate_cars(row)
-
-        elif self.rows[row] == 0:
+        
+        elif self.rows[row] == "Grassy":
 
             return self.generate_grassy(row)
-
-        elif self.rows[row] == 1:
-
+        
+        elif (self.rows[row] == "River_Lilypads" or
+              self.rows[row] =="River_Logs"):
+            
             return self.generate_river(row)
+        
+        elif self.rows[row] == "Victory":
 
+            return self.generate_victory(row)
+
+        
         else:
 
             print("PROBLEM IN GENERATION.")
@@ -158,26 +207,37 @@ class WorldEngine():
         generates platforms
         '''
 
-        # For river
-        if self.rows[row] == 1:
+        # Use self.row[row] to figure out if the row generated was with lilypads or logs
 
-            # Choose between lilypads or logs
-            type = random.choices(['Lilypads', 'Logs'])
+        if self.rows[row] == 'River_Lilypads':
 
-            if type[0] == 'Lilypads':
+            return self.generate_lilypads(row)
+        elif self.rows[row] == 'River_Logs':
+            logs = self.generate_logs(row)
 
-                return self.generate_lilypads(row)
-            else:
-                logs = self.generate_logs(row)
+            return logs   
+        
+        else:
 
-                return logs
+            return arcade.SpriteList()
+        
+    def generate_collectible(self, row):
+        '''
+        generate_collectible is a helper function that takes a row index 
+        and generates the collectibles in that row by calling a child generate function
+        based on what type of collectible it should be
 
-        # for grassy
-        elif self.rows[row] == 0:
+        param: 
+            self
+            row - the current row to be generated
+        return:
+            a SpriteList object from child function
+        '''
+        if self.rows[row] == 0:
 
             return self.generate_honey(row)
 
-        else:
+        else: 
 
             return arcade.SpriteList()
 
@@ -204,10 +264,10 @@ class WorldEngine():
 
         if not moving_left:
             hostiles.append(
-                Hostile("sprites/rock1.png", 0, row, self.speed, static=False, left=moving_left))
+                Hostile("sprites/rock1.png", 0, row - self.loaded_indices[0], self.speed, static=False, left=moving_left))
         else:
             hostiles.append(
-                Hostile("sprites/rock1.png", 14, row, self.speed, static=False, left=moving_left))
+                Hostile("sprites/rock1.png", 14, row - self.loaded_indices[0], self.speed, static=False, left=moving_left))
 
         return hostiles
 
@@ -221,7 +281,7 @@ class WorldEngine():
         hostiles = arcade.SpriteList()
 
         # For each car in the row
-        for car in self.loaded[row]:
+        for car in self.loaded[row - self.loaded_indices[0]]:
 
             # If it's still on screen, keep it
             if not car.is_off_screen():
@@ -229,8 +289,8 @@ class WorldEngine():
 
         index = 0
         while len(hostiles) == 0:
-
-            car = self.loaded[row][index]
+            
+            car = self.loaded[row - self.loaded_indices[0]][index]
             if car.is_off_screen():
                 hostiles.append(car)
             else:
@@ -280,13 +340,13 @@ class WorldEngine():
 
         if last_arrival.is_moving_left:
             hostiles.append(
-                Hostile("sprites/rock1.png", 14, row, speed = new_speed, static=False, left=True))
+                Hostile("sprites/rock1.png", 14, row - self.loaded_indices[0], speed = new_speed, static=False, left=True))
         else:
             hostiles.append(
-                Hostile("sprites/rock1.png", 0, row, speed = new_speed, static=False, left=False))
+                Hostile("sprites/rock1.png", 0, row - self.loaded_indices[0], speed = new_speed, static=False, left=False))
 
         # Replace currently loaded row with the updated one
-        self.loaded[row] = hostiles
+        self.loaded[row - self.loaded_indices[0]] = hostiles
 
 
     def generate_grassy(self, row):
@@ -326,8 +386,18 @@ class WorldEngine():
             elif (grass[i] < -1 or
                 grass[i] > 1):
 
+                # Append a new grass cell
+                tree_texture = random.choices(
+                    ['sprites/tree1_no_bush.png',
+                    'sprites/tree2_no_bush.png',
+                    'sprites/tree3_no_bush.png'],
+                    weights = [0.33, 0.34, 0.33])
+
                 sprites.append(
-                    Obstacle('sprites/tree1_no_bush.png', i, row))
+                    Obstacle(tree_texture[0], i, row - self.loaded_indices[0]))
+                
+                sprites[-1].scale = 0.95
+                sprites[-1].center_y = c.TILE_HEIGHT * (row - self.loaded_indices[0]) + c.TILE_HEIGHT * 0.95
 
             # Otherwise, make it a random chance to be a rock
             else:
@@ -335,7 +405,19 @@ class WorldEngine():
                 if chance < .3:
 
                     if last_rock == None or last_rock.x != i-1:
-                        last_rock = Obstacle('sprites/rock2.png', i, row)
+                        rock_texture = random.choices(
+                            ['sprites/rock1.png',
+                            'sprites/rock2.png',
+                            'sprites/rock3.png',
+                            'sprites/rock1_mossy.png',
+                            'sprites/rock2_mossy.png',
+                            'sprites/rock3_mossy.png',
+                            'sprites/log.png',
+                            'sprites/log_mossy.png',
+                            'sprites/log_mushrooms.png'],
+                            weights = [0.18, 0.18, 0.18, 0.08, 0.08, 0.08, 0.12, 0.06, 0.04])
+
+                        last_rock = Obstacle(rock_texture[0], i, row - self.loaded_indices[0])
                         sprites.append(last_rock)
 
         return sprites
@@ -350,7 +432,6 @@ class WorldEngine():
         if random.random() < .25:
 
             spawnable_spots = []
-            honey = arcade.SpriteList()
 
             # Mark spawnable spots
             for i in range(len(self.get_row(row))):
@@ -366,12 +447,12 @@ class WorldEngine():
 
             hunny = Obstacle('sprites/hunny.png',
                                             x[0],
-                                            row)
-            hunny.scale = .025
-            honey.append(hunny)
+                                            row - self.loaded_indices[0])
 
-            return honey
-
+            self.hunny_list.append(hunny)
+            
+            return self.hunny_list
+        
         # If no honey spawn, just return a blank list
         else:
 
@@ -396,8 +477,8 @@ class WorldEngine():
         for i in range(c.COLUMN_COUNT):
 
             river.append(
-                Hostile("sprites/water.png", i, row))
-
+                Hostile("sprites/water.png", i, row - self.loaded_indices[0]))
+        
         return river
 
     def generate_lilypads(self, row):
@@ -416,8 +497,8 @@ class WorldEngine():
 
                     lilypads.append(Obstacle('sprites/lilypad.png',
                                             i,
-                                            row))
-
+                                            row - self.loaded_indices[0]))
+                    
             if len(lilypads) > c.MIN_LILYPADS_PER_RIVER:
 
                 at_least_one = True
@@ -457,9 +538,9 @@ class WorldEngine():
 
                         log.append(Obstacle('sprites/water_log.png',
                                             x + i,
-                                            row))
-                        print(f"part of log in row {row} at {x+i}")
-
+                                            row - self.loaded_indices[0]))
+                        #print(f"part of log in row {row} at {x+i}")
+                    
                     logs.append(log)
                     x += length
 
@@ -476,7 +557,86 @@ class WorldEngine():
                 list.append(sprite)
 
         return list
+    
+    def generate_victory(self, row):
+        '''
+        generate_victory takes a row and generates it randomly based on
+        the "victory" quality -- surrounded by trees, with randomly placed
+        rocks (similar to grassy). If the row is the last one in the game,
+        place the victory cell, the "den"
 
+        param:
+            self
+            row - a row index to be generated
+        return:
+            a SpriteList object containing all of the object sprites for
+                that row
+        '''
+
+        sprites = arcade.SpriteList()
+
+        # Generate a normal curve with a mean of 0 and a st. dev. of 1.1
+        # and sample it c.COLUMN_COUNT times, then sort it. This is done
+        # to get a "normal" distribution of values so that ones towards the
+        # edges can be set to be trees
+        grass = np.random.normal(loc = 0, scale = 1.1, size = c.COLUMN_COUNT)
+        grass = np.sort(grass)
+
+
+        last_rock = None
+        # For each cell in the row
+        for i in range(c.COLUMN_COUNT):
+
+            # The victory square should not be a rock
+            if row == c.ENDING_Y and i == c.ENDING_X:
+                den = Den('sprites/bear_2.png', i, row - self.loaded_indices[0])
+                sprites.append(den)
+
+            # Always a clear path to end
+            elif i == c.ENDING_X:
+                pass
+            
+            # Make it so values samples from the normal curve towards the edges
+            # are more likely to be trees (we want a border)
+            elif (grass[i] < -1 or
+                grass[i] > 1):
+
+                # Append a new grass cell
+                tree_texture = random.choices(
+                    ['sprites/tree1_no_bush.png',
+                    'sprites/tree2_no_bush.png',
+                    'sprites/tree3_no_bush.png'],
+                    weights = [0.33, 0.34, 0.33])
+
+                sprites.append(
+                    Obstacle(tree_texture[0], i, row - self.loaded_indices[0]))
+                
+                sprites[-1].scale = 0.95
+                sprites[-1].center_y = c.TILE_HEIGHT * (row - self.loaded_indices[0]) + c.TILE_HEIGHT * 0.95
+
+            # Otherwise, make it a random chance to be a rock
+            else:
+                chance = random.random()
+                if chance < .1:
+
+                    if last_rock == None or last_rock.x != i-1:
+                        rock_texture = random.choices(
+                            ['sprites/rock1.png',
+                            'sprites/rock2.png',
+                            'sprites/rock3.png',
+                            'sprites/rock1_mossy.png',
+                            'sprites/rock2_mossy.png',
+                            'sprites/rock3_mossy.png',
+                            'sprites/log.png',
+                            'sprites/log_mossy.png',
+                            'sprites/log_mushrooms.png'],
+                            weights = [0.18, 0.18, 0.18, 0.08, 0.08, 0.08, 0.12, 0.06, 0.04])
+
+                        last_rock = Obstacle(rock_texture[0], i, row - self.loaded_indices[0])
+                        sprites.append(last_rock)
+    
+        return sprites
+    
     def get_row(self, row):
         '''
         get_row takes a row and returns a list version of all the sprites
@@ -498,8 +658,8 @@ class WorldEngine():
 
             there_was_a_sprite = False
 
-            for sprite in self.loaded[row]:
-
+            for sprite in self.loaded[row - self.loaded_indices[0]]:
+                
                 # For each sprite in the current row, check
                 # if it's x coord matches the current x
                 if sprite.x == x:
@@ -538,8 +698,8 @@ class WorldEngine():
 
             there_was_a_sprite = False
 
-            for sprite in self.platforms[row]:
-
+            for sprite in self.platforms[row - self.loaded_indices[0]]:
+                
                 # For each sprite in the current row, check
                 # if it's x coord matches the current x
                 if sprite.x == x:
@@ -569,10 +729,72 @@ class WorldEngine():
 
         cars = []
 
-        for i in range(len(self.loaded)):
+        for i in self.loaded_indices:
 
-            if self.rows[i] == -1:
+            if self.rows[i] == "Road":
 
                 cars.append(i)
 
         return cars
+
+    def get_log_rows(self):
+        '''
+        get_log_rows returns all the indices of current log rows
+
+        param:
+            self
+        return:
+            A list of all log row indices
+        '''
+
+        logs = []
+
+        for i in range(len(self.loaded)):
+
+            if self.rows[i] == "River_Logs":
+
+                logs.append(i)
+        
+        return logs
+    
+    def drunkards_walk(x, y):
+        '''
+        drunkards_walk returns the tiles in a given row which need to be empty
+
+        param:
+            x
+            y
+        returns:
+            a list of coordinates in a row that must be empty
+        '''
+        path = []
+        
+        while y < 14:
+            a = random.choices(['up', 'left', 'right'],
+                            weights = [1/3, 1/3, 1/3])
+            
+            if a[0] == 'up':
+
+                y += 1
+
+                if not((x, y) in path):
+
+                    path.append((x, y))
+                    return path
+                
+            elif a[0] == 'right' and x != 14:
+
+                x += 1
+
+                if not((x, y) in path):
+
+                    path.append((x, y))
+
+            elif a[0] == 'left' and x != 0:
+
+                x += -1
+
+                if not((x, y) in path):
+
+                    path.append((x, y))
+

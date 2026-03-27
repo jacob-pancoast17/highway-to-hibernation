@@ -2,23 +2,24 @@
 import arcade
 from screens.game_over_screen import GameOver
 import constants as c
+from objects.den_object import Den
 from objects.hostile_object import Hostile
 from objects.obstacle_object import Obstacle
 
 class Player(arcade.Sprite):
     '''Player class: holds all information about the player, including position and sprite'''
     def __init__(self, row, column):
-        # For now just makes cubes
-        # Right now this also ignores the angle parameter
-        super().__init__(path_or_texture="sprites/bear_2.png",
-            scale = 1.25)
 
-        self.center_x = (c.MARGIN + c.TILE_WIDTH) * column + c.MARGIN + c.TILE_WIDTH // 2
+        super().__init__(path_or_texture="sprites/bear_2.png")
+        
+        self.center_x = c.TILE_WIDTH * column + c.TILE_WIDTH // 2
         self.x = column
-        self.center_y = (c.MARGIN + c.TILE_HEIGHT) * row + c.MARGIN + c.TILE_HEIGHT // 2
+        self.center_y = c.TILE_HEIGHT * row + c.TILE_HEIGHT // 2
         self.y = row
         self.angle = 180.0
 
+        self.score = 0
+    
     def try_move(self, key, world, window):
         '''
         try_move takes a key, the world, and the window, and tries to move the player
@@ -76,6 +77,11 @@ class Player(arcade.Sprite):
         elif isinstance(next_cell, Hostile):
             window.show_view(GameOver())
 
+        elif isinstance(next_cell, Den):
+
+            from screens.victory_screen import Victory
+            window.show_view(Victory(self.score))
+        
     def move(self, key):
         '''
         move takes a key and moves the player in the direction of the key, 

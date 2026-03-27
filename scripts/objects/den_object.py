@@ -2,12 +2,15 @@
 import arcade
 import constants as c
 
-class Obstacle(arcade.Sprite):
+class Den(arcade.Sprite):
     '''
-    Constructor creates a obstacle object which "is-an" object
+    Constructor creates a den object (victory!)
 
     param: 
-        same as object parameters
+        self
+        texture - the den texture
+        column - x to spawn at
+        row - y to spawn at
     returns:
         nothing
     '''
@@ -19,3 +22,4 @@ class Obstacle(arcade.Sprite):
         self.center_y = c.TILE_HEIGHT * row + c.TILE_HEIGHT // 2
         self.y = row
         self.angle = 0
+    
