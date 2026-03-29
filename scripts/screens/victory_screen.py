@@ -1,6 +1,6 @@
 ''' Module representing the victory screen. '''
 import arcade
-import constants as c
+from scripts import constants as c
 
 
 class Victory(arcade.View):
@@ -9,9 +9,10 @@ class Victory(arcade.View):
     # param: self
     # return: nothing
 
-    def __init__(self, score):
+    def __init__(self, score, previous_view):
         super().__init__()
         self.score = score
+        self.previous_view = previous_view
 
 
     # on_show_view defines events that happen when switching to the game over screen
@@ -87,8 +88,7 @@ class Victory(arcade.View):
      #     _button - button on mouse pressed
      #     _modifiers - shift, ctrl, numlock, etc.
     def on_mouse_press(self, _x, _y, _button, _modifiers):
-        from game_view import GameView
-        self.window.show_view(GameView())
+        self.window.show_view(self.previous_view.__class__())
 
 
     # on_key_press detects when the E key is pressed

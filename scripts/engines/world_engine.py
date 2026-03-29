@@ -1,13 +1,13 @@
 '''This module represents world generation'''
 import arcade
 from scripts import constants as c
-from objects.den_object import Den
+from scripts.objects.den_object import Den
 from scripts.objects.hostile_object import Hostile
 from noise import pnoise1
 import numpy as np
 from scripts.objects.obstacle_object import Obstacle
 import random
-from objects.platform_object import Platform
+from scripts.objects.platform_object import Platform
 
 class WorldEngine():
     '''

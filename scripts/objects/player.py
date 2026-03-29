@@ -1,16 +1,17 @@
 ''' Module representing the player and movement'''
 import arcade
 from scripts import constants as c
-from objects.den_object import Den
+from scripts.objects.den_object import Den
 from scripts.objects.hostile_object import Hostile
 from scripts.objects.obstacle_object import Obstacle
+from scripts.screens.victory_screen import Victory
 
 class Player(arcade.Sprite):
     '''Player class: holds all information about the player, including position and sprite'''
     def __init__(self, row, column):
 
         super().__init__(path_or_texture="sprites/bear_2.png")
-        
+
         self.center_x = c.TILE_WIDTH * column + c.TILE_WIDTH // 2
         self.x = column
         self.center_y = c.TILE_HEIGHT * row + c.TILE_HEIGHT // 2
@@ -19,7 +20,7 @@ class Player(arcade.Sprite):
         self.dead = False
 
         self.score = 0
-    
+
     def try_move(self, key, world, window):
         '''
         try_move takes a key, the world, and the window, and tries to move the player
@@ -75,13 +76,12 @@ class Player(arcade.Sprite):
             return
 
         elif isinstance(next_cell, Hostile):
-            window.show_view(GameOver())
+            self.dead = True
 
         elif isinstance(next_cell, Den):
 
-            from screens.victory_screen import Victory
-            window.show_view(Victory(self.score))
-        
+            window.show_view(Victory(self.score, window.current_view))
+
     def move(self, key):
         '''
         move takes a key and moves the player in the direction of the key, 
