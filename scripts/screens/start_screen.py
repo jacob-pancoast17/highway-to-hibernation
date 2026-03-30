@@ -3,6 +3,7 @@ import arcade
 import arcade.gui
 from scripts import constants as c
 from scripts.game_view import GameView
+from scripts.screens.stats_screen import StatsScreen
 
 
 class StartScreen(arcade.View):
@@ -97,3 +98,17 @@ class StartScreen(arcade.View):
         # Draw UI elements
         self.sprites.draw()
         self.uimanager.draw()
+
+        # draw stats window
+        arcade.draw_text(
+            "Press S for stats",
+            x=c.WINDOW_WIDTH / 2,
+            y=c.WINDOW_HEIGHT / 5,
+            font_name="Edit Undo BRK",
+            font_size=18,
+            anchor_x="center"
+        )
+
+    def on_key_press(self, key, modifiers):
+        if key == arcade.key.S:
+            self.window.show_view(StatsScreen(self))
