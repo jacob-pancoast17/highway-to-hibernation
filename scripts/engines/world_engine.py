@@ -376,6 +376,7 @@ class WorldEngine():
                                        trees_left,
                                        c.COLUMN_COUNT - trees_right)
         walkable = sorted(walkable, key=lambda x: x[1])
+        print('grass path: ' + str(walkable))
 
         last_rock = None
         # Append trees to the left
@@ -387,8 +388,7 @@ class WorldEngine():
                     'sprites/tree3_no_bush.png'],
                     weights = [0.33, 0.34, 0.33])
 
-            sprites.append(
-                    Obstacle(tree_texture[0], i, row - self.loaded_indices[0]))
+            sprites.append(Obstacle(tree_texture[0], i, row - self.loaded_indices[0]))
 
             sprites[-1].scale = 0.95
             sprites[-1].center_y = (c.TILE_HEIGHT * (row - self.loaded_indices[0])
@@ -521,6 +521,8 @@ class WorldEngine():
                                        0,
                                        c.COLUMN_COUNT - 1)
         walkable = sorted(walkable, key=lambda x: x[1])
+        print('river path: ' + str(walkable))
+
 
         # Append all except the last one
         for i in range(len(walkable) - 1):
