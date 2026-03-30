@@ -40,6 +40,8 @@ class GameView(arcade.View):
         self.current_bottom_of_screen = None
         self.current_top_of_screen = None
 
+        self.farthest_y = None
+
         self.setup()
 
 
@@ -79,7 +81,7 @@ class GameView(arcade.View):
             font_name="Edit Undo BRK",
             font_size=25,
             bold= True)
-        
+
         self.current_bottom_of_screen = 0
         self.current_top_of_screen = c.ROW_COUNT - 1
 
@@ -102,21 +104,20 @@ class GameView(arcade.View):
         self.time_engine.pass_time(delta_time)
 
         # checks for collision between player and collectibles
-        hunny_hit_list = []
 
         for hunny in self.world.collectibles:
 
             hit = arcade.check_for_collision_with_list(
                 self.player, hunny)
-            
+
             if hit:
-            
+
                 self.world.collectibles[self.world.collectibles.index(hunny)] = arcade.SpriteList()
                 self.player.score += 300
 
             self.score_text.text = f"Score: {self.player.score}"
 
-    def on_key_press(self, key, modifiers):
+    def on_key_press(self, symbol, modifiers):
         '''
         on_key_press detects when a key is pressed
 
@@ -126,13 +127,13 @@ class GameView(arcade.View):
         '''
 
         # If the player presses a key, update the speed if able to move
-        if (key == arcade.key.UP or
-            key == arcade.key.DOWN or
-            key == arcade.key.LEFT or
-            key == arcade.key.RIGHT):
+        if (symbol == arcade.key.UP or
+            symbol == arcade.key.DOWN or
+            symbol == arcade.key.LEFT or
+            symbol == arcade.key.RIGHT):
 
             # Test if player is going to collide with something
-            did_move = self.player.try_move(key, self.world, self.window)
+            did_move = self.player.try_move(symbol, self.world, self.window)
 
             if self.player.dead:
                 self.window.show_view(GameOver(self))
@@ -140,29 +141,29 @@ class GameView(arcade.View):
 
             if did_move:
                 #print("made it!")
-                if(self.player.y > self.farthest_y):
-                    self.farthest_y = self.player.y 
+                if self.player.y > self.farthest_y:
+                    self.farthest_y = self.player.y
                     self.player.score += 100
                     self.score_text.text = f"Score: {self.player.score}"
 
                 print(self.current_bottom_of_screen)
                 if (self.player.y > self.current_bottom_of_screen + (c.DIST_UNTIL_STAY_PUT - 1) and
-                    self.current_top_of_screen != c.LEVEL_SIZE - 1 and
-                    key == arcade.key.UP):
+                    self.current_top_of_screen != c.LEVEL_SIZE - 1 and symbol == arcade.key.UP):
                     self.move_screen_up()
 
             print(f"[{self.player.x}, {self.player.y}]")
 
-        elif key == arcade.key.ESCAPE:
+        elif symbol == arcade.key.ESCAPE:
             # Pass in the current game state into Pause()
             self.window.show_view(Pause(self))
 
     def move_screen_up(self):
+        '''
+        move_screen_up 
+        '''
 
         self.world.update_screen(self.current_top_of_screen + 1)
         print("updated screen")
 
         self.current_bottom_of_screen += 1
         self.current_top_of_screen += 1
-
-        
