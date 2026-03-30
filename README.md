@@ -32,6 +32,9 @@ Must install requirements:
 
 To run:
 ` python3 -m scripts.main `
+or
+` python -m scripts.main `
+depending on your machine!
 
 
 Enjoy!
