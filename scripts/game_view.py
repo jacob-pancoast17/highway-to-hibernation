@@ -102,20 +102,19 @@ class GameView(arcade.View):
         self.time_engine.pass_time(delta_time)
 
         # checks for collision between player and collectibles
-        hunny_hit_list = arcade.check_for_collision_with_list(
-            self.player, self.world.hunny_list)
+        hunny_hit_list = []
 
-        # for each collectible the player walks through
-        for hunny in hunny_hit_list:
+        for hunny in self.world.collectibles:
+
+            hit = arcade.check_for_collision_with_list(
+                self.player, hunny)
             
-            hunny.remove_from_sprite_lists()
+            if hit:
+            
+                self.world.collectibles[self.world.collectibles.index(hunny)] = arcade.SpriteList()
+                self.player.score += 300
 
-            # score increases
-            self.player.score += 300
-            print("SCORE:")
-            print(self.player.score)
             self.score_text.text = f"Score: {self.player.score}"
-        
 
     def on_key_press(self, key, modifiers):
         '''

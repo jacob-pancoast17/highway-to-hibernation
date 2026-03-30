@@ -42,9 +42,6 @@ class WorldEngine():
         self.window = window
         self.player = player
 
-        # SpriteList for honey the player can collect
-        self.hunny_list = arcade.SpriteList()
-
     def generate_array(self):
         '''
         generate_array fills the array created in the constructor
@@ -458,6 +455,8 @@ class WorldEngine():
         to spawn honey that gives you points if you get it
         """
 
+        self.sprites = arcade.SpriteList()
+
         # Will honey spawn in this row?
         if random.random() < .25:
 
@@ -478,10 +477,9 @@ class WorldEngine():
             hunny = Obstacle('sprites/hunny.png',
                                             x[0],
                                             row - self.loaded_indices[0])
-
-            self.hunny_list.append(hunny)
+            self.sprites.append(hunny)
             
-            return self.hunny_list
+            return self.sprites
         
         # If no honey spawn, just return a blank list
         else:
