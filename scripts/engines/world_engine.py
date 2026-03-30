@@ -428,10 +428,12 @@ class WorldEngine():
 
                     for i in range(length):
 
+                        rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST], weights = [1/3, 1/3, 1/3])
+                        print(rand_speed)
                         log.append(Platform('sprites/rock1_mossy.png',
                                             x + i,
                                             row,
-                                            speed= c.LOG_SPEED_MED,
+                                            speed= rand_speed[0],
                                             static= False,
                                             left= moving_left))
                         print(f"part of log in row {row} at {x+i}")
@@ -455,44 +457,60 @@ class WorldEngine():
     
     def update_logs(self, row):
 
-        platforms = arcade.SpriteList()
+        curr_row_of_platforms = arcade.SpriteList()
 
         # For each log in the row
         for log in self.platforms[row]:
 
             # If it's still on screen, keep it
             if not log.is_off_screen():
-                platforms.append(log)
+                curr_row_of_platforms.append(log)
 
         index = 0
-        while len(platforms) == 0:
+        while len(curr_row_of_platforms) == 0:
             
             log = self.platforms[row][index]
             if log.is_off_screen():
-                platforms.append(log)
+                curr_row_of_platforms.append(log)
             else:
                 index += 1
 
             
         # After cleaning up the current logs we have in a row, 
         # let's check if we should add a new one! 
-        spawn = random.choices([True, False], weights=[20, 80])
+
+        '''
+        if(self.platforms[row][-1] == c.LOG_SPEED_SLOW):
+            spawn = random.choices([True, False], weights=[70, 30])
+        elif(self.platforms[row][-1] == c.LOG_SPEED_MED):
+            spawn = random.choices([True, False], weights=[60, 40])
+        elif(self.platforms[row][-1] == c.LOG_SPEED_FAST):
+            spawn = random.choices([True, False], weights=[50, 50])
+        
+        '''
+
+        spawn = random.choices([True, False], weights=[80, 20])
         if not spawn[0]:
             return
         
         # First we need to determine  when the last in line 
         # arrives (we don't want logs lapping each other)
-        last_arrival = platforms[-1]
+        last_arrival = curr_row_of_platforms[-1]
 
-        if last_arrival.is_moving_left:
-            platforms.append(
-                Platform("sprites/rock1.png", 14, row, speed = c.LOG_SPEED_MED, static=False, left=True))
-        else:
-            platforms.append(
-                Platform("sprites/rock1.png", 0, row, speed = c.LOG_SPEED_MED, static=False, left=False))
+        # Randomly choose how many tiles the log is
+        tile_num = random.randint(c.SMALLEST_LOG, c.BIGGEST_LOG)
+        for i in range(tile_num):
+            if last_arrival.is_moving_left:
+                # if there is a log on screen, copy the velocity for the next log spawned
+                curr_row_of_platforms.append(
+                    Platform("sprites/rock1_mossy.png", c.COLUMN_COUNT - 1 + i, row, speed = self.platforms[row][-1].speed, static=False, left=True))
+            else:
+                #self.platforms[row][-1].speed need for speed
+                curr_row_of_platforms.append(
+                    Platform("sprites/rock1_mossy.png", 0 - i, row, speed = self.platforms[row][-1].speed, static=False, left=False))
 
         # Replace currently loaded row with the updated one
-        self.platforms[row] = platforms
+        self.platforms[row] = curr_row_of_platforms
     
     def get_row(self, row):
         '''

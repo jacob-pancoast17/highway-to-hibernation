@@ -50,20 +50,25 @@ class Platform(arcade.Sprite):
             # Set the next move
             self.next_move += self.speed
 
+            # Check if the player collides with platform object
+            hit_list = arcade.check_for_collision(self,
+                                                  player)
             # If moving right, increase x
             if not self.is_moving_left:
                 self.center_x += c.VELOCITY_MULTIPLIER
                 self.x += 1
+                # if the player is colliding with log, and they aren't offscreen
+                if hit_list and player.x <= c.COLUMN_COUNT - 1:
+                    player.center_x += c.VELOCITY_MULTIPLIER
+                    player.x += 1
             # Otherwise, decrease x
             else:
                 self.center_x -= c.VELOCITY_MULTIPLIER
                 self.x -= 1
-
-            hit_list = arcade.check_for_collision(self,
-                                                  player)
-            if hit_list:
-                #TODO move player along with the log (or call player try move)
-                print("hi")
+                if hit_list and player.x >= 0:
+                    player.center_x -= c.VELOCITY_MULTIPLIER
+                    player.x -= 1
+                #TODO else statement which calls game over screen
 
     def is_off_screen(self):
         

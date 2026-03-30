@@ -1,5 +1,6 @@
 '''This module contains the engine that manages timing and spawns'''
 import constants as c
+import random 
 
 class TimeEngine():
     '''
@@ -50,9 +51,9 @@ class TimeEngine():
         self.try_to_move_log(time)
 
         if self.world_time > self.next_spawn_check:
-
             self.spawn_hostiles()
             self.spawn_platforms()
+        
     
     def try_to_move_log(self, delta_time):
         '''
@@ -119,21 +120,19 @@ class TimeEngine():
             self.world.update_cars(row)
     def spawn_platforms(self):
             '''
-            spawn_plartforms tries to spawn platforms in each row 
+            spawn_platforms tries to spawn platforms in each row 
 
             param:
                 self
             returns:
                 nothing
             '''
-
             self.next_spawn_check += c.TIME_BETWEEN_SPAWNS
 
-            # Get the current hostile rows
+            # Get the current log rows
             curr_log_rows = self.world.get_log_rows()
 
             # Then for each row update the board using the world
             # engine
             for row in curr_log_rows:
-
                 self.world.update_logs(row)

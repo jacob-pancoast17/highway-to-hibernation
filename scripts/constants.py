@@ -23,7 +23,7 @@ STARTING_Y = 0
 # Generation details
 ## River
 MIN_LILYPADS_PER_RIVER = 3
-SMALLEST_LOG = 1
+SMALLEST_LOG = 2
 BIGGEST_LOG = 4
 
 ## Cars
@@ -32,9 +32,9 @@ UPPER_OBSTACLE_SPEED = 1.0 # Tiles per second
 LOWER_OBSTACLE_SPEED = 0.2 # Tiles per second
 
 ## Log Speed
-LOG_SPEED_SLOW = 0.2
+LOG_SPEED_SLOW = 1.0
 LOG_SPEED_MED = 0.5
-LOG_SPEED_FAST= 1.0
+LOG_SPEED_FAST= 0.2
 
 # Colors
 background = arcade.csscolor.SEA_GREEN
