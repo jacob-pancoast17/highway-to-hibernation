@@ -1,13 +1,11 @@
 '''This module represents world generation'''
+import random
 import arcade
+from noise import pnoise1
 from scripts import constants as c
 from scripts.objects.den_object import Den
 from scripts.objects.hostile_object import Hostile
-from noise import pnoise1
-import numpy as np
 from scripts.objects.obstacle_object import Obstacle
-import random
-from scripts.objects.platform_object import Platform
 
 class WorldEngine():
     '''
@@ -41,6 +39,8 @@ class WorldEngine():
 
         self.window = window
         self.player = player
+        self.speed = None
+        self.sprites = None
 
     def generate_array(self):
         '''
@@ -53,9 +53,6 @@ class WorldEngine():
         return: 
             nothing
         '''
-        # TODO: This code currently only works if not considering the
-        # fact that that the screen moves. Fix that
-
         # Make sure the first rows are always grass at the
         # beginning of the game
         for i in range(c.NUM_START_GRASSY_ROWS):
@@ -72,19 +69,17 @@ class WorldEngine():
 
             # Depending on the noise function's value, set the
             # appropriate value based on the legend
-            if (noise > -1 and
-                noise < -0.5):
+            if (noise > -1 and noise < -0.5):
 
                 # River with lilypads
                 self.rows.append("River_Lilypads")
 
-            elif(noise> -0.5 and 
-                 noise < -0.1):
-                
+            elif(noise> -0.5 and noise < -0.1):
+
                 # River with logs
                 self.rows.append("River_Logs")
-            elif (noise > -0.1 and
-                noise < 0.1):
+
+            elif (noise > -0.1 and noise < 0.1):
 
                 # Grassy
                 self.rows.append("Grassy")
@@ -94,7 +89,7 @@ class WorldEngine():
 
                 # Road
                 self.rows.append("Road")
-                
+
             else:
                 print("ERROR GENERATING ARRAY IN WORLD_GEN.PY")
                 exit()
@@ -102,9 +97,9 @@ class WorldEngine():
         # Make sure the first last rows are always grass at the
         # beginning of the game
         for i in range(c.NUM_ENDING_GRASSY_ROWS):
-  
+
             self.rows.append('Victory')
-    
+
     def generate_screen(self):
         '''
         generate_screen generates a row for every row that should
@@ -115,8 +110,6 @@ class WorldEngine():
         return
             nothing
         '''
-
-        #TODO: Right now only works not considering a moving screen
 
         for i in range(c.ROW_COUNT):
             self.loaded_indices.append(i)
@@ -129,27 +122,38 @@ class WorldEngine():
 
             top_row = self.generate_collectible(i)
             self.collectibles.append(top_row)
-    
+
     def update_screen(self, new_row_index):
+        '''
+        update_screen is called whenever a new row needs to be generated, it pushes
+        the previously drawn rows down so a new row can be added and is important 
+        for our infinite generation
+
+        param:
+            self
+            new_row_index
+        returns:
+            nothing
+        '''
         # Delete the first row
         self.loaded.pop(0)
         self.platforms.pop(0)
         self.collectibles.pop(0)
         self.loaded_indices.pop(0)
 
-        # Generate a new row 
+        # Generate a new row
         new_row = self.generate_row(new_row_index)
         self.loaded.append(new_row)
 
         new_platform  = self.generate_platforms(new_row_index)
         self.platforms.append(new_platform)
-        
+
         new_collectible = self.generate_collectible(new_row_index)
         self.collectibles.append(new_collectible)
 
         self.loaded_indices.append(new_row_index)
 
-        # Move everything else down (iterate over rows - 1 because 
+        # Move everything else down (iterate over rows - 1 because
         # we have 1 less row)
         for i in range(c.ROW_COUNT - 1):
             print(i)
@@ -182,21 +186,20 @@ class WorldEngine():
         if self.rows[row] == "Road":
 
             return self.generate_cars(row)
-        
+
         elif self.rows[row] == "Grassy":
 
             return self.generate_grassy(row)
-        
+
         elif (self.rows[row] == "River_Lilypads" or
               self.rows[row] =="River_Logs"):
-            
+
             return self.generate_river(row)
-        
+
         elif self.rows[row] == "Victory":
 
             return self.generate_victory(row)
 
-        
         else:
 
             print("PROBLEM IN GENERATION.")
@@ -212,16 +215,15 @@ class WorldEngine():
         if self.rows[row] == 'River_Lilypads':
 
             return self.generate_lilypads(row)
-        
+
         elif self.rows[row] == 'River_Logs':
 
             return self.generate_logs(row)
- 
-        
+
         else:
 
             return arcade.SpriteList()
-        
+
     def generate_collectible(self, row):
         '''
         generate_collectible is a helper function that takes a row index 
@@ -238,7 +240,7 @@ class WorldEngine():
 
             return self.generate_honey(row)
 
-        else: 
+        else:
 
             return arcade.SpriteList()
 
@@ -264,11 +266,11 @@ class WorldEngine():
         self.speed = random.uniform(c.LOWER_OBSTACLE_SPEED, c.UPPER_OBSTACLE_SPEED)
 
         if not moving_left:
-            hostiles.append(
-                Hostile("sprites/rock1.png", 0, row - self.loaded_indices[0], self.speed, static=False, left=moving_left))
+            hostiles.append(Hostile("sprites/rock1.png", 0, row - self.loaded_indices[0],
+                                    self.speed, static=False, left=moving_left))
         else:
-            hostiles.append(
-                Hostile("sprites/rock1.png", 14, row - self.loaded_indices[0], self.speed, static=False, left=moving_left))
+            hostiles.append(Hostile("sprites/rock1.png", 14, row - self.loaded_indices[0],
+                                    self.speed, static=False, left=moving_left))
 
         return hostiles
 
@@ -290,7 +292,7 @@ class WorldEngine():
 
         index = 0
         while len(hostiles) == 0:
-            
+
             car = self.loaded[row - self.loaded_indices[0]][index]
             if car.is_off_screen():
                 hostiles.append(car)
@@ -309,7 +311,7 @@ class WorldEngine():
         last_arrival = hostiles[-1]
 
         # Arrival time if going right
-        if last_arrival.left == False:
+        if last_arrival.left is False:
             last_arrival_time = (c.COLUMN_COUNT - last_arrival.x) * last_arrival.speed
         # vs left
         else:
@@ -332,7 +334,6 @@ class WorldEngine():
         if new_speed > c.UPPER_OBSTACLE_SPEED:
             new_speed = c.UPPER_OBSTACLE_SPEED
 
-        arrival = 15 * new_speed
         #print(f"last arrival time in {last_arrival_time}, currently at x = {last_arrival.x}")
         #print(f"next available arrival is
         #  {next_avail_arrival_time} due to speed of {last_arrival.speed}")
@@ -340,11 +341,11 @@ class WorldEngine():
         #   speed {new_speed} which will arrive in {arrival}")
 
         if last_arrival.is_moving_left:
-            hostiles.append(
-                Hostile("sprites/rock1.png", 14, row - self.loaded_indices[0], speed = new_speed, static=False, left=True))
+            hostiles.append(Hostile("sprites/rock1.png", 14, row - self.loaded_indices[0],
+                         speed = new_speed, static=False, left=True))
         else:
-            hostiles.append(
-                Hostile("sprites/rock1.png", 0, row - self.loaded_indices[0], speed = new_speed, static=False, left=False))
+            hostiles.append(Hostile("sprites/rock1.png", 0, row - self.loaded_indices[0],
+                         speed = new_speed, static=False, left=False))
 
         # Replace currently loaded row with the updated one
         self.loaded[row - self.loaded_indices[0]] = hostiles
@@ -377,7 +378,7 @@ class WorldEngine():
         walkable = sorted(walkable, key=lambda x: x[1])
 
         last_rock = None
-        # Append trees to the left 
+        # Append trees to the left
         for i in range(trees_left):
 
             tree_texture = random.choices(
@@ -385,12 +386,13 @@ class WorldEngine():
                     'sprites/tree2_no_bush.png',
                     'sprites/tree3_no_bush.png'],
                     weights = [0.33, 0.34, 0.33])
-            
+
             sprites.append(
                     Obstacle(tree_texture[0], i, row - self.loaded_indices[0]))
-                
+
             sprites[-1].scale = 0.95
-            sprites[-1].center_y = c.TILE_HEIGHT * (row - self.loaded_indices[0]) + c.TILE_HEIGHT * 0.95
+            sprites[-1].center_y = (c.TILE_HEIGHT * (row - self.loaded_indices[0])
+                                    + c.TILE_HEIGHT * 0.95)
 
         # Append rocks
         for i in range(c.COLUMN_COUNT - (trees_left + trees_right)):
@@ -410,7 +412,7 @@ class WorldEngine():
                 chance = random.random()
                 if chance < .3:
 
-                    if last_rock == None or last_rock.x != i-1:
+                    if last_rock is None or last_rock.x != i-1:
                         rock_texture = random.choices(
                             ['sprites/rock1.png',
                             'sprites/rock2.png',
@@ -436,12 +438,11 @@ class WorldEngine():
                     'sprites/tree2_no_bush.png',
                     'sprites/tree3_no_bush.png'],
                     weights = [0.33, 0.34, 0.33])
-            
             sprites.append(
                     Obstacle(tree_texture[0], x, row - self.loaded_indices[0]))
-                
             sprites[-1].scale = 0.95
-            sprites[-1].center_y = c.TILE_HEIGHT * (row - self.loaded_indices[0]) + c.TILE_HEIGHT * 0.95
+            sprites[-1].center_y = (c.TILE_HEIGHT * (row - self.loaded_indices[0]) +
+                                    c.TILE_HEIGHT * 0.95)
 
 
         # Update walk
@@ -465,9 +466,7 @@ class WorldEngine():
             cells = self.loaded[row - self.loaded_indices[0]]
 
             # Remove not spawnable spots
-            for i in range(len(cells)):
-
-                cell = cells[i]
+            for cell in enumerate(cells):
 
                 spawnable_spots.pop(spawnable_spots.index(cell.x))
 
@@ -478,9 +477,9 @@ class WorldEngine():
                                             x[0],
                                             row - self.loaded_indices[0])
             self.sprites.append(hunny)
-            
+
             return self.sprites
-        
+
         # If no honey spawn, just return a blank list
         else:
 
@@ -506,7 +505,7 @@ class WorldEngine():
 
             river.append(
                 Hostile("sprites/water.png", i, row - self.loaded_indices[0]))
-        
+
         return river
 
     def generate_lilypads(self, row):
@@ -522,14 +521,14 @@ class WorldEngine():
                                        0,
                                        c.COLUMN_COUNT - 1)
         walkable = sorted(walkable, key=lambda x: x[1])
-        
+
         # Append all except the last one
         for i in range(len(walkable) - 1):
 
             lilypads.append(Obstacle('sprites/lilypad.png',
                                             walkable[i][0],
                                             walkable[i][1]))
-        
+
         for i in range(c.COLUMN_COUNT):
 
             if ((i, row) not in walkable and
@@ -579,7 +578,7 @@ class WorldEngine():
                                             x + i,
                                             row - self.loaded_indices[0]))
                         #print(f"part of log in row {row} at {x+i}")
-                    
+
                     logs.append(log)
                     x += length
 
@@ -587,16 +586,16 @@ class WorldEngine():
 
                 x += 1
 
-        list = arcade.SpriteList()
+        lst = arcade.SpriteList()
 
         for log in logs:
 
             for sprite in log:
 
-                list.append(sprite)
+                lst.append(sprite)
 
-        return list
-    
+        return lst
+
     def generate_victory(self, row):
         '''
         generate_victory takes a row and generates it randomly based on
@@ -620,7 +619,7 @@ class WorldEngine():
 
 
         last_rock = None
-        # Append trees to the left 
+        # Append trees to the left
         for i in range(trees_left):
 
             tree_texture = random.choices(
@@ -628,12 +627,13 @@ class WorldEngine():
                     'sprites/tree2_no_bush.png',
                     'sprites/tree3_no_bush.png'],
                     weights = [0.33, 0.34, 0.33])
-            
+
             sprites.append(
                     Obstacle(tree_texture[0], i, row - self.loaded_indices[0]))
-                
+
             sprites[-1].scale = 0.95
-            sprites[-1].center_y = c.TILE_HEIGHT * (row - self.loaded_indices[0]) + c.TILE_HEIGHT * 0.95
+            sprites[-1].center_y = (c.TILE_HEIGHT * (row - self.loaded_indices[0])
+                                    + c.TILE_HEIGHT * 0.95)
 
         for i in range(c.COLUMN_COUNT - trees_left - trees_right):
 
@@ -647,13 +647,13 @@ class WorldEngine():
             # Always a clear path to end
             elif x == c.ENDING_X:
                 pass
-            
+
             # Otherwise, make it a random chance to be a rock
             else:
                 chance = random.random()
                 if chance < .1:
 
-                    if last_rock == None or last_rock.x != i-1:
+                    if last_rock is None or last_rock.x != i-1:
                         rock_texture = random.choices(
                             ['sprites/rock1.png',
                             'sprites/rock2.png',
@@ -679,16 +679,16 @@ class WorldEngine():
                     'sprites/tree2_no_bush.png',
                     'sprites/tree3_no_bush.png'],
                     weights = [0.33, 0.34, 0.33])
-            
+
             sprites.append(
                     Obstacle(tree_texture[0], x, row - self.loaded_indices[0]))
-                
-            sprites[-1].scale = 0.95
-            sprites[-1].center_y = c.TILE_HEIGHT * (row - self.loaded_indices[0]) + c.TILE_HEIGHT * 0.95
 
-    
+            sprites[-1].scale = 0.95
+            sprites[-1].center_y = (c.TILE_HEIGHT * (row - self.loaded_indices[0])
+                                    + c.TILE_HEIGHT * 0.95)
+
         return sprites
-    
+
     def get_row(self, row):
         '''
         get_row takes a row and returns a list version of all the sprites
@@ -711,7 +711,7 @@ class WorldEngine():
             there_was_a_sprite = False
 
             for sprite in self.loaded[row - self.loaded_indices[0]]:
-                
+
                 # For each sprite in the current row, check
                 # if it's x coord matches the current x
                 if sprite.x == x:
@@ -751,7 +751,7 @@ class WorldEngine():
             there_was_a_sprite = False
 
             for sprite in self.platforms[row - self.loaded_indices[0]]:
-                
+
                 # For each sprite in the current row, check
                 # if it's x coord matches the current x
                 if sprite.x == x:
@@ -806,9 +806,9 @@ class WorldEngine():
             if self.rows[i] == "River_Logs":
 
                 logs.append(i)
-        
+
         return logs
-    
+
     def drunkards_walk(self, x, y, left_bound, right_bound):
         '''
         drunkards_walk returns the tiles in a given row which need to be empty
@@ -820,23 +820,23 @@ class WorldEngine():
             a list of coordinates in a row that must be empty
         '''
         path = []
-        
+
         while True:
             a = random.choices(['up', 'left', 'right'],
                             weights = [1/3, 1/3, 1/3])
-            
+
             if a[0] == 'up':
 
                 y += 1
 
                 path.append((x, y))
                 return path
-                
+
             elif a[0] == 'right' and x != right_bound:
 
                 x += 1
 
-                if not((x, y) in path):
+                if (x, y)not in path:
 
                     path.append((x, y))
 
@@ -844,7 +844,6 @@ class WorldEngine():
 
                 x += -1
 
-                if not((x, y) in path):
+                if (x, y)not in path:
 
                     path.append((x, y))
-
