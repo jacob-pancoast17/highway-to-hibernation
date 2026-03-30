@@ -28,7 +28,6 @@ class WorldEngine():
         '''
         # Set a random seed for the perlin noise function
         self.seed = random.random() * 1000
-        #self.seed = 0.1 * 1000
 
         self.rows = []
         self.generate_array()
@@ -161,10 +160,6 @@ class WorldEngine():
                                 change_y = -c.TILE_HEIGHT)
         self.player.center_y -= c.VELOCITY_MULTIPLIER
         self.player.angle = 180
-
-        print(f"added that to row {new_row_index}")
-        print(f"loaded is currently {self.loaded_indices}")
-        print(f"the index in self.loaded should be {new_row_index - self.loaded_indices[0]}")
 
     def generate_row(self, row):
         '''
