@@ -37,6 +37,7 @@ class WorldEngine():
         self.loaded = []
         self.platforms = []
         self.collectibles = []
+        self.current_walk_coords = (c.STARTING_X, c.STARTING_Y)
 
         self.window = window
         self.player = player
@@ -141,13 +142,20 @@ class WorldEngine():
 
         # Generate a new row 
         new_row = self.generate_row(new_row_index)
+        self.loaded.append(new_row)
+
         new_platform  = self.generate_platforms(new_row_index)
+        self.platforms.append(new_platform)
+        
         new_collectible = self.generate_collectible(new_row_index)
+        self.collectibles.append(new_collectible)
+
         self.loaded_indices.append(new_row_index)
 
         # Move everything else down (iterate over rows - 1 because 
         # we have 1 less row)
         for i in range(c.ROW_COUNT - 1):
+            print(i)
             self.loaded[i].move(change_x = 0,
                                 change_y = -c.TILE_HEIGHT)
             self.platforms[i].move(change_x = 0,
@@ -156,11 +164,6 @@ class WorldEngine():
                                 change_y = -c.TILE_HEIGHT)
         self.player.center_y -= c.VELOCITY_MULTIPLIER
         self.player.angle = 180
-
-        # Add the new row
-        self.loaded.append(new_row)
-        self.platforms.append(new_platform)
-        self.collectibles.append(new_collectible)
 
         print(f"added that to row {new_row_index}")
         print(f"loaded is currently {self.loaded_indices}")
@@ -212,10 +215,11 @@ class WorldEngine():
         if self.rows[row] == 'River_Lilypads':
 
             return self.generate_lilypads(row)
+        
         elif self.rows[row] == 'River_Logs':
-            logs = self.generate_logs(row)
 
-            return logs   
+            return self.generate_logs(row)
+ 
         
         else:
 
@@ -233,7 +237,7 @@ class WorldEngine():
         return:
             a SpriteList object from child function
         '''
-        if self.rows[row] == 0:
+        if self.rows[row] == 'Grassy':
 
             return self.generate_honey(row)
 
@@ -365,39 +369,44 @@ class WorldEngine():
 
         sprites = arcade.SpriteList()
 
-        # Generate a normal curve with a mean of 0 and a st. dev. of 1.1
-        # and sample it c.COLUMN_COUNT times, then sort it. This is done
-        # to get a "normal" distribution of values so that ones towards the
-        # edges can be set to be trees
-        grass = np.random.normal(loc = 0, scale = 1.1, size = c.COLUMN_COUNT)
-        grass = np.sort(grass)
+        # Generate a random number of trees
+        trees_left = random.randint(1,4)
+        trees_right = random.randint(1,4)
 
+        walkable = self.drunkards_walk(self.current_walk_coords[0],
+                                       self.current_walk_coords[1],
+                                       trees_left,
+                                       c.COLUMN_COUNT - trees_right)
+        walkable = sorted(walkable, key=lambda x: x[1])
 
         last_rock = None
-        # For each cell in the row
-        for i in range(c.COLUMN_COUNT):
+        # Append trees to the left 
+        for i in range(trees_left):
 
-            # We should not spawn in a rock
-            if row == c.STARTING_Y and i == c.STARTING_X:
-                pass
-
-            # Make it so values samples from the normal curve towards the edges
-            # are more likely to be trees (we want a border)
-            elif (grass[i] < -1 or
-                grass[i] > 1):
-
-                # Append a new grass cell
-                tree_texture = random.choices(
+            tree_texture = random.choices(
                     ['sprites/tree1_no_bush.png',
                     'sprites/tree2_no_bush.png',
                     'sprites/tree3_no_bush.png'],
                     weights = [0.33, 0.34, 0.33])
-
-                sprites.append(
+            
+            sprites.append(
                     Obstacle(tree_texture[0], i, row - self.loaded_indices[0]))
                 
-                sprites[-1].scale = 0.95
-                sprites[-1].center_y = c.TILE_HEIGHT * (row - self.loaded_indices[0]) + c.TILE_HEIGHT * 0.95
+            sprites[-1].scale = 0.95
+            sprites[-1].center_y = c.TILE_HEIGHT * (row - self.loaded_indices[0]) + c.TILE_HEIGHT * 0.95
+
+        # Append rocks
+        for i in range(c.COLUMN_COUNT - (trees_left + trees_right)):
+
+            x = i + trees_left
+
+            # We should not spawn in a rock
+            if row == c.STARTING_Y and x == c.STARTING_X:
+                pass
+
+            # Rocks should not spawn on the walk
+            elif (x, row) in walkable:
+                pass
 
             # Otherwise, make it a random chance to be a rock
             else:
@@ -417,8 +426,29 @@ class WorldEngine():
                             'sprites/log_mushrooms.png'],
                             weights = [0.18, 0.18, 0.18, 0.08, 0.08, 0.08, 0.12, 0.06, 0.04])
 
-                        last_rock = Obstacle(rock_texture[0], i, row - self.loaded_indices[0])
+                        last_rock = Obstacle(rock_texture[0], x, row - self.loaded_indices[0])
                         sprites.append(last_rock)
+
+        # Trees on the right
+        for i in range(trees_right):
+
+            x = c.COLUMN_COUNT - trees_right + i
+
+            tree_texture = random.choices(
+                    ['sprites/tree1_no_bush.png',
+                    'sprites/tree2_no_bush.png',
+                    'sprites/tree3_no_bush.png'],
+                    weights = [0.33, 0.34, 0.33])
+            
+            sprites.append(
+                    Obstacle(tree_texture[0], x, row - self.loaded_indices[0]))
+                
+            sprites[-1].scale = 0.95
+            sprites[-1].center_y = c.TILE_HEIGHT * (row - self.loaded_indices[0]) + c.TILE_HEIGHT * 0.95
+
+
+        # Update walk
+        self.current_walk_coords = walkable[-1]
 
         return sprites
 
@@ -431,16 +461,16 @@ class WorldEngine():
         # Will honey spawn in this row?
         if random.random() < .25:
 
-            spawnable_spots = []
+            spawnable_spots = list(range(15))
+            print(row - self.loaded_indices[0])
+            cells = self.loaded[row - self.loaded_indices[0]]
 
-            # Mark spawnable spots
-            for i in range(len(self.get_row(row))):
+            # Remove not spawnable spots
+            for i in range(len(cells)):
 
-                cell = self.get_row(row)[i]
+                cell = cells[i]
 
-                if cell == None:
-
-                    spawnable_spots.append(i)
+                spawnable_spots.pop(spawnable_spots.index(cell.x))
 
             # Pick a random one and put it there
             x = random.choices(spawnable_spots)
@@ -488,20 +518,31 @@ class WorldEngine():
         """
 
         lilypads = arcade.SpriteList()
-        at_least_one = False
 
-        while at_least_one == False:
-            for i in range(15):
+        walkable = self.drunkards_walk(self.current_walk_coords[0],
+                                       row,
+                                       0,
+                                       c.COLUMN_COUNT - 1)
+        walkable = sorted(walkable, key=lambda x: x[1])
+        
+        # Append all except the last one
+        for i in range(len(walkable) - 1):
 
-                if random.random() < .2:
+            lilypads.append(Obstacle('sprites/lilypad.png',
+                                            walkable[i][0],
+                                            walkable[i][1]))
+        
+        for i in range(c.COLUMN_COUNT):
 
-                    lilypads.append(Obstacle('sprites/lilypad.png',
-                                            i,
-                                            row - self.loaded_indices[0]))
-                    
-            if len(lilypads) > c.MIN_LILYPADS_PER_RIVER:
+            if ((i, row) not in walkable and
+                random.random() < .2):
 
-                at_least_one = True
+                lilypads.append(Obstacle('sprites/lilypad.png',
+                                        i,
+                                        row - self.loaded_indices[0]))
+
+        # Update walk
+        self.current_walk_coords = walkable[-1]
 
         return lilypads
 
@@ -575,45 +616,40 @@ class WorldEngine():
 
         sprites = arcade.SpriteList()
 
-        # Generate a normal curve with a mean of 0 and a st. dev. of 1.1
-        # and sample it c.COLUMN_COUNT times, then sort it. This is done
-        # to get a "normal" distribution of values so that ones towards the
-        # edges can be set to be trees
-        grass = np.random.normal(loc = 0, scale = 1.1, size = c.COLUMN_COUNT)
-        grass = np.sort(grass)
+        # Generate a random number of trees
+        trees_left = random.randint(1,4)
+        trees_right = random.randint(1,4)
 
 
         last_rock = None
-        # For each cell in the row
-        for i in range(c.COLUMN_COUNT):
+        # Append trees to the left 
+        for i in range(trees_left):
 
-            # The victory square should not be a rock
-            if row == c.ENDING_Y and i == c.ENDING_X:
-                den = Den('sprites/bear_2.png', i, row - self.loaded_indices[0])
-                sprites.append(den)
-
-            # Always a clear path to end
-            elif i == c.ENDING_X:
-                pass
-            
-            # Make it so values samples from the normal curve towards the edges
-            # are more likely to be trees (we want a border)
-            elif (grass[i] < -1 or
-                grass[i] > 1):
-
-                # Append a new grass cell
-                tree_texture = random.choices(
+            tree_texture = random.choices(
                     ['sprites/tree1_no_bush.png',
                     'sprites/tree2_no_bush.png',
                     'sprites/tree3_no_bush.png'],
                     weights = [0.33, 0.34, 0.33])
-
-                sprites.append(
+            
+            sprites.append(
                     Obstacle(tree_texture[0], i, row - self.loaded_indices[0]))
                 
-                sprites[-1].scale = 0.95
-                sprites[-1].center_y = c.TILE_HEIGHT * (row - self.loaded_indices[0]) + c.TILE_HEIGHT * 0.95
+            sprites[-1].scale = 0.95
+            sprites[-1].center_y = c.TILE_HEIGHT * (row - self.loaded_indices[0]) + c.TILE_HEIGHT * 0.95
 
+        for i in range(c.COLUMN_COUNT - trees_left - trees_right):
+
+            x = i + trees_left
+
+            # The victory square should not be a rock
+            if row == c.ENDING_Y and x == c.ENDING_X:
+                den = Den('sprites/bear_2.png', x, row - self.loaded_indices[0])
+                sprites.append(den)
+
+            # Always a clear path to end
+            elif x == c.ENDING_X:
+                pass
+            
             # Otherwise, make it a random chance to be a rock
             else:
                 chance = random.random()
@@ -632,8 +668,26 @@ class WorldEngine():
                             'sprites/log_mushrooms.png'],
                             weights = [0.18, 0.18, 0.18, 0.08, 0.08, 0.08, 0.12, 0.06, 0.04])
 
-                        last_rock = Obstacle(rock_texture[0], i, row - self.loaded_indices[0])
+                        last_rock = Obstacle(rock_texture[0], x, row - self.loaded_indices[0])
                         sprites.append(last_rock)
+
+        # Trees on the right
+        for i in range(trees_right):
+
+            x = c.COLUMN_COUNT - trees_right + i
+
+            tree_texture = random.choices(
+                    ['sprites/tree1_no_bush.png',
+                    'sprites/tree2_no_bush.png',
+                    'sprites/tree3_no_bush.png'],
+                    weights = [0.33, 0.34, 0.33])
+            
+            sprites.append(
+                    Obstacle(tree_texture[0], x, row - self.loaded_indices[0]))
+                
+            sprites[-1].scale = 0.95
+            sprites[-1].center_y = c.TILE_HEIGHT * (row - self.loaded_indices[0]) + c.TILE_HEIGHT * 0.95
+
     
         return sprites
     
@@ -757,7 +811,7 @@ class WorldEngine():
         
         return logs
     
-    def drunkards_walk(x, y):
+    def drunkards_walk(self, x, y, left_bound, right_bound):
         '''
         drunkards_walk returns the tiles in a given row which need to be empty
 
@@ -769,7 +823,7 @@ class WorldEngine():
         '''
         path = []
         
-        while y < 14:
+        while True:
             a = random.choices(['up', 'left', 'right'],
                             weights = [1/3, 1/3, 1/3])
             
@@ -777,12 +831,10 @@ class WorldEngine():
 
                 y += 1
 
-                if not((x, y) in path):
-
-                    path.append((x, y))
-                    return path
+                path.append((x, y))
+                return path
                 
-            elif a[0] == 'right' and x != 14:
+            elif a[0] == 'right' and x != right_bound:
 
                 x += 1
 
@@ -790,7 +842,7 @@ class WorldEngine():
 
                     path.append((x, y))
 
-            elif a[0] == 'left' and x != 0:
+            elif a[0] == 'left' and x != left_bound:
 
                 x += -1
 

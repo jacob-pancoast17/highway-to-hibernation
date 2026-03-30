@@ -111,10 +111,10 @@ class GameView(arcade.View):
             hunny.remove_from_sprite_lists()
 
             # score increases
-            self.score += 300
+            self.player.score += 300
             print("SCORE:")
-            print(self.score)
-            self.score_text.text = f"Score: {self.score}"
+            print(self.player.score)
+            self.score_text.text = f"Score: {self.player.score}"
         
 
     def on_key_press(self, key, modifiers):
