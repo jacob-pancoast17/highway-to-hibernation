@@ -1,6 +1,7 @@
 ''' Module representing the victory screen. '''
 import arcade
 from scripts import constants as c
+from scripts.screens.stats_screen import StatsScreen
 
 
 class Victory(arcade.View):
@@ -79,6 +80,17 @@ class Victory(arcade.View):
             anchor_y = 'center'
         )
 
+        arcade.draw_text(
+            "Press 'S' for stats",
+            font_name="Edit Undo BRK",
+            x=c.WINDOW_WIDTH / 2,
+            y=(c.WINDOW_HEIGHT / 2) - 60,
+            font_size=20,
+            anchor_x='center',
+            anchor_y='center'
+        )
+
+
     # on_mouse_press detects when the mouse is pressed and
     # changes the view to the game view again to restart
 
@@ -101,3 +113,5 @@ class Victory(arcade.View):
     def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.Q:
             self.window.close()
+        if symbol == arcade.key.S:
+            self.window.show_view(StatsScreen(self))
