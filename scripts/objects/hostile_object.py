@@ -4,19 +4,24 @@ from scripts import constants as c
 
 class Hostile(arcade.Sprite):
     '''
-    Constructor creates a hostile object which "is-an" object
-
-    param: 
-        same as object parameters
-        window - a pyarcade window object, allows alterable screen
-        player - player object
-        static - a boolean if the object moves or not
-    returns:
-        nothing
+    A hostile object is a deriviative of the object class that can "kill"
+    the player if they touch it
     '''
+
     def __init__ (self, texture, column, row, speed=0, static=True, left=None):
+        '''
+        Constructor creates a hostile object which "is-an" object
+
+        param: 
+            same as object parameters
+            window - a pyarcade window object, allows alterable screen
+            player - player object
+            static - a boolean if the object moves or not
+        returns:
+            nothing
+        '''
         super().__init__(path_or_texture=texture)
-        
+
         self.center_x = c.TILE_WIDTH * column + c.TILE_WIDTH // 2
         self.x = column
         self.center_y = c.TILE_HEIGHT * row + c.TILE_HEIGHT // 2
@@ -32,10 +37,17 @@ class Hostile(arcade.Sprite):
             self.is_moving_left = left
             self.next_move = self.speed
 
-    def try_move(self, delta_time, window, player):
+    def try_move(self, delta_time, player):
         '''
         try_move takes the elapsed time and tests if we can move
         the hostile object. If we can, move it
+
+        param:
+            self
+            delta_time
+            player
+        returns:
+            nothing
         '''
         #TODO: Delete object after moving off screen
 

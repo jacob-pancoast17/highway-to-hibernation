@@ -18,8 +18,10 @@ class GameView(arcade.View):
         '''
         Constructor
 
-        param: self
-        return: nothing
+        param:
+            self
+        returns:
+            nothing
         '''
         super().__init__()
 
@@ -53,8 +55,10 @@ class GameView(arcade.View):
         and creates the player, world engine, texture engine,
         and time engine.
 
-        param: self
-        return: nothing
+        param:
+            self
+        returns:
+            nothing
         '''
 
         self.player = Player(c.STARTING_Y, c.STARTING_X)

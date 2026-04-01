@@ -6,31 +6,43 @@ from scripts.screens.stats_screen import StatsScreen
 
 class GameOver(arcade.View):
     ''' GameOver represents the game over view '''
-    # Constructor calls arcade 'View' superclass constructor
-    # param: self
-    # return: nothing
 
     def __init__(self, previous_view):
+        '''
+        Constructor calls arcade 'View' superclass constructor
+        
+        param:
+            self
+        returns:
+            nothing
+        '''
         super().__init__()
         self.previous_view = previous_view
 
-    # on_show_view defines events that happen when switching to the game over screen
-    # param: self
-    # return: nothing
     def on_show_view(self):
+        '''
+        on_show_view defines events that happen when switching to the game over screen
+        
+        param:
+            self
+        returns:
+            nothing
+        '''
         # Set background color
         self.window.background_color = c.game_over_background
 
         # Reset view
         self.window.default_camera.use()
 
-
-    # on_draw redraws the game over screen
-
-    # param: self
-    # return: nothing
-
     def on_draw(self):
+        '''
+        on_draw redraws the game over screen
+
+        param:
+            self
+        returns:
+            nothing
+        '''
         # reset window
         self.clear()
 

@@ -22,7 +22,7 @@ class WorldEngine():
 
         param: 
             self
-        return: 
+        returns: 
             nothing
         '''
         # Set a random seed for the perlin noise function
@@ -43,6 +43,7 @@ class WorldEngine():
         self.player = player
         self.speed = None
         self.sprites = None
+        self.spawn = [None]
 
     def generate_array(self):
         '''
@@ -52,7 +53,7 @@ class WorldEngine():
 
         param: 
             self
-        return: 
+        returns: 
             nothing
         '''
         # Make sure the first rows are always grass at the
@@ -119,7 +120,8 @@ class WorldEngine():
             self.loaded.append(bottom_row)
 
             # Randomly pick a velocity to add to list
-            rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST], weights = [1/3, 1/3, 1/3])
+            rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST],
+                                        weights = [1/3, 1/3, 1/3])
             #print(rand_speed)
 
             middle_row = self.generate_platforms(i)
@@ -181,7 +183,7 @@ class WorldEngine():
         param: 
             self
             row - the current row to be generated
-        return:
+        returns:
             a SpriteList object from child function
         '''
         if self.rows[row] == "Road":
@@ -234,7 +236,7 @@ class WorldEngine():
         param: 
             self
             row - the current row to be generated
-        return:
+        returns:
             a SpriteList object from child function
         '''
         if self.rows[row] == 'Grassy':
@@ -253,7 +255,7 @@ class WorldEngine():
         param:
             self
             row - a row index to be generated
-        return:
+        returns:
             a SpriteList object containing all of the object sprites for
                 that row
         '''
@@ -280,6 +282,12 @@ class WorldEngine():
         update_cars takes a row and updates the cars in that row by trying
         to move them and then trying to spawn new ones if we are at the next
         spawn check
+
+        param:
+            self
+            row
+        returns:
+            nothing
         '''
 
         hostiles = arcade.SpriteList()
@@ -361,7 +369,7 @@ class WorldEngine():
         param:
             self
             row - a row index to be generated
-        return:
+        returns:
             a SpriteList object containing all of the object sprites for
                 that row
         '''
@@ -458,7 +466,7 @@ class WorldEngine():
         param:
             self
             row - a row index to be generated
-        return:
+        returns:
             a SpriteList object containing all of the object sprites for
                 that row
         """
@@ -500,7 +508,7 @@ class WorldEngine():
         param:
             self
             row - a row index to be generated
-        return:
+        returns:
             a SpriteList object containing all of the object sprites for
                 that row
         '''
@@ -519,14 +527,18 @@ class WorldEngine():
         """
         generate_lilypads takes a row and generates a lilypad that you
         can walk on to cross the river, with a random chance of spawning in each
+
+        param:
+            self
+            row
+        returns:
+            a SpriteList object containing all of the lilypad sprites for
+                that row
         """
 
         lilypads = arcade.SpriteList()
 
-        walkable = self.drunkards_walk(self.current_walk_coords[0],
-                                       row,
-                                       0,
-                                       c.COLUMN_COUNT - 1)
+        walkable = self.drunkards_walk(self.current_walk_coords[0], row, 0, c.COLUMN_COUNT - 1)
         walkable = sorted(walkable, key=lambda x: x[1])
 
         # Append all except the last one
@@ -541,9 +553,7 @@ class WorldEngine():
             if ((i, row) not in walkable and
                 random.random() < .2):
 
-                lilypads.append(Obstacle('sprites/lilypad.png',
-                                        i,
-                                        row - self.loaded_indices[0]))
+                lilypads.append(Obstacle('sprites/lilypad.png', i, row - self.loaded_indices[0]))
 
         # Update walk
         self.current_walk_coords = walkable[-1]
@@ -555,6 +565,13 @@ class WorldEngine():
         generate_logs takes a row and generates a line of water that 
         kills you with logs that move across the screen that you can 
         jump on to cross
+
+        param:
+            self
+            row
+        returns:
+            a SpriteList object containing all of the log sprites for
+                that row
         '''
 
         logs = []
@@ -585,9 +602,9 @@ class WorldEngine():
                         log.append(Obstacle('sprites/water_log.png',
                                             x + i,
                                             row - self.loaded_indices[0],
-                                            speed= c.LOG_SPEED_SLOW,
-                                            static= False,
-                                            left= moving_left))
+                                            speed = c.LOG_SPEED_SLOW,
+                                            static = False,
+                                            left = moving_left))
                         #print(f"part of log in row {row} at {x+i}")
 
                     logs.append(log)
@@ -617,7 +634,7 @@ class WorldEngine():
         param:
             self
             row - a row index to be generated
-        return:
+        returns:
             a SpriteList object containing all of the object sprites for
                 that row
         '''
@@ -701,6 +718,17 @@ class WorldEngine():
         return sprites
 
     def update_logs(self, row):
+        '''
+        update_logs takes a row and updates the logs in that row by trying
+        to move them and then trying to spawn new ones if we are at the next
+        spawn check 
+
+        param:
+            self
+            row
+        returns:
+            nothing
+        '''
 
         curr_row_of_platforms = arcade.SpriteList()
 
@@ -712,36 +740,40 @@ class WorldEngine():
                 curr_row_of_platforms.append(log)
 
         index = 0
+
         while len(curr_row_of_platforms) == 0:
-            
+
             log = self.platforms[row][0][index]
+
             if log.is_off_screen():
+
                 curr_row_of_platforms.append(log)
+
             else:
+
                 index += 1
 
-            
-        # After cleaning up the current logs we have in a row, 
-        # let's check if we should add a new one! 
+        # After cleaning up the current logs we have in a row,
+        # let's check if we should add a new one!
 
         # Change spawn rate weights based on current row speed
+        spawn = random.choices([True, False], weights=[50, 50])
 
-        if(self.platforms[row][1] == c.LOG_SPEED_SLOW):
+        if self.platforms[row][1] == c.LOG_SPEED_SLOW:
             spawn = random.choices([True, False], weights=[70, 30])
             print("WE GOT SLOW!")
-        elif(self.platforms[row][-1] == c.LOG_SPEED_MED):
+        elif self.platforms[row][-1] == c.LOG_SPEED_MED:
             spawn = random.choices([True, False], weights=[60, 40])
             print("WE GOT MED")
-        elif(self.platforms[row][-1] == c.LOG_SPEED_FAST):
+        elif self.platforms[row][-1] == c.LOG_SPEED_FAST :
             spawn = random.choices([True, False], weights=[50, 50])
             print("WE GOT FAST")
-        
 
         #spawn = random.choices([True, False], weights=[70, 30])
         if not spawn[0]:
             return
-        
-        # First we need to determine  when the last in line 
+
+        # First we need to determine  when the last in line
         # arrives (we don't want logs lapping each other)
         last_arrival = curr_row_of_platforms[-1]
 
@@ -751,15 +783,16 @@ class WorldEngine():
             if last_arrival.is_moving_left:
                 # if there is a log on screen, copy the velocity for the next log spawned
                 curr_row_of_platforms.append(
-                    Platform("sprites/rock1_mossy.png", c.COLUMN_COUNT - 1 + i, row, speed = self.platforms[row][1], static=False, left=True))
+                    Platform("sprites/rock1_mossy.png", c.COLUMN_COUNT - 1 + i, row,
+                            speed = self.platforms[row][1], static=False, left=True))
             else:
                 #self.platforms[row][-1].speed need for speed
                 curr_row_of_platforms.append(
-                    Platform("sprites/rock1_mossy.png", 0 - i, row, speed = self.platforms[row][1], static=False, left=False))
+                    Platform("sprites/rock1_mossy.png", 0 - i, row,
+                             speed = self.platforms[row][1], static=False, left=False))
 
         # Replace currently loaded row with the updated one
         self.platforms[row][0] = curr_row_of_platforms
-    
 
     def get_row(self, row):
         '''
@@ -771,7 +804,7 @@ class WorldEngine():
         param:
             self
             row - a row index to convert from a SpriteList to a list 
-        return:
+        returns:
             the row as a list of sprite objects and Nones
         '''
 
@@ -811,7 +844,7 @@ class WorldEngine():
         param:
             self
             row - a row index to convert from a SpriteList to a list 
-        return:
+        returns:
             the row as a list of sprite objects and Nones
         '''
 
@@ -847,7 +880,7 @@ class WorldEngine():
 
         param:
             self
-        return:
+        returns:
             A list of all car row indices
         '''
 
@@ -867,7 +900,7 @@ class WorldEngine():
 
         param:
             self
-        return:
+        returns:
             A list of all log row indices
         '''
 
