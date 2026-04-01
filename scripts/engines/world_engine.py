@@ -25,9 +25,7 @@ class WorldEngine():
             nothing
         '''
         # Set a random seed for the perlin noise function
-        # TODO: Change this seed after testing the path algorithm. Currently it
-        # blocks you
-        self.seed = 941.5329189805698#random.random() * 1000
+        self.seed = random.random() * 1000
         print(self.seed)
         random.seed(self.seed)
 
@@ -374,7 +372,6 @@ class WorldEngine():
                                        trees_left,
                                        c.COLUMN_COUNT - trees_right)
         walkable = sorted(walkable, key=lambda x: x[1])
-        print('grass path: ' + str(walkable))
 
         last_rock = None
         # Append trees to the left
@@ -526,8 +523,6 @@ class WorldEngine():
                                        0,
                                        c.COLUMN_COUNT - 1)
         walkable = sorted(walkable, key=lambda x: x[1])
-        print('river path: ' + str(walkable))
-
 
         # Append all except the last one
         for i in range(len(walkable) - 1):
@@ -826,7 +821,7 @@ class WorldEngine():
         returns:
             a list of coordinates in a row that must be empty
         '''
-        path = []
+        path = [(x, y)]
 
         while True:
             a = random.choices(['up', 'left', 'right'],
