@@ -65,7 +65,7 @@ class TextureEngine():
 
         return grid
 
-    def draw_all_rows(self):
+    def draw_all_grassy_and_cars(self):
         '''
         draw_all_rows is a helper function that draws all
         currently loaded rows of the world engine
@@ -77,7 +77,27 @@ class TextureEngine():
         '''
         for row in reversed(self.world.loaded):
 
-            row.draw()
+            if (self.world.rows[row[0].y] == 'Grassy' or
+                self.world.rows[row[0].y] == 'Road'):
+
+                row.draw()
+
+    def draw_all_rivers(self):
+        '''
+        draw_all_rows is a helper function that draws all
+        currently loaded rows of the world engine
+
+        param: 
+            self
+        returns:
+            nothing
+        '''
+        for row in reversed(self.world.loaded):
+
+            if (self.world.rows[row[0].y] == 'River_Lilypads' or
+                self.world.rows[row[0].y] == 'River_Logs'):
+
+                row.draw()
 
     def draw_all_platforms(self):
         '''
@@ -92,7 +112,7 @@ class TextureEngine():
         '''
 
         for platforms in reversed(self.world.platforms):
-
+    
             platforms.draw()
     
     def draw_all_collectibles(self):
@@ -109,6 +129,7 @@ class TextureEngine():
         for collectibles in reversed(self.world.collectibles):
 
             collectibles.draw()
+
     
     def draw_all_sprites(self):
         '''
@@ -122,7 +143,8 @@ class TextureEngine():
         '''
 
         self.grid.draw()
-        self.draw_all_rows()
+        self.draw_all_rivers()
         self.draw_all_platforms()
-        self.draw_all_collectibles()
         self.player.draw()
+        self.draw_all_grassy_and_cars()
+        self.draw_all_collectibles()

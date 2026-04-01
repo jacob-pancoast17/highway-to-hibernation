@@ -7,6 +7,8 @@ from scripts.screens.game_over_screen import GameOver
 from scripts.engines.texture_engine import TextureEngine
 from scripts.engines.time_engine import TimeEngine
 from scripts.engines.world_engine import WorldEngine
+from scripts.stats_manager import record_score
+
 #from pause_screen import Pause
 
 class GameView(arcade.View):
@@ -136,6 +138,7 @@ class GameView(arcade.View):
             did_move = self.player.try_move(symbol, self.world, self.window)
 
             if self.player.dead:
+                record_score(self.player.score)
                 self.window.show_view(GameOver(self))
                 return
 
