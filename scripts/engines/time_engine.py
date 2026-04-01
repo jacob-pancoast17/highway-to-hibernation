@@ -29,6 +29,7 @@ class TimeEngine():
 
         # Set the first spawn check
         self.next_spawn_check = c.TIME_BETWEEN_SPAWNS
+        self.next_log_spawn_check = c. TIME_BETWEEN_LOG_SPAWNS
     
     def pass_time(self, time):
         '''
@@ -52,6 +53,7 @@ class TimeEngine():
 
         if self.world_time > self.next_spawn_check:
             self.spawn_hostiles()
+        if self.world_time > self.next_log_spawn_check:
             self.spawn_platforms()
         
     
@@ -72,7 +74,7 @@ class TimeEngine():
         # Try to move each log in each row
         for row in curr_log_rows:
 
-            for log in self.world.platforms[row]:
+            for log in self.world.platforms[row][0]:
                 
                 log.try_move(delta_time, self.window, self.world.player)
 
@@ -127,7 +129,9 @@ class TimeEngine():
             returns:
                 nothing
             '''
-            self.next_spawn_check += c.TIME_BETWEEN_SPAWNS
+
+            # Add TIME_BETWEEN_LOG_SPAWNS to log spawns
+            self.next_log_spawn_check += c.TIME_BETWEEN_LOG_SPAWNS
 
             # Get the current log rows
             curr_log_rows = self.world.get_log_rows()

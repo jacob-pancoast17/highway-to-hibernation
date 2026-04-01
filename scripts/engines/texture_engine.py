@@ -93,7 +93,7 @@ class TextureEngine():
 
         for i in range(len(self.world.platforms)):
 
-            self.world.platforms[i].draw()
+            self.world.platforms[i][0].draw()
     
     def draw_all_sprites(self):
         '''
