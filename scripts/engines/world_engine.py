@@ -576,7 +576,6 @@ class WorldEngine():
 
         logs = []
         x = 0
-        moving_left = random.choice([True, False])
 
         # For each spot before the end
         while x < 15:
