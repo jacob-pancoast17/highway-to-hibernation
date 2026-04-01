@@ -452,6 +452,13 @@ class WorldEngine():
         """
         generate_honey takes a row and generates it randomly
         to spawn honey that gives you points if you get it
+
+        param:
+            self
+            row - a row index to be generated
+        return:
+            a SpriteList object containing all of the object sprites for
+                that row
         """
 
         self.sprites = arcade.SpriteList()
