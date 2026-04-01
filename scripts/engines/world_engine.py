@@ -396,7 +396,7 @@ class WorldEngine():
                     'sprites/tree3_no_bush.png'],
                     weights = [0.33, 0.34, 0.33])
 
-            sprites.append(Obstacle(tree_texture[0], i, row - self.loaded_indices[0]))
+            sprites.append(Obstacle(tree_texture[0], i, row=row - self.loaded_indices[0]))
 
             sprites[-1].scale = 0.95
             sprites[-1].center_y = (c.TILE_HEIGHT * (row - self.loaded_indices[0])
@@ -601,10 +601,8 @@ class WorldEngine():
 
                         log.append(Obstacle('sprites/water_log.png',
                                             x + i,
-                                            row - self.loaded_indices[0],
-                                            speed = c.LOG_SPEED_SLOW,
-                                            static = False,
-                                            left = moving_left))
+                                            row= row - self.loaded_indices[0],
+                                            speed= c.LOG_SPEED_SLOW))
                         #print(f"part of log in row {row} at {x+i}")
 
                     logs.append(log)
@@ -783,12 +781,12 @@ class WorldEngine():
             if last_arrival.is_moving_left:
                 # if there is a log on screen, copy the velocity for the next log spawned
                 curr_row_of_platforms.append(
-                    Platform("sprites/rock1_mossy.png", c.COLUMN_COUNT - 1 + i, row,
-                            speed = self.platforms[row][1], static=False, left=True))
+                    Platform("sprites/water_log.png", c.COLUMN_COUNT - 1 + i, row,
+                            speed = self.platforms[row][1], left=True))
             else:
                 #self.platforms[row][-1].speed need for speed
                 curr_row_of_platforms.append(
-                    Platform("sprites/rock1_mossy.png", 0 - i, row,
+                    Platform("sprites/water_log.png", 0 - i, row,
                              speed = self.platforms[row][1], static=False, left=False))
 
         # Replace currently loaded row with the updated one
