@@ -1,18 +1,20 @@
-''' Module representing the game over screen. '''
+''' Module representing the victory screen. '''
 import arcade
 from scripts import constants as c
 from scripts.screens.stats_screen import StatsScreen
 
 
-class GameOver(arcade.View):
-    ''' GameOver represents the game over view '''
+class Victory(arcade.View):
+    ''' Victory represents the game over view '''
     # Constructor calls arcade 'View' superclass constructor
     # param: self
     # return: nothing
 
-    def __init__(self, previous_view):
+    def __init__(self, score, previous_view):
         super().__init__()
+        self.score = score
         self.previous_view = previous_view
+
 
     # on_show_view defines events that happen when switching to the game over screen
     # param: self
@@ -36,12 +38,22 @@ class GameOver(arcade.View):
 
         #TODO: Change to text objects, same in start_screen
         arcade.draw_text(
-            "YOU ARE DEAD",
+            "VICTORY!",
             font_name="Edit Undo BRK",
-            color= c.blood_mwahaha,
+            color= c.victory,
             x = c.WINDOW_WIDTH / 2,
             y = c.WINDOW_HEIGHT * 3 / 4,
             font_size = 50,
+            anchor_x = 'center',
+            anchor_y = 'center'
+        )
+
+        arcade.draw_text(
+            f"SCORE: {self.score}",
+            font_name="Edit Undo BRK",
+            x = c.WINDOW_WIDTH / 2,
+            y = c.WINDOW_HEIGHT * 5 / 8,
+            font_size = 30,
             anchor_x = 'center',
             anchor_y = 'center'
         )
@@ -77,6 +89,7 @@ class GameOver(arcade.View):
             anchor_x='center',
             anchor_y='center'
         )
+
 
     # on_mouse_press detects when the mouse is pressed and
     # changes the view to the game view again to restart

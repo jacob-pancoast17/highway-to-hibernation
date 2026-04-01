@@ -1,6 +1,6 @@
 '''This module contains the engine that manages timing and spawns'''
-import constants as c
-import random 
+from scripts import constants as c
+import random
 
 class TimeEngine():
     '''
@@ -29,6 +29,7 @@ class TimeEngine():
 
         # Set the first spawn check
         self.next_spawn_check = c.TIME_BETWEEN_SPAWNS
+
         self.next_log_spawn_check = c. TIME_BETWEEN_LOG_SPAWNS
     
     def pass_time(self, time):
@@ -43,7 +44,6 @@ class TimeEngine():
         returns:
             nothing
         '''
-
         self.world_time += time
 
         # Try to move hostile objects and attempt to spawn
@@ -53,6 +53,7 @@ class TimeEngine():
 
         if self.world_time > self.next_spawn_check:
             self.spawn_hostiles()
+        
         if self.world_time > self.next_log_spawn_check:
             self.spawn_platforms()
         
@@ -92,11 +93,12 @@ class TimeEngine():
 
         # Get the current hostile rows
         curr_car_rows = self.world.get_car_rows()
+        #print(f"curr car rows: {curr_car_rows}")
 
         # Try to move each car in each row
         for row in curr_car_rows:
 
-            for car in self.world.loaded[row]:
+            for car in self.world.loaded[row - self.world.loaded_indices[0]]:
 
                 car.try_move(delta_time, self.window, self.world.player)
 
@@ -120,6 +122,7 @@ class TimeEngine():
         for row in curr_car_rows:
 
             self.world.update_cars(row)
+
     def spawn_platforms(self):
             '''
             spawn_platforms tries to spawn platforms in each row 

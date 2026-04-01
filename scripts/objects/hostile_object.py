@@ -1,5 +1,6 @@
+''' Hostile object class, which is an object that can kill the player on contact.'''
 import arcade
-import constants as c
+from scripts import constants as c
 
 class Hostile(arcade.Sprite):
     '''
@@ -16,25 +17,26 @@ class Hostile(arcade.Sprite):
     def __init__ (self, texture, column, row, speed=0, static=True, left=None):
         super().__init__(path_or_texture=texture)
         
-        self.center_x = (c.MARGIN + c.TILE_WIDTH) * column + c.MARGIN + c.TILE_WIDTH // 2
+        self.center_x = c.TILE_WIDTH * column + c.TILE_WIDTH // 2
         self.x = column
-        self.center_y = (c.MARGIN + c.TILE_HEIGHT) * row + c.MARGIN + c.TILE_HEIGHT // 2
+        self.center_y = c.TILE_HEIGHT * row + c.TILE_HEIGHT // 2
         self.y = row
         self.angle = 0
 
         self.static = static
         self.speed = speed
 
-        # If this hostile item is a dynamic one...
-        if self.static == False:
-            # Start global timer
+        # Set movement values for moving hostiles
+        if not self.static:
             self.timer = 0
             self.is_moving_left = left
-        
-            # Set the first time to move based on the speed
             self.next_move = self.speed
 
     def try_move(self, delta_time, window, player):
+        '''
+        try_move takes the elapsed time and tests if we can move
+        the hostile object. If we can, move it
+        '''
         #TODO: Delete object after moving off screen
 
         # Don't move static objects
@@ -59,15 +61,16 @@ class Hostile(arcade.Sprite):
                 self.center_x -= c.VELOCITY_MULTIPLIER
                 self.x -= 1
 
-            hit_list = arcade.check_for_collision(self,
-                                                  player)
+            hit_list = arcade.check_for_collision(self, player)
             if hit_list:
-
-                from screens.game_over_screen import GameOver
-                window.show_view(GameOver())
+                player.dead = True
 
     def is_off_screen(self):
-        
+        '''
+        is_off_screen checks if the hostile object has moved off the screen, and
+        should be deleted
+        '''
+
         if (self.center_x < c.TILE_WIDTH or
             self.center_x > c.WINDOW_WIDTH):
             self.speed = 0
