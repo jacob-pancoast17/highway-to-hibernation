@@ -145,6 +145,6 @@ class TextureEngine():
         self.grid.draw()
         self.draw_all_rivers()
         self.draw_all_platforms()
+        self.player.draw()
         self.draw_all_grassy_and_cars()
         self.draw_all_collectibles()
-        self.player.draw()

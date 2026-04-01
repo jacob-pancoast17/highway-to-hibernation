@@ -25,7 +25,11 @@ class WorldEngine():
             nothing
         '''
         # Set a random seed for the perlin noise function
-        self.seed = random.random() * 1000
+        # TODO: Change this seed after testing the path algorithm. Currently it
+        # blocks you
+        self.seed = 941.5329189805698#random.random() * 1000
+        print(self.seed)
+        random.seed(self.seed)
 
         self.rows = []
         self.generate_array()
@@ -91,7 +95,6 @@ class WorldEngine():
 
             else:
                 print("ERROR GENERATING ARRAY IN WORLD_GEN.PY")
-                exit()
 
         # Make sure the first last rows are always grass at the
         # beginning of the game
