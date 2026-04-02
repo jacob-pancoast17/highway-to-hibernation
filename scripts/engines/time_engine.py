@@ -142,5 +142,4 @@ class TimeEngine():
             # Then for each row update the board using the world
             # engine
             for row in curr_log_rows:
-                print(f"i really want to spawn a log on row {row}")
                 self.world.update_logs(row)
