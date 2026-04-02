@@ -27,7 +27,6 @@ class WorldEngine():
         '''
         # Set a random seed for the perlin noise function
         self.seed = random.random() * 1000
-        print(self.seed)
         random.seed(self.seed)
 
         self.rows = []
@@ -122,7 +121,7 @@ class WorldEngine():
             rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST], weights = [1/3, 1/3, 1/3])
             #print(rand_speed)
 
-            middle_row = self.generate_platforms(i)
+            middle_row = self.generate_platforms(i, speed = rand_speed[0])
             self.platforms.append([middle_row, rand_speed[0]])
 
             top_row = self.generate_collectible(i)
@@ -152,7 +151,7 @@ class WorldEngine():
 
         rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST], weights = [1/3, 1/3, 1/3])    
         new_platform  = self.generate_platforms(new_row_index)
-        self.platforms.append([new_platform, rand_speed])
+        self.platforms.append([new_platform, rand_speed[0]])
 
         new_collectible = self.generate_collectible(new_row_index)
         self.collectibles.append(new_collectible)
@@ -162,7 +161,6 @@ class WorldEngine():
         # Move everything else down (iterate over rows - 1 because
         # we have 1 less row)
         for i in range(c.ROW_COUNT - 1):
-            print(i)
             self.loaded[i].move(change_x = 0,
                                 change_y = -c.TILE_HEIGHT)
             self.platforms[i][0].move(change_x = 0,
@@ -207,7 +205,7 @@ class WorldEngine():
             print("PROBLEM IN GENERATION.")
             exit()
 
-    def generate_platforms(self, row):
+    def generate_platforms(self, row, speed=c.LOG_SPEED_SLOW):
         '''
         generates platforms
         '''
@@ -220,7 +218,7 @@ class WorldEngine():
 
         elif self.rows[row] == 'River_Logs':
 
-            return self.generate_logs(row)
+            return self.generate_logs(row, speed=speed)
 
         else:
 
@@ -269,10 +267,10 @@ class WorldEngine():
 
         if not moving_left:
             hostiles.append(Hostile("sprites/rock1.png", 0, row - self.loaded_indices[0],
-                                    self.speed, static=False, left=moving_left))
+                                    self.speed, static=False, left=False))
         else:
             hostiles.append(Hostile("sprites/rock1.png", 14, row - self.loaded_indices[0],
-                                    self.speed, static=False, left=moving_left))
+                                    self.speed, static=False, left=True))
 
         return hostiles
 
@@ -335,12 +333,6 @@ class WorldEngine():
         # Truncate THAT so we don't get any speed demons
         if new_speed > c.UPPER_OBSTACLE_SPEED:
             new_speed = c.UPPER_OBSTACLE_SPEED
-
-        #print(f"last arrival time in {last_arrival_time}, currently at x = {last_arrival.x}")
-        #print(f"next available arrival is
-        #  {next_avail_arrival_time} due to speed of {last_arrival.speed}")
-        # print(f"adding a new car on row {row} with
-        #   speed {new_speed} which will arrive in {arrival}")
 
         if last_arrival.is_moving_left:
             hostiles.append(Hostile("sprites/rock1.png", 14, row - self.loaded_indices[0],
@@ -470,7 +462,7 @@ class WorldEngine():
         if random.random() < .25:
 
             spawnable_spots = list(range(15))
-            print(row - self.loaded_indices[0])
+            #print(row - self.loaded_indices[0])
             cells = self.loaded[row - self.loaded_indices[0]]
 
             # Remove not spawnable spots
@@ -551,61 +543,40 @@ class WorldEngine():
 
         return lilypads
 
-    def generate_logs(self, row):
+    def generate_logs(self, row, speed):
         '''
         generate_logs takes a row and generates a line of water that 
         kills you with logs that move across the screen that you can 
         jump on to cross
         '''
 
-        logs = []
-        x = 0
+        log_cells = arcade.SpriteList()
         moving_left = random.choice([True, False])
 
-        # For each spot before the end
-        while x < 15:
+        length = random.randint(c.SMALLEST_LOG,c.BIGGEST_LOG)
 
-            # Try to spawn a log if  probablility
-            if random.random() < 0.25:
 
-                if logs and logs[-1][0].x != x - 1:
+        for i in range(length):
 
-                    pass
+            if moving_left:
 
-                else:
-
-                    if x <= 11:
-                        length = random.randint(c.SMALLEST_LOG,c.BIGGEST_LOG)
-                    else:
-                        length = random.randint(c.SMALLEST_LOG, 15 - x)
-
-                    log = arcade.SpriteList()
-
-                    for i in range(length):
-
-                        log.append(Platform('sprites/water_log.png',
-                                            x + i,
-                                            row= row - self.loaded_indices[0],
-                                            static = False,
-                                            speed= c.LOG_SPEED_SLOW))
-                        #print(f"part of log in row {row} at {x+i}")
-
-                    logs.append(log)
-                    x += length
-
+                log_cells.append(Platform('sprites/water_log.png',
+                                    15 - i,
+                                    row= row - self.loaded_indices[0],
+                                    static = False,
+                                    speed= speed,
+                                    left=True))
+            
             else:
 
-                x += 1
+                log_cells.append(Platform('sprites/water_log.png',
+                                    i,
+                                    row= row - self.loaded_indices[0],
+                                    static = False,
+                                    speed= speed,
+                                    left=False))
 
-        lst = arcade.SpriteList()
-
-        for log in logs:
-
-            for sprite in log:
-
-                lst.append(sprite)
-
-        return lst
+        return log_cells
 
     def generate_victory(self, row):
         '''
@@ -702,24 +673,23 @@ class WorldEngine():
 
     def update_logs(self, row):
 
-        curr_row_of_platforms = arcade.SpriteList()
+        new_row = arcade.SpriteList()
+
+        existing_row = self.platforms[row - self.loaded_indices[0]][0]
+        tmp = existing_row[0]
+        moving_left = tmp.is_moving_left
 
         # For each log in the row
-        for log in self.platforms[row - self.loaded_indices[0]][0]:
+        for moving_cell in existing_row:
 
             # If it's still on screen, keep it
-            if not log.is_off_screen():
-                curr_row_of_platforms.append(log)
+            if not moving_cell.is_off_screen():
+                new_row.append(moving_cell)
+        
+        # We want at least one so we can store if the row is a left row or a right row
+        if len(new_row) == 0:
 
-        index = 0
-        while len(curr_row_of_platforms) == 0:
-            
-            log = self.platforms[row - self.loaded_indices[0]][0][index]
-            if log.is_off_screen():
-                curr_row_of_platforms.append(log)
-            else:
-                index += 1
-
+            new_row.append(tmp)
             
         # After cleaning up the current logs we have in a row, 
         # let's check if we should add a new one! 
@@ -728,37 +698,33 @@ class WorldEngine():
 
         if(self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_SLOW):
             spawn = random.choices([True, False], weights=[70, 30])
-            print("WE GOT SLOW!")
+            #print("WE GOT SLOW!")
         elif(self.platforms[row - self.loaded_indices[0]][-1] == c.LOG_SPEED_MED):
             spawn = random.choices([True, False], weights=[60, 40])
-            print("WE GOT MED")
+            #print("WE GOT MED")
         elif(self.platforms[row - self.loaded_indices[0]][-1] == c.LOG_SPEED_FAST):
             spawn = random.choices([True, False], weights=[50, 50])
-            print("WE GOT FAST")
+            #print("WE GOT FAST")
         
 
-        #spawn = random.choices([True, False], weights=[70, 30])
+        spawn = random.choices([True, False], weights=[70, 30])
         if not spawn[0]:
             return
-        
-        # First we need to determine  when the last in line 
-        # arrives (we don't want logs lapping each other)
-        last_arrival = curr_row_of_platforms[-1]
 
         # Randomly choose how many tiles the log is
-        tile_num = random.randint(c.SMALLEST_LOG, c.BIGGEST_LOG)
-        for i in range(tile_num):
-            if last_arrival.is_moving_left:
+        log_size = random.randint(c.SMALLEST_LOG, c.BIGGEST_LOG)
+        for i in range(log_size):
+            if moving_left:
                 # if there is a log on screen, copy the velocity for the next log spawned
-                curr_row_of_platforms.append(
-                    Platform("sprites/water_log.png", c.COLUMN_COUNT - 1 + i, row, speed = self.platforms[row][1], static=False, left=True))
+                new_row.append(
+                    Platform("sprites/water_log.png", c.COLUMN_COUNT - 1 + i, row - self.loaded_indices[0], speed = self.platforms[row - self.loaded_indices[0]][1], static=False, left=True))
             else:
                 #self.platforms[row][-1].speed need for speed
-                curr_row_of_platforms.append(
-                    Platform("sprites/water_log.png", 0 - i, row, speed = self.platforms[row][1], static=False, left=False))
+                new_row.append(
+                    Platform("sprites/water_log.png", 0 - i, row - self.loaded_indices[0], speed = self.platforms[row - self.loaded_indices[0]][1], static=False, left=False))
 
         # Replace currently loaded row with the updated one
-        self.platforms[row - self.loaded_indices[0]][0] = curr_row_of_platforms
+        self.platforms[row - self.loaded_indices[0]][0] = new_row
     
 
     def get_row(self, row):
@@ -873,7 +839,7 @@ class WorldEngine():
 
         logs = []
 
-        for i in range(len(self.platforms)):
+        for i in self.loaded_indices:
 
             if self.rows[i] == "River_Logs":
 

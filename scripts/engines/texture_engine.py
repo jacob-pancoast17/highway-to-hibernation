@@ -112,8 +112,6 @@ class TextureEngine():
         '''
 
         for row in reversed(self.world.platforms):
-
-            print(row)
     
             row[0].draw()
     
