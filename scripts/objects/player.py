@@ -9,6 +9,16 @@ from scripts.screens.victory_screen import Victory
 class Player(arcade.Sprite):
     '''Player class: holds all information about the player, including position and sprite'''
     def __init__(self, row, column):
+        '''
+        Constructor creates a player
+
+        param: 
+            self
+            row
+            column
+        returns:
+            nothing
+        '''
 
         super().__init__(path_or_texture="sprites/bear_2.png")
 

@@ -7,8 +7,10 @@ class Pause(arcade.View):
     '''
     Constructor calls arcade 'View' superclass constructor
 
-    param: self
-    return: nothing
+    param:
+        self
+    returns:
+        nothing
     '''
     def __init__(self, game_view):
         super().__init__()
@@ -26,10 +28,12 @@ class Pause(arcade.View):
 
     def on_show_view(self):
         '''
-        on_show_view defines events that happen when switching
-        to the game over screen
-        param: self
-        return: nothing
+        on_show_view defines events that happen when switching to the game over screen
+
+        param:
+            self
+        returns:
+            nothing
         '''
         # Reset view
         self.window.default_camera.use()
@@ -39,8 +43,10 @@ class Pause(arcade.View):
         '''
         on_draw redraws the pause screen
 
-        param: self
-        return: nothing
+        param:
+            self
+        returns:
+            nothing
         '''
         self.clear()
         self.sprites.draw()
@@ -87,10 +93,10 @@ class Pause(arcade.View):
             anchor_y='center'
         )
 
-    def on_key_press(self, key, modifiers):
-        if key == arcade.key.ESCAPE:
+    def on_key_press(self, symbol, modifiers):
+        if symbol == arcade.key.ESCAPE:
             self.window.show_view(self.game_view)
-        if key == arcade.key.ENTER:
+        if symbol == arcade.key.ENTER:
             self.window.show_view(self.game_view.__class__())
-        if key == arcade.key.S:
+        if symbol == arcade.key.S:
             self.window.show_view(StatsScreen(self))

@@ -15,8 +15,10 @@ class StartScreen(arcade.View):
         '''
         Constructor calls arcade 'View' superclass constructor
 
-        param: self
-        return: nothing
+        param:
+            self
+        returns:
+            nothing
         '''
         super().__init__()
 
@@ -61,11 +63,12 @@ class StartScreen(arcade.View):
 
     def on_show_view(self):
         '''
-        on_show_view defines events that happen when switching
-        to the start screen view
+        on_show_view defines events that happen when switching to the start screen view
 
-        param: self
-        return: nothing
+        param:
+            self
+        returns:
+            nothing
         '''
         # Set background color
         # self.window.background_color == c.start_screen_background
@@ -79,8 +82,10 @@ class StartScreen(arcade.View):
         on_hide_view defines events that happen when switching
         away from the start screen
 
-        param: self
-        return: nothing
+        param:
+            self
+        returns:
+            nothing
         '''
         self.uimanager.disable()
 
@@ -89,8 +94,10 @@ class StartScreen(arcade.View):
         '''
         on_draw redraws the frame for the start screen
 
-        param: self
-        return: nothing
+        param:
+            self
+        returns:
+            nothing
         '''
         # Reset window
         self.clear()
@@ -109,6 +116,6 @@ class StartScreen(arcade.View):
             anchor_x="center"
         )
 
-    def on_key_press(self, key, modifiers):
-        if key == arcade.key.S:
+    def on_key_press(self, symbol, modifiers):
+        if symbol == arcade.key.S:
             self.window.show_view(StatsScreen(self))

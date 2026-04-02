@@ -1,24 +1,30 @@
+''' Module representing platform objects in the game.'''
 import arcade
 from scripts import constants as c
 
 class Platform(arcade.Sprite):
     '''
-    Constructor creates a platform object which "is-an" object
-
-    param: 
-        same as object parameters
-        window - a pyarcade window object, allows alterable screen
-        player - player object
-        static - a boolean if the object moves or not
-    returns:
-        nothing
+    A platform object is a derivative of the object clase which creates objects which
+    the player can stand on to avoid touching anything hostile.
     '''
+
     def __init__ (self, texture, column, row, speed=0, static=True, left=None):
+        '''
+        Constructor creates a platform object which "is-an" object
+
+        param: 
+            same as object parameters
+            window - a pyarcade window object, allows alterable screen
+            player - player object
+            static - a boolean if the object moves or not
+        returns:
+            nothing
+        '''
         super().__init__(path_or_texture=texture)
-        
-        self.center_x = (c.MARGIN + c.TILE_WIDTH) * column + c.MARGIN + c.TILE_WIDTH // 2
+
+        self.center_x = c.TILE_WIDTH * column + c.TILE_WIDTH // 2
         self.x = column
-        self.center_y = (c.MARGIN + c.TILE_HEIGHT) * row + c.MARGIN + c.TILE_HEIGHT // 2
+        self.center_y = c.TILE_HEIGHT * row + c.TILE_HEIGHT // 2
         self.y = row
         self.angle = 0
 
@@ -26,15 +32,26 @@ class Platform(arcade.Sprite):
         self.speed = speed
 
         # If this platform item is a dynamic one...
-        if self.static == False:
+        if self.static is False:
             # Start global timer
             self.timer = 0
             self.is_moving_left = left
-        
+
             # Set the first time to move based on the speed
             self.next_move = self.speed
 
-    def try_move(self, delta_time, window, player):
+    def try_move(self, delta_time, player):
+        '''
+        try_move takes the elapsed time and tests if we can move
+        the hostile object. If we can, move it
+
+        param:
+            self
+            delta_time
+            player
+        returns:
+            nothing
+        '''
         #TODO: Delete object after moving off screen
 
         # Don't move static objects
@@ -71,7 +88,15 @@ class Platform(arcade.Sprite):
                 #TODO else statement which calls game over screen
 
     def is_off_screen(self):
-        
+        '''
+        Checks if the platform is off screen
+
+        param:
+            self
+        returns:
+
+        '''
+
         if (self.center_x < c.TILE_WIDTH or
             self.center_x > c.WINDOW_WIDTH):
             self.speed = 0
