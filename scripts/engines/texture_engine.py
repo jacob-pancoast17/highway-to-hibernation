@@ -111,9 +111,11 @@ class TextureEngine():
             nothing
         '''
 
-        for platforms in reversed(self.world.platforms):
+        for row in reversed(self.world.platforms):
+
+            print(row)
     
-            self.world.platforms.draw()
+            row[0].draw()
     
     def draw_all_collectibles(self):
         '''

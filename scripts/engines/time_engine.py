@@ -75,7 +75,7 @@ class TimeEngine():
         # Try to move each log in each row
         for row in curr_log_rows:
 
-            for log in self.world.platforms[row][0]:
+            for log in self.world.platforms[row - self.world.loaded_indices[0]][0]:
                 
                 log.try_move(delta_time, self.window, self.world.player)
 

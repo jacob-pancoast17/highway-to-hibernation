@@ -150,8 +150,9 @@ class WorldEngine():
         new_row = self.generate_row(new_row_index)
         self.loaded.append(new_row)
 
+        rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST], weights = [1/3, 1/3, 1/3])    
         new_platform  = self.generate_platforms(new_row_index)
-        self.platforms.append(new_platform)
+        self.platforms.append([new_platform, rand_speed])
 
         new_collectible = self.generate_collectible(new_row_index)
         self.collectibles.append(new_collectible)
@@ -164,7 +165,7 @@ class WorldEngine():
             print(i)
             self.loaded[i].move(change_x = 0,
                                 change_y = -c.TILE_HEIGHT)
-            self.platforms[i].move(change_x = 0,
+            self.platforms[i][0].move(change_x = 0,
                                 change_y = -c.TILE_HEIGHT)
             self.collectibles[i].move(change_x = 0,
                                 change_y = -c.TILE_HEIGHT)
@@ -582,9 +583,10 @@ class WorldEngine():
 
                     for i in range(length):
 
-                        log.append(Obstacle('sprites/water_log.png',
+                        log.append(Platform('sprites/water_log.png',
                                             x + i,
                                             row= row - self.loaded_indices[0],
+                                            static = False,
                                             speed= c.LOG_SPEED_SLOW))
                         #print(f"part of log in row {row} at {x+i}")
 
@@ -703,7 +705,7 @@ class WorldEngine():
         curr_row_of_platforms = arcade.SpriteList()
 
         # For each log in the row
-        for log in self.platforms[row][0]:
+        for log in self.platforms[row - self.loaded_indices[0]][0]:
 
             # If it's still on screen, keep it
             if not log.is_off_screen():
@@ -712,7 +714,7 @@ class WorldEngine():
         index = 0
         while len(curr_row_of_platforms) == 0:
             
-            log = self.platforms[row][0][index]
+            log = self.platforms[row - self.loaded_indices[0]][0][index]
             if log.is_off_screen():
                 curr_row_of_platforms.append(log)
             else:
@@ -724,13 +726,13 @@ class WorldEngine():
 
         # Change spawn rate weights based on current row speed
 
-        if(self.platforms[row][1] == c.LOG_SPEED_SLOW):
+        if(self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_SLOW):
             spawn = random.choices([True, False], weights=[70, 30])
             print("WE GOT SLOW!")
-        elif(self.platforms[row][-1] == c.LOG_SPEED_MED):
+        elif(self.platforms[row - self.loaded_indices[0]][-1] == c.LOG_SPEED_MED):
             spawn = random.choices([True, False], weights=[60, 40])
             print("WE GOT MED")
-        elif(self.platforms[row][-1] == c.LOG_SPEED_FAST):
+        elif(self.platforms[row - self.loaded_indices[0]][-1] == c.LOG_SPEED_FAST):
             spawn = random.choices([True, False], weights=[50, 50])
             print("WE GOT FAST")
         
@@ -749,14 +751,14 @@ class WorldEngine():
             if last_arrival.is_moving_left:
                 # if there is a log on screen, copy the velocity for the next log spawned
                 curr_row_of_platforms.append(
-                    Platform("sprites/water_log.png", c.COLUMN_COUNT - 1 + i, row, speed = self.platforms[row][1], left=True))
+                    Platform("sprites/water_log.png", c.COLUMN_COUNT - 1 + i, row, speed = self.platforms[row][1], static=False, left=True))
             else:
                 #self.platforms[row][-1].speed need for speed
                 curr_row_of_platforms.append(
                     Platform("sprites/water_log.png", 0 - i, row, speed = self.platforms[row][1], static=False, left=False))
 
         # Replace currently loaded row with the updated one
-        self.platforms[row][0] = curr_row_of_platforms
+        self.platforms[row - self.loaded_indices[0]][0] = curr_row_of_platforms
     
 
     def get_row(self, row):
@@ -820,7 +822,7 @@ class WorldEngine():
 
             there_was_a_sprite = False
 
-            for sprite in self.platforms[row - self.loaded_indices[0]]:
+            for sprite in self.platforms[row - self.loaded_indices[0]][0]:
 
                 # For each sprite in the current row, check
                 # if it's x coord matches the current x
