@@ -30,7 +30,6 @@ class Hostile(arcade.Sprite):
 
         self.static = static
         self.speed = speed
-        self.left = left
 
         # Set movement values for moving hostiles
         if not self.static:
