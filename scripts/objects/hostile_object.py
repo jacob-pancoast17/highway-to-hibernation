@@ -34,7 +34,7 @@ class Hostile(arcade.Sprite):
         # Set movement values for moving hostiles
         if not self.static:
             self.timer = 0
-            self.is_moving_left = left
+            self.is_moving_left = True
             self.next_move = self.speed
 
     def try_move(self, delta_time, player):
@@ -75,8 +75,24 @@ class Hostile(arcade.Sprite):
 
             hit_list = arcade.check_for_collision(self, player)
             if hit_list:
+                self.move_back()
                 player.dead = True
                 player.death = 'Mauled'
+
+    def move_back(self):
+        '''
+        move_back takes a key and moves the hostile back
+        '''
+
+        if self.is_moving_left == True:
+
+            self.x += 1
+            self.center_x += c.VELOCITY_MULTIPLIER
+
+        else:
+
+            self.x -= 1
+            self.center_x -= c.VELOCITY_MULTIPLIER
 
     def is_off_screen(self):
         '''

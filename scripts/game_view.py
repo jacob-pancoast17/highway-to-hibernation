@@ -37,6 +37,7 @@ class GameView(arcade.View):
 
         self.world = None
         self.player = None
+        self.controls_removed = False
 
         # A variable to store our gui camera object
         self.gui_camera = None
@@ -119,6 +120,8 @@ class GameView(arcade.View):
         if self.player.dead:
                 
                 self.time_stopped = True
+                self.controls_removed = True
+                self.player.angle = 180
                 self.death_timer += delta_time
                 self.play_death_animation(delta_time)
                 
@@ -153,10 +156,11 @@ class GameView(arcade.View):
         '''
 
         # If the player presses a key, update the speed if able to move
-        if (symbol == arcade.key.UP or
+        if ((symbol == arcade.key.UP or
             symbol == arcade.key.DOWN or
             symbol == arcade.key.LEFT or
-            symbol == arcade.key.RIGHT):
+            symbol == arcade.key.RIGHT) and
+            not self.controls_removed):
 
             # Test if player is going to collide with something
             did_move = self.player.try_move(symbol, self.world, self.window)

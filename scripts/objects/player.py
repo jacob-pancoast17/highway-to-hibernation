@@ -25,8 +25,9 @@ class Player(arcade.Sprite):
         # Access the bear sprite
         super().__init__(path_or_texture=tex_eng.bear)
 
-        # Access the drowning sprites
-        self.drowning_textures = tex_eng.drowning_sprites
+        # Access the death textures
+        self.drowning_textures = tex_eng.drowning
+        self.mauled_texture = tex_eng.mauled
 
         # Define all coordinates
         self.center_x = c.TILE_WIDTH * column + c.TILE_WIDTH // 2
@@ -76,10 +77,10 @@ class Player(arcade.Sprite):
             arcade.check_for_collision(self, next_cell)):
 
             # Define the type of hit
-            obstacle_collided = self.hit(next_cell, window)
+            river_collided = self.hit(next_cell, window)
                 
             # If this line is reached, the hit type was obstacle
-            if obstacle_collided:
+            if not river_collided:
                 self.move_back(key)
 
             return False
@@ -95,7 +96,7 @@ class Player(arcade.Sprite):
 
         if isinstance(next_cell, Obstacle):
 
-            return True
+            return False
 
         elif isinstance(next_cell, Hostile):
 
@@ -104,11 +105,11 @@ class Player(arcade.Sprite):
             if next_cell.static == True:
 
                 self.death = 'Drown'
-                return False
+                return True
 
             else:
 
-                self.death = 'Maul'
+                self.death = 'Mauled'
                 return False
 
         elif isinstance(next_cell, Den):
@@ -200,4 +201,4 @@ class Player(arcade.Sprite):
 
         elif self.death == 'Mauled':
 
-            pass
+            self.texture = self.mauled_texture

@@ -23,8 +23,11 @@ class TextureEngine():
         ## SPRITES
         # Bear
         self.bear = "sprites/bear_2.png"
+        # Deaths
         drowning_sheet = arcade.load_spritesheet("sprites/bear_death2_sheet.png")
-        self.drowning_sprites = drowning_sheet.get_texture_grid(size = (30, 30), columns=9, count=9)
+        self.drowning = drowning_sheet.get_texture_grid(size = (30, 30), columns=9, count=9)
+
+        self.mauled = arcade.load_texture("sprites/bear_death1.png")
 
         # Create the grid
         self.grid = self.create_grid()
