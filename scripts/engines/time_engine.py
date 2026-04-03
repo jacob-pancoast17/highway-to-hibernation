@@ -77,7 +77,7 @@ class TimeEngine():
 
             for log in self.world.platforms[row - self.world.loaded_indices[0]][0]:
                 
-                log.try_move(delta_time, self.window, self.world.player)
+                log.try_move(delta_time, self.world.player)
 
     def try_to_move_hostiles(self, delta_time):
         '''
@@ -100,7 +100,7 @@ class TimeEngine():
 
             for car in self.world.loaded[row - self.world.loaded_indices[0]]:
 
-                car.try_move(delta_time, self.window, self.world.player)
+                car.try_move(delta_time, self.world.player)
 
     def spawn_hostiles(self):
         '''

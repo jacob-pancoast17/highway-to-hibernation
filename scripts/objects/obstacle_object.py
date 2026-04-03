@@ -8,7 +8,7 @@ class Obstacle(arcade.Sprite):
     but does not kill them when they touch it
     '''
 
-    def __init__ (self, texture, column, row, speed=0, left=False):
+    def __init__ (self, texture, column, row):
         '''
         Constructor creates a obstacle object which "is-an" object
 
