@@ -79,7 +79,8 @@ class Platform(arcade.Sprite):
                     player.center_x += c.VELOCITY_MULTIPLIER
                     player.x += 1
                     if player.x > c.COLUMN_COUNT - 1:
-                        player.die()
+                        player.dead = True
+                        player.death = 'Off Screen'
             # Otherwise, decrease x
             else:
                 self.center_x -= c.VELOCITY_MULTIPLIER
@@ -88,7 +89,8 @@ class Platform(arcade.Sprite):
                     player.center_x -= c.VELOCITY_MULTIPLIER
                     player.x -= 1
                     if player.x < 0:
-                        player.die()
+                        player.dead = True
+                        player.death = 'Off Screen'
 
     def is_off_screen(self):
         '''

@@ -30,11 +30,14 @@ class GameView(arcade.View):
 
         # Timing
         self.next_move = 0
+        self.time_stopped = False
+        self.death_timer = 0
 
         self.player_sprite = None
 
         self.world = None
         self.player = None
+        self.controls_removed = False
 
         # A variable to store our gui camera object
         self.gui_camera = None
@@ -61,13 +64,16 @@ class GameView(arcade.View):
         returns:
             nothing
         '''
+        self.texture_engine = TextureEngine()
 
-        self.player = Player(c.STARTING_Y, c.STARTING_X)
+        self.player = Player(c.STARTING_Y, c.STARTING_X, self.texture_engine)
+
+        self.texture_engine.add_player(self.player)
 
         self.world = WorldEngine(self.window, self.player)
         self.world.generate_screen()
 
-        self.texture_engine = TextureEngine(self.world, self.player)
+        self.texture_engine.add_world(self.world)
 
         self.time_engine = TimeEngine(self.world, self.window)
 
@@ -107,14 +113,23 @@ class GameView(arcade.View):
         '''
         Happens every frame
         '''
+        if not self.time_stopped:
 
-        self.time_engine.pass_time(delta_time)
+            self.time_engine.pass_time(delta_time)
 
         if self.player.dead:
                 
-                record_score(self.player.score)
-                time.sleep(1)
-                self.window.show_view(GameOver(self))
+                self.time_stopped = True
+                self.controls_removed = True
+                self.player.angle = 180
+                self.death_timer += delta_time
+                self.play_death_animation(delta_time)
+                
+                if self.death_timer > c.DEATH_ANIMATION_LENGTH:
+                
+                    record_score(self.player.score)
+                    self.window.show_view(GameOver(self))
+                
                 return
 
         # checks for collision between player and collectibles
@@ -141,10 +156,11 @@ class GameView(arcade.View):
         '''
 
         # If the player presses a key, update the speed if able to move
-        if (symbol == arcade.key.UP or
+        if ((symbol == arcade.key.UP or
             symbol == arcade.key.DOWN or
             symbol == arcade.key.LEFT or
-            symbol == arcade.key.RIGHT):
+            symbol == arcade.key.RIGHT) and
+            not self.controls_removed):
 
             # Test if player is going to collide with something
             did_move = self.player.try_move(symbol, self.world, self.window)
@@ -178,3 +194,7 @@ class GameView(arcade.View):
         self.current_bottom_of_screen += 1
         self.current_top_of_screen += 1
         print(f"bottom: {self.current_bottom_of_screen}")
+
+    def play_death_animation(self, delta_time):
+
+        self.player.die(delta_time)

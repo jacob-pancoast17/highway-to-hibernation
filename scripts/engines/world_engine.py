@@ -374,6 +374,7 @@ class WorldEngine():
         trees_left = random.randint(1,4)
         trees_right = random.randint(1,4)
 
+        print("Grass")
         walkable = self.drunkards_walk(self.current_walk_coords[0],
                                        self.current_walk_coords[1],
                                        trees_left,
@@ -532,6 +533,7 @@ class WorldEngine():
 
         lilypads = arcade.SpriteList()
 
+        print("River")
         walkable = self.drunkards_walk(self.current_walk_coords[0], row, 0, c.COLUMN_COUNT - 1)
         walkable = sorted(walkable, key=lambda x: x[1])
 
@@ -541,6 +543,8 @@ class WorldEngine():
             lilypads.append(Obstacle('sprites/lilypad.png',
                                             walkable[i][0],
                                             walkable[i][1]))
+            print("Lilypad on")
+            print(walkable[i][0], walkable[i][1])
 
         for i in range(c.COLUMN_COUNT):
 
@@ -646,7 +650,7 @@ class WorldEngine():
 
             # The victory square should not be a rock
             if row == c.ENDING_Y and x == c.ENDING_X:
-                den = Den('sprites/bear_rev2.png', x, row - self.loaded_indices[0])
+                den = Den('sprites/den.png', x, row - self.loaded_indices[0])
                 sprites.append(den)
 
             # Always a clear path to end
@@ -904,7 +908,8 @@ class WorldEngine():
                 y += 1
 
                 path.append((x, y))
-                # print(path)
+                print("path: ")
+                print(path)
                 return path
 
             elif a[0] == 'right' and x != right_bound:

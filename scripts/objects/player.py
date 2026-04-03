@@ -4,11 +4,12 @@ from scripts import constants as c
 from scripts.objects.den_object import Den
 from scripts.objects.hostile_object import Hostile
 from scripts.objects.obstacle_object import Obstacle
+import time
 from scripts.screens.victory_screen import Victory
 
 class Player(arcade.Sprite):
     '''Player class: holds all information about the player, including position and sprite'''
-    def __init__(self, row, column):
+    def __init__(self, row, column, tex_eng):
         '''
         Constructor creates a player
 
@@ -16,19 +17,30 @@ class Player(arcade.Sprite):
             self
             row
             column
+            texture engine to access sprites
         returns:
             nothing
         '''
 
-        super().__init__(path_or_texture="sprites/bear_rev2.png")
+        # Access the bear sprite
+        super().__init__(path_or_texture=tex_eng.bear)
 
+        # Access the death textures
+        self.drowning_textures = tex_eng.drowning
+        self.mauled_texture = tex_eng.mauled
+
+        # Define all coordinates
         self.center_x = c.TILE_WIDTH * column + c.TILE_WIDTH // 2
         self.x = column
         self.center_y = c.TILE_HEIGHT * row + c.TILE_HEIGHT // 2
         self.y = row
         self.angle = 180.0
-        self.dead = False
+        self.cur_texture_index = 0
 
+        # Define some starting properties of the player
+        self.death_timer = 0
+        self.next_death_anim = c.DEATH_ANIMATION_UPDATE_INTERVAL
+        self.dead = False
         self.score = 0
 
     def try_move(self, key, world, window):
@@ -65,10 +77,10 @@ class Player(arcade.Sprite):
             arcade.check_for_collision(self, next_cell)):
 
             # Define the type of hit
-            obstacle_collided = self.hit(next_cell, window)
+            river_collided = self.hit(next_cell, window)
                 
             # If this line is reached, the hit type was obstacle
-            if obstacle_collided:
+            if not river_collided:
                 self.move_back(key)
 
             return False
@@ -84,18 +96,20 @@ class Player(arcade.Sprite):
 
         if isinstance(next_cell, Obstacle):
 
-            return True
+            return False
 
         elif isinstance(next_cell, Hostile):
 
+            self.dead = True
+
             if next_cell.static == True:
 
-                self.die('Drown')
-                return False
+                self.death = 'Drown'
+                return True
 
             else:
 
-                self.die('Mauled')
+                self.death = 'Mauled'
                 return False
 
         elif isinstance(next_cell, Den):
@@ -168,14 +182,23 @@ class Player(arcade.Sprite):
             self.x -= 1
             self.angle = -90
 
-    def die(self, type):
+    def die(self, delta_time):
 
-        self.dead = True
+        self.death_timer += delta_time
 
-        if type == 'Drown':
+        if self.death == 'Drown':
+            
+            if self.death_timer > self.next_death_anim:
+                    
+                    self.next_death_anim += c.DEATH_ANIMATION_UPDATE_INTERVAL
 
-            super.path_or_texture="sprites/bear_rev2.png"
+                    self.texture = self.drowning_textures[self.cur_texture_index]
+                    
+                    self.cur_texture_index += 1
+                    if (self.cur_texture_index > 8):
 
-        elif type == 'Mauled':
+                        self.cur_texture_index = 0
 
-            pass
+        elif self.death == 'Mauled':
+
+            self.texture = self.mauled_texture
