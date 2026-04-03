@@ -374,7 +374,6 @@ class WorldEngine():
         trees_left = random.randint(1,4)
         trees_right = random.randint(1,4)
 
-        print("Grass")
         walkable = self.drunkards_walk(self.current_walk_coords[0],
                                        self.current_walk_coords[1],
                                        trees_left,
@@ -533,8 +532,7 @@ class WorldEngine():
 
         lilypads = arcade.SpriteList()
 
-        print("River")
-        walkable = self.drunkards_walk(self.current_walk_coords[0], row, 0, c.COLUMN_COUNT - 1)
+        walkable = self.drunkards_walk(self.current_walk_coords[0], row, 4, c.COLUMN_COUNT - 4)
         walkable = sorted(walkable, key=lambda x: x[1])
 
         # Append all except the last one
@@ -907,8 +905,6 @@ class WorldEngine():
                 y += 1
 
                 path.append((x, y))
-                print("path: ")
-                print(path)
                 return path
 
             elif a[0] == 'right' and x != right_bound:
