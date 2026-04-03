@@ -474,9 +474,9 @@ class WorldEngine():
             cells = self.loaded[row - self.loaded_indices[0]]
 
             # Remove not spawnable spots
-            for cell in enumerate(cells):
+            for cell in cells:
 
-                spawnable_spots.pop(spawnable_spots.index(cell[0]))
+                spawnable_spots.remove(cell.x)
 
             # Pick a random one and put it there
             x = random.choices(spawnable_spots)

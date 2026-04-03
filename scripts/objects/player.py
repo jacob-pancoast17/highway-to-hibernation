@@ -65,13 +65,14 @@ class Player(arcade.Sprite):
             arcade.check_for_collision(self, next_cell)):
 
             # Define the type of hit
-            self.hit(next_cell, window)
-
+            obstacle_collided = self.hit(next_cell, window)
+                
             # If this line is reached, the hit type was obstacle
-            self.move_back(key)
+            if obstacle_collided:
+                self.move_back(key)
 
-            # return False
             return False
+        
         # return True
         return True
 
@@ -83,15 +84,24 @@ class Player(arcade.Sprite):
 
         if isinstance(next_cell, Obstacle):
 
-            return
+            return True
 
         elif isinstance(next_cell, Hostile):
 
-            self.die()
+            if next_cell.static == True:
+
+                self.die('Drown')
+                return False
+
+            else:
+
+                self.die('Mauled')
+                return False
 
         elif isinstance(next_cell, Den):
 
             window.show_view(Victory(self.score, window.current_view))
+            return False
 
     def move(self, key):
         '''
@@ -158,6 +168,14 @@ class Player(arcade.Sprite):
             self.x -= 1
             self.angle = -90
 
-    def die(self):
+    def die(self, type):
 
         self.dead = True
+
+        if type == 'Drown':
+
+            super.path_or_texture="sprites/bear_2.png"
+
+        elif type == 'Mauled':
+
+            pass

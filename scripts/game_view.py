@@ -8,6 +8,7 @@ from scripts.engines.texture_engine import TextureEngine
 from scripts.engines.time_engine import TimeEngine
 from scripts.engines.world_engine import WorldEngine
 from scripts.stats_manager import record_score
+import time
 
 #from pause_screen import Pause
 
@@ -109,6 +110,13 @@ class GameView(arcade.View):
 
         self.time_engine.pass_time(delta_time)
 
+        if self.player.dead:
+                
+                record_score(self.player.score)
+                time.sleep(1)
+                self.window.show_view(GameOver(self))
+                return
+
         # checks for collision between player and collectibles
 
         for hunny in self.world.collectibles:
@@ -140,11 +148,6 @@ class GameView(arcade.View):
 
             # Test if player is going to collide with something
             did_move = self.player.try_move(symbol, self.world, self.window)
-
-            if self.player.dead:
-                record_score(self.player.score)
-                self.window.show_view(GameOver(self))
-                return
 
             if did_move:
                 #print("made it!")
