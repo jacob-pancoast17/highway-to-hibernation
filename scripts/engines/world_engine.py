@@ -151,7 +151,8 @@ class WorldEngine():
         new_row = self.generate_row(new_row_index)
         self.loaded.append(new_row)
 
-        rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST], weights = [1/3, 1/3, 1/3])    
+        rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST],
+                                    weights = [1/3, 1/3, 1/3])
         new_platform  = self.generate_platforms(new_row_index)
         self.platforms.append([new_platform, rand_speed[0]])
 
@@ -586,7 +587,7 @@ class WorldEngine():
                                     static = False,
                                     speed= rand_speed[0],
                                     left=True))
-            
+
             else:
 
                 log_cells.append(Platform('sprites/water_log.png',
@@ -694,7 +695,17 @@ class WorldEngine():
         return sprites
 
     def update_logs(self, row):
+        '''
+        update_logs takes a row and updates the logs in that row by trying
+        to move them and then trying to spawn new ones if we are at the next
+        spawn check
 
+        param:
+            self
+            row
+        returns:
+            nothing
+        '''
         new_row = arcade.SpriteList()
 
         existing_row = self.platforms[row - self.loaded_indices[0]][0]
@@ -707,7 +718,7 @@ class WorldEngine():
             # If it's still on screen, keep it
             if not moving_cell.is_off_screen():
                 new_row.append(moving_cell)
-        
+
         # We want at least one so we can store if the row is a left row or a right row
         if len(new_row) == 0:
 
@@ -716,7 +727,7 @@ class WorldEngine():
         # After cleaning up the current logs we have in a row, 
         # let's check if we should add a new one! 
 
-        if(self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_SLOW):
+        if self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_SLOW:
             spawn = random.choices([True, False], weights=[70, 30])
             #print("WE GOT SLOW!")
         elif(self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_MED):
@@ -735,14 +746,16 @@ class WorldEngine():
             if moving_left:
                 # if there is a log on screen, copy the velocity for the next log spawned
                 new_row.append(
-                    Platform("sprites/water_log.png", c.COLUMN_COUNT - 1 + i, row - self.loaded_indices[0], speed = self.platforms[row - self.loaded_indices[0]][1], static=False, left=True))
+                    Platform("sprites/water_log.png", c.COLUMN_COUNT - 1 + i,
+                                row - self.loaded_indices[0],
+                                speed = self.platforms[row - self.loaded_indices[0]][1],
+                                static=False, left=True))
             else:
                 #self.platforms[row][-1].speed need for speed
                 new_row.append(
                     Platform("sprites/water_log.png", 0 - i, row - self.loaded_indices[0], speed = self.platforms[row - self.loaded_indices[0]][1], static=False, left=False))
         # Replace currently loaded row with the updated one
         self.platforms[row - self.loaded_indices[0]][0] = new_row
-    
 
     def get_row(self, row):
         '''
@@ -885,6 +898,7 @@ class WorldEngine():
                 y += 1
 
                 path.append((x, y))
+                print(path)
                 return path
 
             elif a[0] == 'right' and x != right_bound:
