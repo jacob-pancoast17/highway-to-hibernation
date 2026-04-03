@@ -22,7 +22,7 @@ class TextureEngine():
         
         ## SPRITES
         # Bear
-        self.bear = "sprites/bear_2.png"
+        self.bear = "sprites/bear_rev2.png"
         # Deaths
         drowning_sheet = arcade.load_spritesheet("sprites/bear_death2_sheet.png")
         self.drowning = drowning_sheet.get_texture_grid(size = (30, 30), columns=9, count=9)

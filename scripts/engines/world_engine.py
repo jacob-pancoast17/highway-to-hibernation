@@ -374,6 +374,7 @@ class WorldEngine():
         trees_left = random.randint(1,4)
         trees_right = random.randint(1,4)
 
+        print("Grass")
         walkable = self.drunkards_walk(self.current_walk_coords[0],
                                        self.current_walk_coords[1],
                                        trees_left,
@@ -532,6 +533,7 @@ class WorldEngine():
 
         lilypads = arcade.SpriteList()
 
+        print("River")
         walkable = self.drunkards_walk(self.current_walk_coords[0], row, 0, c.COLUMN_COUNT - 1)
         walkable = sorted(walkable, key=lambda x: x[1])
 
@@ -541,6 +543,8 @@ class WorldEngine():
             lilypads.append(Obstacle('sprites/lilypad.png',
                                             walkable[i][0],
                                             walkable[i][1]))
+            print("Lilypad on")
+            print(walkable[i][0], walkable[i][1])
 
         for i in range(c.COLUMN_COUNT):
 
@@ -646,7 +650,7 @@ class WorldEngine():
 
             # The victory square should not be a rock
             if row == c.ENDING_Y and x == c.ENDING_X:
-                den = Den('sprites/bear_2.png', x, row - self.loaded_indices[0])
+                den = Den('sprites/den.png', x, row - self.loaded_indices[0])
                 sprites.append(den)
 
             # Always a clear path to end
@@ -723,20 +727,23 @@ class WorldEngine():
         if len(new_row) == 0:
 
             new_row.append(tmp)
-            
-        # After cleaning up the current logs we have in a row, 
-        # let's check if we should add a new one! 
+
+        # After cleaning up the current logs we have in a row,
+        # let's check if we should add a new one!
+
+        # ensures spawn is assigned a value
+        spawn = random.choices([True, False], weights=[50, 50])
 
         if self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_SLOW:
             spawn = random.choices([True, False], weights=[70, 30])
             #print("WE GOT SLOW!")
-        elif(self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_MED):
+        elif self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_MED:
             spawn = random.choices([True, False], weights=[60, 40])
             #print("WE GOT MED")
-        elif(self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_FAST):
+        elif self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_FAST:
             spawn = random.choices([True, False], weights=[50, 50])
             #print("WE GOT FAST")
-        
+
         if not spawn[0]:
             return
 
@@ -753,7 +760,9 @@ class WorldEngine():
             else:
                 #self.platforms[row][-1].speed need for speed
                 new_row.append(
-                    Platform("sprites/water_log.png", 0 - i, row - self.loaded_indices[0], speed = self.platforms[row - self.loaded_indices[0]][1], static=False, left=False))
+                    Platform("sprites/water_log.png", 0 - i, row - self.loaded_indices[0],
+                             speed = self.platforms[row - self.loaded_indices[0]][1],
+                             static=False, left=False))
         # Replace currently loaded row with the updated one
         self.platforms[row - self.loaded_indices[0]][0] = new_row
 
@@ -898,6 +907,7 @@ class WorldEngine():
                 y += 1
 
                 path.append((x, y))
+                print("path: ")
                 print(path)
                 return path
 
