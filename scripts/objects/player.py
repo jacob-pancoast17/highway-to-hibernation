@@ -86,7 +86,8 @@ class Player(arcade.Sprite):
             return
 
         elif isinstance(next_cell, Hostile):
-            self.dead = True
+
+            self.die()
 
         elif isinstance(next_cell, Den):
 
@@ -156,3 +157,7 @@ class Player(arcade.Sprite):
             self.center_x -= c.VELOCITY_MULTIPLIER
             self.x -= 1
             self.angle = -90
+
+    def die(self):
+
+        self.dead = True

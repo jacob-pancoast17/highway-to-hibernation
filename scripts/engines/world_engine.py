@@ -123,7 +123,7 @@ class WorldEngine():
                                         weights = [1/3, 1/3, 1/3])
             #print(rand_speed)
 
-            middle_row = self.generate_platforms(i, speed = rand_speed[0])
+            middle_row = self.generate_platforms(i)
             self.platforms.append([middle_row, rand_speed[0]])
 
             top_row = self.generate_collectible(i)
@@ -207,7 +207,7 @@ class WorldEngine():
             print("PROBLEM IN GENERATION.")
             exit()
 
-    def generate_platforms(self, row, speed=c.LOG_SPEED_SLOW):
+    def generate_platforms(self, row):
         '''
         generates platforms
         '''
@@ -220,7 +220,7 @@ class WorldEngine():
 
         elif self.rows[row] == 'River_Logs':
 
-            return self.generate_logs(row, speed=speed)
+            return self.generate_logs(row)
 
         else:
 
@@ -553,7 +553,7 @@ class WorldEngine():
 
         return lilypads
 
-    def generate_logs(self, row, speed):
+    def generate_logs(self, row):
         '''
         generate_logs takes a row and generates a line of water that 
         kills you with logs that move across the screen that you can 
@@ -572,6 +572,9 @@ class WorldEngine():
 
         length = random.randint(c.SMALLEST_LOG,c.BIGGEST_LOG)
 
+        rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST],
+                                        weights = [1/3, 1/3, 1/3])
+
 
         for i in range(length):
 
@@ -581,7 +584,7 @@ class WorldEngine():
                                     15 - i,
                                     row= row - self.loaded_indices[0],
                                     static = False,
-                                    speed= speed,
+                                    speed= rand_speed[0],
                                     left=True))
             
             else:
@@ -590,9 +593,11 @@ class WorldEngine():
                                     i,
                                     row= row - self.loaded_indices[0],
                                     static = False,
-                                    speed= speed,
+                                    speed= rand_speed[0],
                                     left=False))
 
+        for log in log_cells:
+            print(f"{log} x: {log.x}, y: {log.y}")
         return log_cells
 
     def generate_victory(self, row):
@@ -711,21 +716,16 @@ class WorldEngine():
         # After cleaning up the current logs we have in a row, 
         # let's check if we should add a new one! 
 
-        # Change spawn rate weights based on current row speed
-        spawn = random.choices([True, False], weights=[50, 50])
-
         if(self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_SLOW):
             spawn = random.choices([True, False], weights=[70, 30])
             #print("WE GOT SLOW!")
-        elif(self.platforms[row - self.loaded_indices[0]][-1] == c.LOG_SPEED_MED):
+        elif(self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_MED):
             spawn = random.choices([True, False], weights=[60, 40])
             #print("WE GOT MED")
-        elif(self.platforms[row - self.loaded_indices[0]][-1] == c.LOG_SPEED_FAST):
+        elif(self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_FAST):
             spawn = random.choices([True, False], weights=[50, 50])
             #print("WE GOT FAST")
         
-
-        spawn = random.choices([True, False], weights=[70, 30])
         if not spawn[0]:
             return
 
@@ -740,7 +740,6 @@ class WorldEngine():
                 #self.platforms[row][-1].speed need for speed
                 new_row.append(
                     Platform("sprites/water_log.png", 0 - i, row - self.loaded_indices[0], speed = self.platforms[row - self.loaded_indices[0]][1], static=False, left=False))
-
         # Replace currently loaded row with the updated one
         self.platforms[row - self.loaded_indices[0]][0] = new_row
     

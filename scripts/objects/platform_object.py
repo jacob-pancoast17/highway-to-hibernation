@@ -75,9 +75,11 @@ class Platform(arcade.Sprite):
                 self.center_x += c.VELOCITY_MULTIPLIER
                 self.x += 1
                 # if the player is colliding with log, and they aren't offscreen
-                if hit_list and player.x <= c.COLUMN_COUNT - 1:
+                if hit_list:
                     player.center_x += c.VELOCITY_MULTIPLIER
                     player.x += 1
+                    if player.x > c.COLUMN_COUNT - 1:
+                        player.die()
             # Otherwise, decrease x
             else:
                 self.center_x -= c.VELOCITY_MULTIPLIER
@@ -85,7 +87,8 @@ class Platform(arcade.Sprite):
                 if hit_list and player.x >= 0:
                     player.center_x -= c.VELOCITY_MULTIPLIER
                     player.x -= 1
-                #TODO else statement which calls game over screen
+                    if player.x < 0:
+                        player.die()
 
     def is_off_screen(self):
         '''

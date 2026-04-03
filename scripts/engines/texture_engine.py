@@ -75,12 +75,13 @@ class TextureEngine():
         returns:
             nothing
         '''
-        for row in reversed(self.world.loaded):
+        for index in reversed(self.world.loaded_indices):
 
-            if (self.world.rows[row[0].y] == 'Grassy' or
-                self.world.rows[row[0].y] == 'Road'):
+            if (self.world.rows[index] == 'Grassy' or
+                self.world.rows[index] == 'Road' or
+                self.world.rows[index] == 'Victory'):
 
-                row.draw()
+                self.world.loaded[index - self.world.loaded_indices[0]].draw()
 
     def draw_all_rivers(self):
         '''
@@ -92,12 +93,12 @@ class TextureEngine():
         returns:
             nothing
         '''
-        for row in reversed(self.world.loaded):
+        for index in reversed(self.world.loaded_indices):
 
-            if (self.world.rows[row[0].y] == 'River_Lilypads' or
-                self.world.rows[row[0].y] == 'River_Logs'):
+            if (self.world.rows[index] == 'River_Lilypads' or
+                self.world.rows[index] == 'River_Logs'):
 
-                row.draw()
+                self.world.loaded[index - self.world.loaded_indices[0]].draw()
 
     def draw_all_platforms(self):
         '''
@@ -112,8 +113,16 @@ class TextureEngine():
         '''
 
         for row in reversed(self.world.platforms):
+
+            # For logs
+            if isinstance(row, list):
     
-            row[0].draw()
+                row[0].draw()
+
+            # For lilypads
+            else:
+
+                row.draw()
     
     def draw_all_collectibles(self):
         '''

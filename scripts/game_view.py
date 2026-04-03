@@ -174,3 +174,4 @@ class GameView(arcade.View):
 
         self.current_bottom_of_screen += 1
         self.current_top_of_screen += 1
+        print(f"bottom: {self.current_bottom_of_screen}")
