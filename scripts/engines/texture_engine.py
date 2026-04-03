@@ -29,6 +29,9 @@ class TextureEngine():
 
         self.mauled = arcade.load_texture("sprites/bear_death1.png")
 
+        wolf_sheet = arcade.load_spritesheet("sprites/wolf_sheet.png")
+        self.wolf = drowning_sheet.get_texture_grid(size = (30, 30), columns=9, count=9)
+
         # Create the grid
         self.grid = self.create_grid()
 
