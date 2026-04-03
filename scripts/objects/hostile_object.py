@@ -76,6 +76,7 @@ class Hostile(arcade.Sprite):
             hit_list = arcade.check_for_collision(self, player)
             if hit_list:
                 player.dead = True
+                player.death = 'Mauled'
 
     def is_off_screen(self):
         '''

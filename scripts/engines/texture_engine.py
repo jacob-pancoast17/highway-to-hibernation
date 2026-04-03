@@ -10,7 +10,7 @@ class TextureEngine():
     draws every frame
     '''
 
-    def __init__(self, world, player):
+    def __init__(self):
         '''
         Constructor
 
@@ -19,13 +19,24 @@ class TextureEngine():
             world - a world engine
             player - a player
         '''
-
-        self.world = world
-        self.player = arcade.SpriteList()
-        self.player.append(player)
+        
+        ## SPRITES
+        # Bear
+        self.bear = "sprites/bear_2.png"
+        drowning_sheet = arcade.load_spritesheet("sprites/bear_death2_sheet.png")
+        self.drowning_sprites = drowning_sheet.get_texture_grid(size = (30, 30), columns=9, count=9)
 
         # Create the grid
         self.grid = self.create_grid()
+
+    def add_player(self, player):
+
+        self.player = arcade.SpriteList()
+        self.player.append(player)
+
+    def add_world(self, world):
+
+        self.world = world
 
     def create_grid(self):
         '''
