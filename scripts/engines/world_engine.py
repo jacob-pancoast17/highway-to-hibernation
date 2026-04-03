@@ -646,7 +646,7 @@ class WorldEngine():
 
             # The victory square should not be a rock
             if row == c.ENDING_Y and x == c.ENDING_X:
-                den = Den('sprites/bear_2.png', x, row - self.loaded_indices[0])
+                den = Den('sprites/bear_rev2.png', x, row - self.loaded_indices[0])
                 sprites.append(den)
 
             # Always a clear path to end
