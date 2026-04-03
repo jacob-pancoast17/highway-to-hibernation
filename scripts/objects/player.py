@@ -20,7 +20,7 @@ class Player(arcade.Sprite):
             nothing
         '''
 
-        super().__init__(path_or_texture="sprites/bear_2.png")
+        super().__init__(path_or_texture="sprites/bear_rev2.png")
 
         self.center_x = c.TILE_WIDTH * column + c.TILE_WIDTH // 2
         self.x = column
@@ -174,7 +174,7 @@ class Player(arcade.Sprite):
 
         if type == 'Drown':
 
-            super.path_or_texture="sprites/bear_2.png"
+            super.path_or_texture="sprites/bear_rev2.png"
 
         elif type == 'Mauled':
 
