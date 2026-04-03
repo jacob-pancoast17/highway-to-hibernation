@@ -723,20 +723,23 @@ class WorldEngine():
         if len(new_row) == 0:
 
             new_row.append(tmp)
-            
-        # After cleaning up the current logs we have in a row, 
-        # let's check if we should add a new one! 
+
+        # After cleaning up the current logs we have in a row,
+        # let's check if we should add a new one!
+
+        # ensures spawn is assigned a value
+        spawn = random.choices([True, False], weights=[50, 50])
 
         if self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_SLOW:
             spawn = random.choices([True, False], weights=[70, 30])
             #print("WE GOT SLOW!")
-        elif(self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_MED):
+        elif self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_MED:
             spawn = random.choices([True, False], weights=[60, 40])
             #print("WE GOT MED")
-        elif(self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_FAST):
+        elif self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_FAST:
             spawn = random.choices([True, False], weights=[50, 50])
             #print("WE GOT FAST")
-        
+
         if not spawn[0]:
             return
 
@@ -753,7 +756,9 @@ class WorldEngine():
             else:
                 #self.platforms[row][-1].speed need for speed
                 new_row.append(
-                    Platform("sprites/water_log.png", 0 - i, row - self.loaded_indices[0], speed = self.platforms[row - self.loaded_indices[0]][1], static=False, left=False))
+                    Platform("sprites/water_log.png", 0 - i, row - self.loaded_indices[0],
+                             speed = self.platforms[row - self.loaded_indices[0]][1],
+                             static=False, left=False))
         # Replace currently loaded row with the updated one
         self.platforms[row - self.loaded_indices[0]][0] = new_row
 
