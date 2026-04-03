@@ -754,13 +754,14 @@ class WorldEngine():
                                 speed = self.platforms[row - self.loaded_indices[0]][1],
                                 static=False, left=True))
             else:
-                #self.platforms[row][-1].speed need for speed
                 new_row.append(
                     Platform("sprites/water_log.png", 0 - i, row - self.loaded_indices[0],
                              speed = self.platforms[row - self.loaded_indices[0]][1],
                              static=False, left=False))
         # Replace currently loaded row with the updated one
         self.platforms[row - self.loaded_indices[0]][0] = new_row
+        # print("SPEED:")
+        # print(self.platforms[row - self.loaded_indices[0]][1])
 
     def get_row(self, row):
         '''
@@ -903,7 +904,7 @@ class WorldEngine():
                 y += 1
 
                 path.append((x, y))
-                print(path)
+                # print(path)
                 return path
 
             elif a[0] == 'right' and x != right_bound:
