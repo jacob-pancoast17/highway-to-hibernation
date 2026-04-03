@@ -30,6 +30,7 @@ class Hostile(arcade.Sprite):
 
         self.static = static
         self.speed = speed
+        self.left = left
 
         # Set movement values for moving hostiles
         if not self.static:
@@ -84,7 +85,7 @@ class Hostile(arcade.Sprite):
         move_back takes a key and moves the hostile back
         '''
 
-        if self.is_moving_left == True:
+        if self.is_moving_left is True:
 
             self.x += 1
             self.center_x += c.VELOCITY_MULTIPLIER
