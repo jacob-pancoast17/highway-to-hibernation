@@ -102,6 +102,8 @@ class Player(arcade.Sprite):
 
             self.dead = True
 
+            self.death_sound = arcade.play_sound(c.DEATH_SFX)
+
             if next_cell.static == True:
 
                 self.death = 'Drown'
@@ -115,6 +117,7 @@ class Player(arcade.Sprite):
         elif isinstance(next_cell, Den):
 
             window.show_view(Victory(self.score, window.current_view))
+            self.achieve_victory = arcade.play_sound(c.VICTORY_JINGLE)
             return False
 
     def move(self, key):

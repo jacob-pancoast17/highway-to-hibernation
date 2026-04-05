@@ -81,6 +81,7 @@ class Platform(arcade.Sprite):
                     if player.x > c.COLUMN_COUNT - 1:
                         player.dead = True
                         player.death = 'Off Screen'
+                        self.death_sound = arcade.play_sound(c.DEATH_SFX)
             # Otherwise, decrease x
             else:
                 self.center_x -= c.VELOCITY_MULTIPLIER
@@ -91,6 +92,7 @@ class Platform(arcade.Sprite):
                     if player.x < 0:
                         player.dead = True
                         player.death = 'Off Screen'
+                        self.death_sound = arcade.play_sound(c.DEATH_SFX)
 
     def is_off_screen(self):
         '''

@@ -98,6 +98,11 @@ class GameView(arcade.View):
         self.current_bottom_of_screen = 0
         self.current_top_of_screen = c.ROW_COUNT - 1
 
+        # Music
+        self.main_theme = arcade.play_sound(c.ADVENTURE_MUSIC)
+        self.main_theme.loop = True
+        self.main_theme.volume = 0.4
+
     def on_draw(self):
         """
         Render the screen every frame
@@ -113,6 +118,9 @@ class GameView(arcade.View):
         '''
         Happens every frame
         '''
+
+        self.main_theme.play()
+
         if not self.time_stopped:
 
             self.time_engine.pass_time(delta_time)
@@ -129,6 +137,7 @@ class GameView(arcade.View):
                 
                     record_score(self.player.score)
                     self.window.show_view(GameOver(self))
+                    self.achieve_game_over = arcade.play_sound(c.GAME_OVER_JINGLE)
                 
                 return
 
@@ -143,6 +152,7 @@ class GameView(arcade.View):
 
                 self.world.collectibles[self.world.collectibles.index(hunny)] = arcade.SpriteList()
                 self.player.score += 300
+                self.hunni_pickup = arcade.play_sound(c.HUNNI_SFX)
 
             self.score_text.text = f"Score: {self.player.score}"
 
@@ -166,7 +176,10 @@ class GameView(arcade.View):
             did_move = self.player.try_move(symbol, self.world, self.window)
 
             if did_move:
-                #print("made it!")
+                # print("made it!")
+                # play movement sfx
+                self.walk_playback = arcade.play_sound(c.WALK_SFX)
+
                 if self.player.y > self.farthest_y:
                     self.farthest_y = self.player.y
                     self.player.score += 100
@@ -182,6 +195,7 @@ class GameView(arcade.View):
         elif symbol == arcade.key.ESCAPE:
             # Pass in the current game state into Pause()
             self.window.show_view(Pause(self))
+            self.main_theme.pause()
 
     def move_screen_up(self):
         '''
@@ -197,4 +211,5 @@ class GameView(arcade.View):
 
     def play_death_animation(self, delta_time):
 
+        arcade.stop_sound(self.main_theme)
         self.player.die(delta_time)

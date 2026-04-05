@@ -78,6 +78,7 @@ class Hostile(arcade.Sprite):
                 self.move_back()
                 player.dead = True
                 player.death = 'Mauled'
+                self.death_sound = arcade.play_sound(c.DEATH_SFX)
 
     def move_back(self):
         '''
