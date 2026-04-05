@@ -14,7 +14,7 @@ class WorldEngine():
     the world pseudo-randomly
     '''
 
-    def __init__(self, window, player):
+    def __init__(self, window, player, tex_eng):
         '''
         Constructor
         Sets a random seed for the perlin noise function and
@@ -31,6 +31,8 @@ class WorldEngine():
 
         self.rows = []
         self.generate_array()
+
+        self.tex_eng = tex_eng
 
         self.loaded_indices = []
         self.loaded = []
@@ -371,18 +373,18 @@ class WorldEngine():
         sprites = arcade.SpriteList()
 
         # Generate a random number of trees
-        trees_left = random.randint(1,4)
-        trees_right = random.randint(1,4)
+        num_trees_left = random.randint(1,4)
+        num_trees_right = random.randint(1,4)
 
         walkable = self.drunkards_walk(self.current_walk_coords[0],
                                        self.current_walk_coords[1],
-                                       trees_left,
-                                       c.COLUMN_COUNT - trees_right)
+                                       num_trees_left,
+                                       c.COLUMN_COUNT - num_trees_right)
         walkable = sorted(walkable, key=lambda x: x[1])
 
         last_rock = None
         # Append trees to the left
-        for i in range(trees_left):
+        for i in range(num_trees_left):
 
             tree_texture = random.choices(
                     ['sprites/tree1_no_bush.png',
@@ -397,9 +399,9 @@ class WorldEngine():
                                     + c.TILE_HEIGHT * 0.95)
 
         # Append rocks
-        for i in range(c.COLUMN_COUNT - (trees_left + trees_right)):
+        for i in range(c.COLUMN_COUNT - (num_trees_left + num_trees_right)):
 
-            x = i + trees_left
+            x = i + num_trees_left
 
             # We should not spawn in a rock
             if row == c.STARTING_Y and x == c.STARTING_X:
@@ -431,9 +433,9 @@ class WorldEngine():
                         sprites.append(last_rock)
 
         # Trees on the right
-        for i in range(trees_right):
+        for i in range(num_trees_right):
 
-            x = c.COLUMN_COUNT - trees_right + i
+            x = c.COLUMN_COUNT - num_trees_right + i
 
             tree_texture = random.choices(
                     ['sprites/tree1_no_bush.png',

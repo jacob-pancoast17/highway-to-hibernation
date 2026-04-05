@@ -70,7 +70,7 @@ class GameView(arcade.View):
 
         self.texture_engine.add_player(self.player)
 
-        self.world = WorldEngine(self.window, self.player)
+        self.world = WorldEngine(self.window, self.player, self.texture_engine)
         self.world.generate_screen()
 
         self.texture_engine.add_world(self.world)
