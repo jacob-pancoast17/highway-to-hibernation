@@ -56,7 +56,7 @@ class Pause(arcade.View):
             "PAUSE",
             font_name="Edit Undo BRK",
             x = c.WINDOW_WIDTH / 2,
-            y = c.WINDOW_HEIGHT * 3 / 5.3,
+            y = c.WINDOW_HEIGHT * 3 / 5,
             font_size = 50,
             anchor_x = 'center',
             anchor_y = 'center'
@@ -64,7 +64,7 @@ class Pause(arcade.View):
 
         #TODO: Change to text objects, same in start_screen
         arcade.draw_text(
-            "Press ESC to continue",
+            "Press 'ESC' to continue",
             font_name="Edit Undo BRK",
             x = c.WINDOW_WIDTH / 2,
             y = c.WINDOW_HEIGHT / 2.1,
@@ -72,9 +72,10 @@ class Pause(arcade.View):
             anchor_x = 'center',
             anchor_y = 'center'
         )
+
         # TODO: Change to text objects, same in start_screen
         arcade.draw_text(
-            "Press ENTER to reset",
+            "Press 'Q' to quit",
             font_name="Edit Undo BRK",
             x = c.WINDOW_WIDTH / 2,
             y = c.WINDOW_HEIGHT / 2.4,
@@ -84,7 +85,7 @@ class Pause(arcade.View):
         )
 
         arcade.draw_text(
-            "Press S for stats",
+            "Press 'ENTER' to reset",
             font_name="Edit Undo BRK",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT / 2.8,
@@ -93,9 +94,21 @@ class Pause(arcade.View):
             anchor_y='center'
         )
 
+        arcade.draw_text(
+            "Press 'S' for stats",
+            font_name="Edit Undo BRK",
+            x=c.WINDOW_WIDTH / 2,
+            y=c.WINDOW_HEIGHT / 3.4,
+            font_size=17,
+            anchor_x='center',
+            anchor_y='center'
+        )
+
     def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.ESCAPE:
             self.window.show_view(self.game_view)
+        if symbol == arcade.key.Q:
+            self.window.close()
         if symbol == arcade.key.ENTER:
             self.window.show_view(self.game_view.__class__())
         if symbol == arcade.key.S:

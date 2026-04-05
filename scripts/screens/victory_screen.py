@@ -84,7 +84,7 @@ class Victory(arcade.View):
 
         #TODO: Change to text objects, same in start_screen
         arcade.draw_text(
-            "or press 'Q' to quit",
+            "Press 'Q' to quit",
             font_name="Edit Undo BRK",
             x = c.WINDOW_WIDTH / 2,
             y = (c.WINDOW_HEIGHT / 2)-30,

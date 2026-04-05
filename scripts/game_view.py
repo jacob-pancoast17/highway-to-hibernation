@@ -136,7 +136,7 @@ class GameView(arcade.View):
                 if self.death_timer > c.DEATH_ANIMATION_LENGTH:
                 
                     record_score(self.player.score)
-                    self.window.show_view(GameOver(self))
+                    self.window.show_view(GameOver(self.player.score, self))
                     self.achieve_game_over = arcade.play_sound(c.GAME_OVER_JINGLE)
                 
                 return

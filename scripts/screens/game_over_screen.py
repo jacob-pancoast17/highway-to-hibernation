@@ -7,7 +7,7 @@ from scripts.screens.stats_screen import StatsScreen
 class GameOver(arcade.View):
     ''' GameOver represents the game over view '''
 
-    def __init__(self, previous_view):
+    def __init__(self, score, previous_view):
         '''
         Constructor calls arcade 'View' superclass constructor
         
@@ -17,6 +17,7 @@ class GameOver(arcade.View):
             nothing
         '''
         super().__init__()
+        self.score = score
         self.previous_view = previous_view
 
     def on_show_view(self):
@@ -58,6 +59,16 @@ class GameOver(arcade.View):
             anchor_y = 'center'
         )
 
+        arcade.draw_text(
+            f"SCORE: {self.score}",
+            font_name="Edit Undo BRK",
+            x = c.WINDOW_WIDTH / 2,
+            y = c.WINDOW_HEIGHT * 5 / 8,
+            font_size = 30,
+            anchor_x = 'center',
+            anchor_y = 'center'
+        )
+
         #TODO: Change to text objects, same in start_screen
         arcade.draw_text(
             "Click to play again",
@@ -71,7 +82,7 @@ class GameOver(arcade.View):
 
         #TODO: Change to text objects, same in start_screen
         arcade.draw_text(
-            "or press 'Q' to quit",
+            "Press 'Q' to quit",
             font_name="Edit Undo BRK",
             x = c.WINDOW_WIDTH / 2,
             y = (c.WINDOW_HEIGHT / 2)-30,
