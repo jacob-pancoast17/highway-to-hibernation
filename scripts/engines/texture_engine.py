@@ -30,21 +30,21 @@ class TextureEngine():
         self.mauled = arcade.load_texture("sprites/bear_death1.png")
 
         # Trees
-        self.tree1 = arcade.load_texture("sprites/tree1.png")
-        self.tree2 = arcade.load_texture("sprites/tree2.png")
-        self.tree3 = arcade.load_texture("sprites/tree3.png")
+        self.tree1 = "sprites/tree1.png"
+        self.tree2 = "sprites/tree2.png"
+        self.tree3 = "sprites/tree3.png"
 
-        self.tree1_left_end = arcade.load_texture("sprites/tree1_left_end.png")
-        self.tree2_left_end = arcade.load_texture("sprites/tree2_left_end.png")
-        self.tree3_left_end = arcade.load_texture("sprites/tree3_left_end.png")
+        self.tree1_left_end = "sprites/tree1_left_end.png"
+        self.tree2_left_end = "sprites/tree2_left_end.png"
+        self.tree3_left_end = "sprites/tree3_left_end.png"
 
-        self.tree1_right_end = arcade.load_texture("sprites/tree1_right_end.png")
-        self.tree2_right_end = arcade.load_texture("sprites/tree2_right_end.png")
-        self.tree3_right_end = arcade.load_texture("sprites/tree3_right_end.png")
+        self.tree1_right_end = "sprites/tree1_right_end.png"
+        self.tree2_right_end = "sprites/tree2_right_end.png"
+        self.tree3_right_end = "sprites/tree3_right_end.png"
 
-        self.tree1_no_bush = arcade.load_texture("sprites/tree1_no_bush.png")
-        self.tree2_no_bush = arcade.load_texture("sprites/tree2_no_bush.png")
-        self.tree3_no_bush = arcade.load_texture("sprites/tree3_no_bush.png")
+        self.tree1_no_bush = "sprites/tree1_no_bush.png"
+        self.tree2_no_bush = "sprites/tree2_no_bush.png"
+        self.tree3_no_bush = "sprites/tree3_no_bush.png"
 
         # Create the grid
         self.grid = self.create_grid()
@@ -96,18 +96,17 @@ class TextureEngine():
 
         return grid
     
-    def get_trees(self, num_trees, side):
+    def get_trees(self, num_trees, right):
 
-        trees = arcade.SpriteList()
+        trees = []
 
         bush_start_chance = 0.5
         end_bush_chance = 0.3
-        in_bush = False
 
-        if side == 'right':
-            right = True
+        if not right:
+            in_bush = random.choice([True, False])
         else:
-            right = False
+            in_bush = False
 
         # For each tree
         for i in range(num_trees):
@@ -119,12 +118,14 @@ class TextureEngine():
                 if (random.random() < bush_start_chance or not
                     (right == False and i == num_trees - 1)):
 
-                    # Bushes left end
-                    tree_left_end = random.choices([self.tree1_left_end, 
-                                    self.tree2_left_end, 
-                                    self.tree3_left_end], 
-                                    weights = [1/3, 1/3, 1/3])
-                    trees.append(tree_left_end)
+                    # Bushes right end
+                    tree_right_end = random.choices([self.tree1_right_end, 
+                                         self.tree2_right_end, 
+                                         self.tree3_right_end], 
+                                         weights = [1/3, 1/3, 1/3])[0]
+                    trees.append(tree_right_end)
+
+                    in_bush = True
                 
                 # Otherwise, append a tree with no bush
                 else:
@@ -132,7 +133,7 @@ class TextureEngine():
                     tree_no_bush = random.choices([self.tree1_no_bush, 
                                        self.tree2_no_bush, 
                                        self.tree3_no_bush], 
-                                       weights = [1/3, 1/3, 1/3])
+                                       weights = [1/3, 1/3, 1/3])[0]
                     trees.append(tree_no_bush)
             
             # Otherwise 
@@ -142,12 +143,14 @@ class TextureEngine():
                 if (random.random() < end_bush_chance or
                     (right == False and i == num_trees - 1)):
                     
-                    # Bushes right end
-                    tree_right_end = random.choices([self.tree1_right_end, 
-                                         self.tree2_right_end, 
-                                         self.tree3_right_end], 
-                                         weights = [1/3, 1/3, 1/3])
-                    trees.append(tree_right_end)
+                    # Bushes left end
+                    tree_left_end = random.choices([self.tree1_left_end, 
+                                    self.tree2_left_end, 
+                                    self.tree3_left_end], 
+                                    weights = [1/3, 1/3, 1/3])[0]
+                    trees.append(tree_left_end)
+
+                    in_bush = False
                 
                 # Otherwise, continue bushes
                 else:
@@ -155,15 +158,10 @@ class TextureEngine():
                     tree = random.choices([self.tree1, 
                                self.tree2, 
                                self.tree3], 
-                               weights = [1/3, 1/3, 1/3])
+                               weights = [1/3, 1/3, 1/3])[0]
                     trees.append(tree)
 
-
-
-
-
-
-
+        return trees
 
     def draw_all_grassy_and_cars(self):
         '''

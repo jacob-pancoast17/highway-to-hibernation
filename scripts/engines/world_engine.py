@@ -383,20 +383,20 @@ class WorldEngine():
         walkable = sorted(walkable, key=lambda x: x[1])
 
         last_rock = None
+
         # Append trees to the left
+        tree_textures_left = self.tex_eng.get_trees(num_trees_left, False)
+
         for i in range(num_trees_left):
 
-            tree_texture = random.choices(
-                    ['sprites/tree1_no_bush.png',
-                    'sprites/tree2_no_bush.png',
-                    'sprites/tree3_no_bush.png'],
-                    weights = [0.33, 0.34, 0.33])
+            tree_texture = tree_textures_left[i]
 
-            sprites.append(Obstacle(tree_texture[0], i, row=row - self.loaded_indices[0]))
+            tree = Obstacle(tree_texture, i, row=row - self.loaded_indices[0])
 
-            sprites[-1].scale = 0.95
-            sprites[-1].center_y = (c.TILE_HEIGHT * (row - self.loaded_indices[0])
-                                    + c.TILE_HEIGHT * 0.95)
+            tree.center_y = (c.TILE_HEIGHT * (row - self.loaded_indices[0])
+                                    + c.TILE_HEIGHT)
+            
+            sprites.append(tree)
 
         # Append rocks
         for i in range(c.COLUMN_COUNT - (num_trees_left + num_trees_right)):
@@ -433,20 +433,20 @@ class WorldEngine():
                         sprites.append(last_rock)
 
         # Trees on the right
-        for i in range(num_trees_right):
+        tree_textures_right = self.tex_eng.get_trees(num_trees_right, True)
 
+        for i in range(num_trees_right):
+            
             x = c.COLUMN_COUNT - num_trees_right + i
 
-            tree_texture = random.choices(
-                    ['sprites/tree1_no_bush.png',
-                    'sprites/tree2_no_bush.png',
-                    'sprites/tree3_no_bush.png'],
-                    weights = [0.33, 0.34, 0.33])
-            sprites.append(
-                    Obstacle(tree_texture[0], x, row - self.loaded_indices[0]))
-            sprites[-1].scale = 0.95
-            sprites[-1].center_y = (c.TILE_HEIGHT * (row - self.loaded_indices[0]) +
-                                    c.TILE_HEIGHT * 0.95)
+            tree_texture = tree_textures_right[i]
+
+            tree = Obstacle(tree_texture, x, row=row - self.loaded_indices[0])
+
+            tree.center_y = (c.TILE_HEIGHT * (row - self.loaded_indices[0])
+                                    + c.TILE_HEIGHT)
+            
+            sprites.append(tree)
 
 
         # Update walk
