@@ -35,6 +35,7 @@ class WorldEngine():
         self.tex_eng = tex_eng
 
         self.loaded_indices = []
+        self.backgrounds = []
         self.loaded = []
         self.platforms = []
         self.collectibles = []
@@ -59,12 +60,12 @@ class WorldEngine():
         '''
         # Make sure the first rows are always grass at the
         # beginning of the game
-        for i in range(c.NUM_START_GRASSY_ROWS):
-            self.rows.append('Grassy')
+        for i in range(c.NUM_START_FOREST_ROWS):
+            self.rows.append('Forest')
 
         # For each row... (excluding the first three which
         # should be grass
-        for i in range(c.LEVEL_SIZE - c.NUM_START_GRASSY_ROWS - c.NUM_ENDING_GRASSY_ROWS):
+        for i in range(c.LEVEL_SIZE - c.NUM_START_FOREST_ROWS - c.NUM_ENDING_FOREST_ROWS):
 
             # Offset the seed a bit depending on the iteration and
             # find the value on the perlin noise wave
@@ -83,10 +84,15 @@ class WorldEngine():
                 # River with logs
                 self.rows.append("River_Logs")
 
-            elif (noise > -0.1 and noise < 0.1):
+            elif (noise > -0.1 and noise < -0.05):
 
-                # Grassy
-                self.rows.append("Grassy")
+                # Banks
+                self.rows.append("Bank")
+
+            elif (noise > -0.05 and noise < 0.1):
+
+                # Forest
+                self.rows.append("Forest")
 
             elif (noise > 0.1 and
                 noise < 1):
@@ -99,7 +105,7 @@ class WorldEngine():
 
         # Make sure the first last rows are always grass at the
         # beginning of the game
-        for i in range(c.NUM_ENDING_GRASSY_ROWS):
+        for i in range(c.NUM_ENDING_FOREST_ROWS):
 
             self.rows.append('Victory')
 
@@ -116,6 +122,10 @@ class WorldEngine():
 
         for i in range(c.ROW_COUNT):
             self.loaded_indices.append(i)
+
+            background = self.generate_background(i)
+            self.backgrounds.append(background)
+
 
             bottom_row = self.generate_row(i)
             self.loaded.append(bottom_row)
@@ -144,12 +154,16 @@ class WorldEngine():
             nothing
         '''
         # Delete the first row
+        self.backgrounds.pop(0)
         self.loaded.pop(0)
         self.platforms.pop(0)
         self.collectibles.pop(0)
         self.loaded_indices.pop(0)
 
         # Generate a new row
+        new_background = self.generate_background(new_row_index)
+        self.backgrounds.append(new_background)
+
         new_row = self.generate_row(new_row_index)
         self.loaded.append(new_row)
 
@@ -166,6 +180,8 @@ class WorldEngine():
         # Move everything else down (iterate over rows - 1 because
         # we have 1 less row)
         for i in range(c.ROW_COUNT - 1):
+            self.backgrounds[i].move(change_x = 0,
+                                     change_y = -c.TILE_HEIGHT)
             self.loaded[i].move(change_x = 0,
                                 change_y = -c.TILE_HEIGHT)
             self.platforms[i][0].move(change_x = 0,
@@ -174,6 +190,45 @@ class WorldEngine():
                                 change_y = -c.TILE_HEIGHT)
         self.player.center_y -= c.VELOCITY_MULTIPLIER
         self.player.angle = 180
+
+    def generate_background(self, row):
+        '''
+        generate_background is a helper function that takes a row index 
+        and generates that row of backgrounds by calling a child generate 
+        function based on what type of row it should be, assigned by the
+        WorldGen's "rows" varaiable
+
+        param: 
+            self
+            row - the current row to be generated
+        returns:
+            a SpriteList object from child function
+        '''
+
+        if self.rows[row] == "Road":
+
+            return self.generate_grass(row)
+
+        elif self.rows[row] == "Forest":
+
+            return self.generate_grass(row)
+
+        # Rivers don't need a background
+        elif (self.rows[row] == "River_Lilypads" or
+              self.rows[row] =="River_Logs"):
+
+            return arcade.SpriteList()
+
+        elif self.rows[row] == "Victory":
+
+            return self.generate_grass(row)
+
+        else:
+
+            print("PROBLEM IN GENERATION.")
+            exit()
+
+
 
     def generate_row(self, row):
         '''
@@ -192,9 +247,9 @@ class WorldEngine():
 
             return self.generate_cars(row)
 
-        elif self.rows[row] == "Grassy":
+        elif self.rows[row] == "Forest":
 
-            return self.generate_grassy(row)
+            return self.generate_forest(row)
 
         elif (self.rows[row] == "River_Lilypads" or
               self.rows[row] =="River_Logs"):
@@ -241,13 +296,50 @@ class WorldEngine():
         returns:
             a SpriteList object from child function
         '''
-        if self.rows[row] == 'Grassy':
+        if self.rows[row] == 'Forest':
 
             return self.generate_honey(row)
 
         else:
 
             return arcade.SpriteList()
+        
+    def generate_grass(self, row):
+        '''
+        generate_grass takes a row and generates the grass background
+        for it
+
+        param:
+            self
+            row - the row index to be drawn at
+        returns:
+            a spritelist of grass objects
+        '''
+
+        grass = arcade.SpriteList()
+
+        for i in range(c.COLUMN_COUNT):
+
+            grass_texture = random.choices(
+                    ['sprites/grass_1.png',
+                    'sprites/grass_2.png',
+                    'sprites/grass_3.png',
+                    'sprites/flowers_1.png',
+                    'sprites/flowers_2.png',
+                    'sprites/flowers_3.png'],
+                    weights = [0.22, 0.22, 0.22,
+                               0.11, 0.11, 0.11])[0]
+            
+            cell = arcade.Sprite(grass_texture)
+            
+            # Set the cell's center based on grid position
+            cell.center_x = c.TILE_WIDTH * i + c.TILE_WIDTH // 2
+            cell.center_y = c.TILE_HEIGHT * (row - self.loaded_indices[0]) + c.TILE_HEIGHT // 2
+
+            grass.append(cell)
+        
+        return grass
+
 
     def generate_cars(self, row):
         '''
@@ -356,10 +448,10 @@ class WorldEngine():
         self.loaded[row - self.loaded_indices[0]] = hostiles
 
 
-    def generate_grassy(self, row):
+    def generate_forest(self, row):
         '''
-        generate_grassy takes a row and generates it randomly based on
-        the "grassy" quality -- surrounded by trees, with randomly placed
+        generate_forest takes a row and generates it randomly based on
+        the "Forest" quality -- surrounded by trees, with randomly placed
         rocks
 
         param:
@@ -609,7 +701,7 @@ class WorldEngine():
         '''
         generate_victory takes a row and generates it randomly based on
         the "victory" quality -- surrounded by trees, with randomly placed
-        rocks (similar to grassy). If the row is the last one in the game,
+        rocks (similar to Forest). If the row is the last one in the game,
         place the victory cell, the "den"
 
         param:

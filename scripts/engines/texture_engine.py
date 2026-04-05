@@ -47,7 +47,7 @@ class TextureEngine():
         self.tree3_no_bush = "sprites/tree3_no_bush.png"
 
         # Create the grid
-        self.grid = self.create_grid()
+        #self.grid = self.create_grid()
 
     def add_player(self, player):
 
@@ -163,7 +163,22 @@ class TextureEngine():
 
         return trees
 
-    def draw_all_grassy_and_cars(self):
+    def draw_all_backgrounds(self):
+        '''
+        draw_all_backgrounds is a helper function that draws all
+        currently background rows of the world engine
+
+        param: 
+            self
+        returns:
+            nothing
+        '''
+
+        for index in reversed(self.world.loaded_indices):
+
+            self.world.backgrounds[index - self.world.loaded_indices[0]].draw()
+
+    def draw_all_forest_and_cars(self):
         '''
         draw_all_rows is a helper function that draws all
         currently loaded rows of the world engine
@@ -175,7 +190,7 @@ class TextureEngine():
         '''
         for index in reversed(self.world.loaded_indices):
 
-            if (self.world.rows[index] == 'Grassy' or
+            if (self.world.rows[index] == 'Forest' or
                 self.world.rows[index] == 'Road' or
                 self.world.rows[index] == 'Victory'):
 
@@ -249,9 +264,9 @@ class TextureEngine():
             nothing
         '''
 
-        self.grid.draw()
+        self.draw_all_backgrounds()
         self.draw_all_rivers()
         self.draw_all_platforms()
         self.player.draw()
         self.draw_all_collectibles()
-        self.draw_all_grassy_and_cars()
+        self.draw_all_forest_and_cars()
