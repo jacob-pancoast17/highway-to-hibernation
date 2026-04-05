@@ -64,3 +64,6 @@ DEATH_SFX = arcade.load_sound("sfx/death.mp3")
 HUNNI_SFX = arcade.load_sound("sfx/hunni_pickup.mp3")
 VICTORY_JINGLE = arcade.load_sound("sfx/victory.wav")
 GAME_OVER_JINGLE = arcade.load_sound("sfx/game_over.wav")
+
+MAIN_THEME = arcade.play_sound(ADVENTURE_MUSIC)
+MAIN_THEME.pause()

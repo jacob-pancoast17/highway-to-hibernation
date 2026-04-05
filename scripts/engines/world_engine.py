@@ -734,10 +734,10 @@ class WorldEngine():
 
         if self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_SLOW:
             spawn = random.choices([True, False], weights=[65, 35])
-            print("WE GOT SLOW!")
+            # print("WE GOT SLOW!")
         elif self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_MED:
             spawn = random.choices([True, False], weights=[70, 30])
-            print("WE GOT MED")
+            # print("WE GOT MED")
         elif self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_FAST:
             spawn = random.choices([True, False], weights=[90, 10])
             #print("WE GOT FAST")

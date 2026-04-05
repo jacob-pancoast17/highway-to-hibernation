@@ -47,6 +47,8 @@ class Victory(arcade.View):
         # reset window
         self.clear()
 
+        arcade.stop_sound(c.MAIN_THEME)
+
         #TODO: Change to text objects, same in start_screen
         arcade.draw_text(
             "VICTORY!",
