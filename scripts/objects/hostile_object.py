@@ -31,6 +31,8 @@ class Hostile(arcade.Sprite):
         self.static = static
         self.speed = speed
 
+        self.death_sound = None
+
         # Set movement values for moving hostiles
         if not self.static:
             self.timer = 0
@@ -49,7 +51,6 @@ class Hostile(arcade.Sprite):
         returns:
             nothing
         '''
-        #TODO: Delete object after moving off screen
 
         # Don't move static objects
         if self.static:

@@ -539,7 +539,8 @@ class WorldEngine():
 
         lilypads = arcade.SpriteList()
 
-        walkable = self.drunkards_walk(self.current_walk_coords[0], row - self.loaded_indices[0], 4, c.COLUMN_COUNT - 4)
+        walkable = self.drunkards_walk(self.current_walk_coords[0], row - self.loaded_indices[0],
+                                       4, c.COLUMN_COUNT - 4)
         walkable = sorted(walkable, key=lambda x: x[1])
 
         # Append all except the last one
@@ -613,7 +614,7 @@ class WorldEngine():
                                     static = False,
                                     speed= self.platforms[(row - self.loaded_indices[0])-1][1],
                                     left=False))
-        
+
         for log in log_cells:
             print(f"{log} x: {log.x}, y: {log.y}")
 

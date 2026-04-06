@@ -56,11 +56,11 @@ victory = arcade.csscolor.GOLD
 # Fonts
 arcade.load_font("fonts/edit-undo.brk.ttf")
 
-# Sounds 
+# Sounds
 ADVENTURE_MUSIC = arcade.load_sound("sfx/bear_adventure.mp3")
 WALK_SFX = arcade.load_sound("sfx/footstep.mp3")
 DEATH_SFX = arcade.load_sound("sfx/death.mp3")
-HUNNI_SFX = arcade.load_sound("sfx/hunni_pickup.mp3")
+HUNNY_SFX = arcade.load_sound("sfx/hunny_pickup.mp3")
 VICTORY_JINGLE = arcade.load_sound("sfx/victory.wav")
 GAME_OVER_JINGLE = arcade.load_sound("sfx/game_over.wav")
 
