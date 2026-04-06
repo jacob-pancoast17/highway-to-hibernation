@@ -1,12 +1,12 @@
 {
-    "last_score": 1900,
-    "high_score": 1900,
-    "games_played": 15,
+    "last_score": 500,
+    "high_score": 2000,
+    "games_played": 22,
     "top_scores": [
+        2000,
         1900,
         1700,
         1700,
-        1500,
-        1400
+        1500
     ]
 }
