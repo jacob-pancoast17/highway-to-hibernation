@@ -1,7 +1,8 @@
 ''' Module representing the game over screen. '''
 import arcade
 from scripts import constants as c
-from scripts.screens.stats_screen import StatsScreen
+from scripts.stats_manager import record_score
+from scripts.screens.leaderboard_screen import LeaderboardScreen
 
 
 class GameOver(arcade.View):
@@ -19,55 +20,9 @@ class GameOver(arcade.View):
         super().__init__()
         self.score = score
         self.previous_view = previous_view
-
-        self.game_over_text = arcade.Text(
-            "YOU ARE DEAD",
-            x = c.WINDOW_WIDTH / 2,
-            y = c.WINDOW_HEIGHT * 3 / 4,
-            color= c.blood_mwahaha,
-            font_size = 50,
-            font_name="Edit Undo BRK",
-            anchor_x = 'center',
-            anchor_y = 'center'
-        )
-
-        self.score_text = arcade.Text(
-            f"SCORE: {self.score}",
-            x = c.WINDOW_WIDTH / 2,
-            y = c.WINDOW_HEIGHT * 5 / 8,
-            font_size = 30,
-            font_name="Edit Undo BRK",
-            anchor_x = 'center',
-            anchor_y = 'center'
-        )
-
-        self.play_again_text = arcade.Text(
-            "Click to play again",
-            x = c.WINDOW_WIDTH / 2,
-            y = c.WINDOW_HEIGHT / 2,
-            font_size = 18,
-            font_name="Edit Undo BRK",
-            anchor_x = 'center',
-            anchor_y = 'center'
-        )
-        self.quit_text = arcade.Text(
-            "Press 'Q' to quit",
-            x = c.WINDOW_WIDTH / 2,
-            y = (c.WINDOW_HEIGHT / 2)-30,
-            font_size = 18,
-            font_name="Edit Undo BRK",
-            anchor_x = 'center',
-            anchor_y = 'center'
-        )
-        self.stats_text = arcade.Text(
-            "Press 'S' for stats",
-            x=c.WINDOW_WIDTH / 2,
-            y=(c.WINDOW_HEIGHT / 2) - 60,
-            font_size = 18,
-            font_name="Edit Undo BRK",
-            anchor_x = 'center',
-            anchor_y = 'center'
-        )
+        self.player_name = ""
+        self.submitted = False
+        self.submit_message = ""
 
     def on_show_view(self):
         '''
@@ -96,11 +51,125 @@ class GameOver(arcade.View):
         # reset window
         self.clear()
 
-        self.game_over_text.draw()
-        self.score_text.draw()
-        self.play_again_text.draw()
-        self.quit_text.draw()
-        self.stats_text.draw()
+        #TODO: Change to text objects, same in start_screen
+        arcade.draw_text(
+            "YOU ARE DEAD",
+            font_name="Edit Undo BRK",
+            color= c.blood_mwahaha,
+            x = c.WINDOW_WIDTH / 2,
+            y = c.WINDOW_HEIGHT * 3 / 4,
+            font_size = 50,
+            anchor_x = 'center',
+            anchor_y = 'center'
+        )
+
+        arcade.draw_text(
+            f"SCORE: {self.score}",
+            font_name="Edit Undo BRK",
+            x = c.WINDOW_WIDTH / 2,
+            y = c.WINDOW_HEIGHT * 5 / 8,
+            font_size = 30,
+            anchor_x = 'center',
+            anchor_y = 'center'
+        )
+
+        arcade.draw_text(
+            "Enter your name:",
+            font_name="Edit Undo BRK",
+            x = c.WINDOW_WIDTH / 2,
+            y = c.WINDOW_HEIGHT * 0.54,
+            font_size = 22,
+            anchor_x = 'center',
+            anchor_y = 'center'
+        )
+
+        arcade.draw_text(
+            self.player_name if self.player_name else "_",
+            font_name="Edit Undo BRK",
+            x = c.WINDOW_WIDTH / 2,
+            y = c.WINDOW_HEIGHT * 0.48,
+            font_size = 24,
+            anchor_x = 'center',
+            anchor_y = 'center'
+        )
+
+        #TODO: Change to text objects, same in start_screen
+        arcade.draw_text(
+            "Press ENTER to submit score",
+            font_name="Edit Undo BRK",
+            x = c.WINDOW_WIDTH / 2,
+            y = c.WINDOW_HEIGHT / 2,
+            font_size = 20,
+            anchor_x = 'center',
+            anchor_y = 'center'
+        )
+
+        #TODO: Change to text objects, same in start_screen
+        arcade.draw_text(
+            "Click to play again",
+            font_name="Edit Undo BRK",
+            x = c.WINDOW_WIDTH / 2,
+            y = (c.WINDOW_HEIGHT / 2)-30,
+            font_size = 20,
+            anchor_x = 'center',
+            anchor_y = 'center'
+        )
+
+        arcade.draw_text(
+            "Press 'L' for leaderboard",
+            font_name="Edit Undo BRK",
+            x=c.WINDOW_WIDTH / 2,
+            y=(c.WINDOW_HEIGHT / 2) - 60,
+            font_size=20,
+            anchor_x='center',
+            anchor_y='center'
+        )
+
+        arcade.draw_text(
+            "Press 'Q' to quit",
+            font_name="Edit Undo BRK",
+            x=c.WINDOW_WIDTH / 2,
+            y=(c.WINDOW_HEIGHT / 2) - 90,
+            font_size=20,
+            anchor_x='center',
+            anchor_y='center'
+        )
+
+        if self.submit_message:
+            arcade.draw_text(
+                self.submit_message,
+                font_name="Edit Undo BRK",
+                x=c.WINDOW_WIDTH / 2,
+                y=(c.WINDOW_HEIGHT / 2) - 130,
+                font_size=18,
+                anchor_x='center',
+                anchor_y='center'
+            )
+
+    def submit_score(self):
+        '''
+        submit_score uploads the player's score to firebase
+        
+        param:
+            self
+        returns:
+            nothing
+        '''
+        if self.submitted:
+            self.submit_message = "Score already submitted!"
+            return
+
+        name = self.player_name.strip()
+        if not name:
+            name = "Player"
+
+        success = record_score(name, self.score)
+
+        if success:
+            self.submitted = True
+            self.submit_message = "Score submitted!"
+        else:
+            self.submit_message = "Could not submit score."
 
     # on_mouse_press detects when the mouse is pressed and
     # changes the view to the game view again to restart
@@ -124,5 +193,15 @@ class GameOver(arcade.View):
     def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.Q:
             self.window.close()
-        if symbol == arcade.key.S:
-            self.window.show_view(StatsScreen(self))
+        elif symbol == arcade.key.L:
+            self.window.show_view(LeaderboardScreen(self))
+        elif symbol == arcade.key.ENTER:
+            self.submit_score()
+        elif symbol == arcade.key.BACKSPACE:
+            self.player_name = self.player_name[:-1]
+        elif symbol == arcade.key.SPACE:
+            if len(self.player_name) < 12:
+                self.player_name += " "
+        else:
+            if len(self.player_name) < 12 and 32 <= symbol <= 126:
+                self.player_name += chr(symbol)

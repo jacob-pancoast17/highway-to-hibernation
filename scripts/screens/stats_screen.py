@@ -1,6 +1,7 @@
 import arcade
 from scripts import constants as c
 from scripts.stats_manager import load_stats
+from scripts.screens.leaderboard_screen import LeaderboardScreen
 
 
 class StatsScreen(arcade.View):
@@ -81,6 +82,18 @@ class StatsScreen(arcade.View):
             anchor_x="center"
         )
 
-    def on_key_press(self, key):
+        arcade.draw_text(
+            "Press L for leaderboard",
+            x=c.WINDOW_WIDTH / 2,
+            y=c.WINDOW_HEIGHT * 0.12,
+            font_name="Edit Undo BRK",
+            font_size=16,
+            anchor_x="center"
+        )
+
+
+    def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:
             self.window.show_view(self.previous_view)
+        elif key == arcade.key.L:
+            self.window.show_view(LeaderboardScreen(self))
