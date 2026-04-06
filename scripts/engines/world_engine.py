@@ -261,6 +261,11 @@ class WorldEngine():
                 that row
         '''
 
+        walkable = self.drunkards_walk(self.current_walk_coords[0],
+                                       self.current_walk_coords[1],
+                                       4, c.COLUMN_COUNT - 4)
+        walkable = sorted(walkable, key=lambda x: x[1])
+
         hostiles = arcade.SpriteList()
 
         # For each tile, just generate a hostile object that kills you
@@ -275,6 +280,8 @@ class WorldEngine():
         else:
             hostiles.append(Hostile("sprites/rock1.png", 14, row - self.loaded_indices[0],
                                     self.speed, static=False, left=True))
+
+        self.current_walk_coords = walkable[-1]
 
         return hostiles
 
@@ -380,8 +387,6 @@ class WorldEngine():
                                        trees_left,
                                        c.COLUMN_COUNT - trees_right)
         walkable = sorted(walkable, key=lambda x: x[1])
-        print("path:")
-        print(walkable)
 
         last_rock = None
         # Append trees to the left
