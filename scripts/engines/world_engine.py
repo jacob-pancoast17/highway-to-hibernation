@@ -428,6 +428,8 @@ class WorldEngine():
 
         self.current_walk_coords = walkable[-1]
 
+        self.current_walk_coords = walkable[-1]
+
         return hostiles
 
     def update_wolves(self, row):
@@ -532,8 +534,6 @@ class WorldEngine():
                                        num_trees_left,
                                        c.COLUMN_COUNT - num_trees_right)
         walkable = sorted(walkable, key=lambda x: x[1])
-        print("path:")
-        print(walkable)
 
         last_rock = None
 
