@@ -69,31 +69,37 @@ class WorldEngine():
 
             # Offset the seed a bit depending on the iteration and
             # find the value on the perlin noise wave
-            x = self.seed + i * .3
+            x = self.seed + i * .2
             noise = pnoise1(x)
 
             # Depending on the noise function's value, set the
             # appropriate value based on the legend
-            if (noise > -1 and noise < -0.5):
+
+            # Gravel if the last row was a river
+            if (self.rows[-1] == "River_Logs" or
+                self.rows[-1] == "River_Lilypads"):
+
+                self.rows.append("Bank")
+
+            # River (lilypads)
+            elif (noise > -1 and noise < -0.5):
 
                 # River with lilypads
                 self.rows.append("River_Lilypads")
 
+            # River (with logs)
             elif(noise> -0.5 and noise < -0.1):
 
                 # River with logs
                 self.rows.append("River_Logs")
 
-            elif (noise > -0.1 and noise < -0.05):
-
-                # Banks
-                self.rows.append("Bank")
-
-            elif (noise > -0.05 and noise < 0.1):
+            # Forest
+            elif (noise > -0.1 and noise < 0.1):
 
                 # Forest
                 self.rows.append("Forest")
 
+            # Cars
             elif (noise > 0.1 and
                 noise < 1):
 
@@ -125,7 +131,6 @@ class WorldEngine():
 
             background = self.generate_background(i)
             self.backgrounds.append(background)
-
 
             bottom_row = self.generate_row(i)
             self.loaded.append(bottom_row)
@@ -218,6 +223,10 @@ class WorldEngine():
               self.rows[row] =="River_Logs"):
 
             return arcade.SpriteList()
+        
+        elif (self.rows[row] == "Bank"):
+
+            return self.generate_bank(row)
 
         elif self.rows[row] == "Victory":
 
@@ -255,6 +264,10 @@ class WorldEngine():
               self.rows[row] =="River_Logs"):
 
             return self.generate_river(row)
+        
+        elif (self.rows[row] == "Bank"):
+
+            return arcade.SpriteList()
 
         elif self.rows[row] == "Victory":
 
@@ -339,6 +352,41 @@ class WorldEngine():
             grass.append(cell)
         
         return grass
+    
+    def generate_bank(self, row):
+        '''
+        generate_bank takes a row and generates the bank background
+        for it
+
+        param:
+            self
+            row - the row index to be drawn at
+        returns:
+            a spritelist of gravel objects
+        '''
+
+        bank = arcade.SpriteList()
+
+        for i in range(c.COLUMN_COUNT):            
+                
+            bank_texture = random.choices(["sprites/bank_1.png",
+                                           "sprites/bank_2.png",
+                                           "sprites/bank_3.png"],
+                                           weights = [
+                                               1/3,
+                                               1/3,
+                                               1/3
+                                           ])[0]
+
+            cell = arcade.Sprite(bank_texture)
+
+            # Set the cell's center based on grid position
+            cell.center_x = c.TILE_WIDTH * i + c.TILE_WIDTH // 2
+            cell.center_y = c.TILE_HEIGHT * (row - self.loaded_indices[0]) + c.TILE_HEIGHT // 2
+
+            bank.append(cell)
+        
+        return bank
 
 
     def generate_cars(self, row):
@@ -635,8 +683,6 @@ class WorldEngine():
             lilypads.append(Obstacle('sprites/lilypad.png',
                                             walkable[i][0],
                                             walkable[i][1]))
-            print("Lilypad on")
-            print(walkable[i][0], walkable[i][1])
 
         for i in range(c.COLUMN_COUNT):
 
@@ -693,8 +739,6 @@ class WorldEngine():
                                     speed= rand_speed[0],
                                     left=False))
 
-        for log in log_cells:
-            print(f"{log} x: {log.x}, y: {log.y}")
         return log_cells
 
     def generate_victory(self, row):

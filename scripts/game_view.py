@@ -189,11 +189,9 @@ class GameView(arcade.View):
         '''
 
         self.world.update_screen(self.current_top_of_screen + 1)
-        print("updated screen")
 
         self.current_bottom_of_screen += 1
         self.current_top_of_screen += 1
-        print(f"bottom: {self.current_bottom_of_screen}")
 
     def play_death_animation(self, delta_time):
 

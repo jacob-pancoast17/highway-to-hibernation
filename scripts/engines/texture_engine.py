@@ -178,7 +178,7 @@ class TextureEngine():
 
             self.world.backgrounds[index - self.world.loaded_indices[0]].draw()
 
-    def draw_all_forest_and_cars(self):
+    def draw_all_obstacle(self):
         '''
         draw_all_rows is a helper function that draws all
         currently loaded rows of the world engine
@@ -192,6 +192,7 @@ class TextureEngine():
 
             if (self.world.rows[index] == 'Forest' or
                 self.world.rows[index] == 'Road' or
+                self.world.rows[index] == 'Bank' or
                 self.world.rows[index] == 'Victory'):
 
                 self.world.loaded[index - self.world.loaded_indices[0]].draw()
@@ -269,4 +270,4 @@ class TextureEngine():
         self.draw_all_platforms()
         self.player.draw()
         self.draw_all_collectibles()
-        self.draw_all_forest_and_cars()
+        self.draw_all_obstacle()
