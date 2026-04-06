@@ -27,6 +27,7 @@ class WorldEngine():
         '''
         # Set a random seed for the perlin noise function
         self.seed = random.random() * 1000
+        print(self.seed)
         random.seed(self.seed)
 
         self.rows = []
@@ -379,6 +380,8 @@ class WorldEngine():
                                        trees_left,
                                        c.COLUMN_COUNT - trees_right)
         walkable = sorted(walkable, key=lambda x: x[1])
+        print("path:")
+        print(walkable)
 
         last_rock = None
         # Append trees to the left
@@ -532,24 +535,33 @@ class WorldEngine():
 
         lilypads = arcade.SpriteList()
 
-        walkable = self.drunkards_walk(self.current_walk_coords[0], row, 4, c.COLUMN_COUNT - 4)
+        walkable = self.drunkards_walk(self.current_walk_coords[0], row - self.loaded_indices[0], 4, c.COLUMN_COUNT - 4)
         walkable = sorted(walkable, key=lambda x: x[1])
 
         # Append all except the last one
         for i in range(len(walkable) - 1):
 
-            lilypads.append(Obstacle('sprites/lilypad.png',
+            lilypads.append(Platform('sprites/lilypad.png',
                                             walkable[i][0],
                                             walkable[i][1]))
             print("Lilypad on")
             print(walkable[i][0], walkable[i][1])
 
-        for i in range(c.COLUMN_COUNT):
+        for i in range(4, c.COLUMN_COUNT - 4):
 
-            if ((i, row) not in walkable and
-                random.random() < .2):
+            if ((i, row) not in walkable and random.random() < .2):
 
-                lilypads.append(Obstacle('sprites/lilypad.png', i, row - self.loaded_indices[0]))
+                lilypad_texture = random.choices(
+                    ['sprites/lilypad.png',
+                    'sprites/lilypad-with-frog.png'],
+                    weights = [0.9, 0.1])
+
+                for lilypad in lilypads:
+
+                    if lilypad.x is not i:
+
+                        lilypads.append(Platform(lilypad_texture[0], i,
+                                                row - self.loaded_indices[0]))
 
         # Update walk
         self.current_walk_coords = walkable[-1]
@@ -569,6 +581,9 @@ class WorldEngine():
             a SpriteList object containing all of the log sprites for
                 that row
         '''
+
+        walkable = self.drunkards_walk(self.current_walk_coords[0], row, 4, c.COLUMN_COUNT - 4)
+        walkable = sorted(walkable, key=lambda x: x[1])
 
         log_cells = arcade.SpriteList()
         moving_left = random.choice([True, False])
@@ -601,6 +616,10 @@ class WorldEngine():
 
         for log in log_cells:
             print(f"{log} x: {log.x}, y: {log.y}")
+
+        # Update walk
+        self.current_walk_coords = walkable[-1]
+
         return log_cells
 
     def generate_victory(self, row):
@@ -740,7 +759,7 @@ class WorldEngine():
             print("WE GOT MED")
         elif self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_FAST:
             spawn = random.choices([True, False], weights=[90, 10])
-            #print("WE GOT FAST")
+            print("WE GOT FAST")
 
         if not spawn[0]:
             return
@@ -908,7 +927,7 @@ class WorldEngine():
                 path.append((x, y))
                 return path
 
-            elif a[0] == 'right' and x != right_bound:
+            elif a[0] == 'right' and x < right_bound:
 
                 x += 1
 
@@ -916,7 +935,7 @@ class WorldEngine():
 
                     path.append((x, y))
 
-            elif a[0] == 'left' and x != left_bound:
+            elif a[0] == 'left' and x > left_bound:
 
                 x += -1
 
