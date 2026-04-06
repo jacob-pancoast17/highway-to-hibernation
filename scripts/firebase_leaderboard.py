@@ -2,7 +2,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from datetime import datetime
 
-# initialize Firebase app if not already initialized
+# initialize firebase app if not already initialized
 if not firebase_admin._apps:
     cred = credentials.Certificate("firebase_key/serviceAccountKey.json")
     firebase_admin.initialize_app(cred)
@@ -58,3 +58,44 @@ def get_top_scores(limit_count=10):
         })
 
     return scores
+
+
+def get_player_stats(name):
+    """
+    Return stats for one player name.
+    """
+    try:
+        docs = (
+            db.collection("leaderboard")
+            .where("name", "==", name)
+            .stream()
+        )
+
+        scores = []
+        for doc in docs:
+            data = doc.to_dict()
+            scores.append(data.get("score", 0))
+
+        if not scores:
+            return {
+                "name": name,
+                "high_score": 0,
+                "games_played": 0,
+                "top_scores": []
+            }
+
+        return {
+            "name": name,
+            "high_score": max(scores),
+            "games_played": len(scores),
+            "top_scores": sorted(scores, reverse=True)[:5]
+        }
+
+    except Exception as e:
+        print("Could not load player stats:", e)
+        return {
+            "name": name,
+            "high_score": 0,
+            "games_played": 0,
+            "top_scores": []
+        }

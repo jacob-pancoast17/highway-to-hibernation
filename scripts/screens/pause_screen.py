@@ -95,7 +95,7 @@ class Pause(arcade.View):
         )
 
         arcade.draw_text(
-            "Press 'S' for stats",
+            "Press 'L' for leaderboard",
             font_name="Edit Undo BRK",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT / 3.4,
@@ -111,5 +111,5 @@ class Pause(arcade.View):
             self.window.close()
         if symbol == arcade.key.ENTER:
             self.window.show_view(self.game_view.__class__())
-        if symbol == arcade.key.S:
+        if symbol == arcade.key.L:
             self.window.show_view(LeaderboardScreen(self))

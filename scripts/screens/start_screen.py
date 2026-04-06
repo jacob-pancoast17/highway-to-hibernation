@@ -108,7 +108,7 @@ class StartScreen(arcade.View):
 
         # draw stats window
         arcade.draw_text(
-            "Press S for stats",
+            "Press L for leaderboard",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT / 5,
             font_name="Edit Undo BRK",
@@ -117,5 +117,5 @@ class StartScreen(arcade.View):
         )
 
     def on_key_press(self, symbol, modifiers):
-        if symbol == arcade.key.S:
+        if symbol == arcade.key.L:
             self.window.show_view(LeaderboardScreen(self))
