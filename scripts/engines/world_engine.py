@@ -138,6 +138,7 @@ class WorldEngine():
             self.loaded.append(bottom_row)
 
             # Randomly pick a velocity to add to list for initial screen generation
+            # Randomly pick a velocity to add to list for initial screen generation
             rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST],
                                         weights = [1/3, 1/3, 1/3])
             middle_row = self.generate_platforms(i)
@@ -760,7 +761,7 @@ class WorldEngine():
                                     static = False,
                                     speed= self.platforms[(row - self.loaded_indices[0])-1][1],
                                     left=False))
-
+        
         for log in log_cells:
             print(f"{log} x: {log.x}, y: {log.y}")
 
