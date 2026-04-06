@@ -98,11 +98,58 @@ class Pause(arcade.View):
         self.clear()
         self.sprites.draw()
 
-        self.pause_text.draw()
-        self.continue_text.draw()
-        self.quit_text.draw()
-        self.reset_text.draw()
-        self.stats_text.draw()
+    
+        arcade.draw_text(
+            "PAUSE",
+            font_name="Edit Undo BRK",
+            x = c.WINDOW_WIDTH / 2,
+            y = c.WINDOW_HEIGHT * 3 / 5,
+            font_size = 50,
+            anchor_x = 'center',
+            anchor_y = 'center'
+        )
+
+        #TODO: Change to text objects, same in start_screen
+        arcade.draw_text(
+            "Press 'ESC' to continue",
+            font_name="Edit Undo BRK",
+            x = c.WINDOW_WIDTH / 2,
+            y = c.WINDOW_HEIGHT / 2.1,
+            font_size = 17,
+            anchor_x = 'center',
+            anchor_y = 'center'
+        )
+
+        # TODO: Change to text objects, same in start_screen
+        arcade.draw_text(
+            "Press 'Q' to quit",
+            font_name="Edit Undo BRK",
+            x = c.WINDOW_WIDTH / 2,
+            y = c.WINDOW_HEIGHT / 2.4,
+            font_size = 17,
+            anchor_x = 'center',
+            anchor_y = 'center'
+        )
+
+        arcade.draw_text(
+            "Press 'ENTER' to reset",
+            font_name="Edit Undo BRK",
+            x=c.WINDOW_WIDTH / 2,
+            y=c.WINDOW_HEIGHT / 2.8,
+            font_size=17,
+            anchor_x='center',
+            anchor_y='center'
+        )
+
+        arcade.draw_text(
+            "Press 'S' for stats",
+            font_name="Edit Undo BRK",
+            x=c.WINDOW_WIDTH / 2,
+            y=c.WINDOW_HEIGHT / 3.4,
+            font_size=17,
+            anchor_x='center',
+            anchor_y='center'
+        )
 
     def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.ESCAPE:
@@ -111,5 +158,5 @@ class Pause(arcade.View):
             self.window.close()
         if symbol == arcade.key.ENTER:
             self.window.show_view(self.game_view.__class__())
-        if symbol == arcade.key.S:
+        if symbol == arcade.key.L:
             self.window.show_view(LeaderboardScreen(self))

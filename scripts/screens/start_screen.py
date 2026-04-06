@@ -121,5 +121,5 @@ class StartScreen(arcade.View):
         self.stats_text.draw()
 
     def on_key_press(self, symbol, modifiers):
-        if symbol == arcade.key.S:
+        if symbol == arcade.key.L:
             self.window.show_view(LeaderboardScreen(self))

@@ -532,6 +532,8 @@ class WorldEngine():
                                        num_trees_left,
                                        c.COLUMN_COUNT - num_trees_right)
         walkable = sorted(walkable, key=lambda x: x[1])
+        print("path:")
+        print(walkable)
 
         last_rock = None
 
@@ -771,6 +773,7 @@ class WorldEngine():
         # Change log direction for next row
         self.log_moving_left = not moving_left
 
+
         return log_cells
 
     def generate_victory(self, row):
@@ -910,7 +913,7 @@ class WorldEngine():
             # print("WE GOT MED!")
         elif self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_FAST:
             spawn = random.choices([True, False], weights=[90, 10])
-            # print("WE GOT FAST!")
+            print("WE GOT FAST")
 
         if not spawn[0]:
             return
