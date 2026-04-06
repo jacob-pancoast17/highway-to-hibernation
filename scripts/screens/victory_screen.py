@@ -1,7 +1,7 @@
 ''' Module representing the victory screen. '''
 import arcade
 from scripts import constants as c
-from scripts.screens.stats_screen import StatsScreen
+from scripts.screens.leaderboard_screen import LeaderboardScreen
 
 
 class Victory(arcade.View):
@@ -127,4 +127,4 @@ class Victory(arcade.View):
         if symbol == arcade.key.Q:
             self.window.close()
         if symbol == arcade.key.S:
-            self.window.show_view(StatsScreen(self))
+            self.window.show_view(LeaderboardScreen(self))

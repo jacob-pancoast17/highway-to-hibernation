@@ -3,7 +3,7 @@ import arcade
 import arcade.gui
 from scripts import constants as c
 from scripts.game_view import GameView
-from scripts.screens.stats_screen import StatsScreen
+from scripts.screens.leaderboard_screen import LeaderboardScreen
 
 
 class StartScreen(arcade.View):
@@ -118,4 +118,4 @@ class StartScreen(arcade.View):
 
     def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.S:
-            self.window.show_view(StatsScreen(self))
+            self.window.show_view(LeaderboardScreen(self))
