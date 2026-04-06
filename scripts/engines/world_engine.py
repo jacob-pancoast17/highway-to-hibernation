@@ -118,11 +118,9 @@ class WorldEngine():
             bottom_row = self.generate_row(i)
             self.loaded.append(bottom_row)
 
-            # Randomly pick a velocity to add to list
+            # Randomly pick a velocity to add to list for initial screen generation
             rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST],
                                         weights = [1/3, 1/3, 1/3])
-            #print(rand_speed)
-
             middle_row = self.generate_platforms(i)
             self.platforms.append([middle_row, rand_speed[0]])
 
@@ -151,10 +149,12 @@ class WorldEngine():
         new_row = self.generate_row(new_row_index)
         self.loaded.append(new_row)
 
+        # Randomly pick a velocity for each row in the updated screen
         rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST],
                                     weights = [1/3, 1/3, 1/3])
         new_platform  = self.generate_platforms(new_row_index)
         self.platforms.append([new_platform, rand_speed[0]])
+
 
         new_collectible = self.generate_collectible(new_row_index)
         self.collectibles.append(new_collectible)
@@ -471,7 +471,6 @@ class WorldEngine():
         if random.random() < .25:
 
             spawnable_spots = list(range(15))
-            #print(row - self.loaded_indices[0])
             cells = self.loaded[row - self.loaded_indices[0]]
 
             # Remove not spawnable spots
@@ -575,10 +574,6 @@ class WorldEngine():
 
         length = random.randint(c.SMALLEST_LOG,c.BIGGEST_LOG)
 
-        rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST],
-                                        weights = [1/3, 1/3, 1/3])
-
-
         for i in range(length):
 
             if moving_left:
@@ -587,7 +582,7 @@ class WorldEngine():
                                     15 - i,
                                     row= row - self.loaded_indices[0],
                                     static = False,
-                                    speed= rand_speed[0],
+                                    speed= self.platforms[row-1][1],
                                     left=True))
 
             else:
@@ -596,9 +591,9 @@ class WorldEngine():
                                     i,
                                     row= row - self.loaded_indices[0],
                                     static = False,
-                                    speed= rand_speed[0],
+                                    speed= self.platforms[row-1][1],
                                     left=False))
-
+        
         for log in log_cells:
             print(f"{log} x: {log.x}, y: {log.y}")
         return log_cells
@@ -737,10 +732,10 @@ class WorldEngine():
             # print("WE GOT SLOW!")
         elif self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_MED:
             spawn = random.choices([True, False], weights=[70, 30])
-            # print("WE GOT MED")
+            # print("WE GOT MED!")
         elif self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_FAST:
             spawn = random.choices([True, False], weights=[90, 10])
-            #print("WE GOT FAST")
+            # print("WE GOT FAST!")
 
         if not spawn[0]:
             return
@@ -753,12 +748,12 @@ class WorldEngine():
                 new_row.append(
                     Platform("sprites/water_log.png", c.COLUMN_COUNT - 1 + i,
                                 row - self.loaded_indices[0],
-                                speed = self.platforms[row - self.loaded_indices[0]][1],
+                                speed = self.platforms[(row - self.loaded_indices[0])-1][1],
                                 static=False, left=True))
             else:
                 new_row.append(
                     Platform("sprites/water_log.png", 0 - i, row - self.loaded_indices[0],
-                             speed = self.platforms[row - self.loaded_indices[0]][1],
+                             speed = self.platforms[(row - self.loaded_indices[0])-1][1],
                              static=False, left=False))
         # Replace currently loaded row with the updated one
         self.platforms[row - self.loaded_indices[0]][0] = new_row
