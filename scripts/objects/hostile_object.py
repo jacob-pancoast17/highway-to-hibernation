@@ -8,7 +8,7 @@ class Hostile(arcade.Sprite):
     the player if they touch it
     '''
 
-    def __init__ (self, texture, column, row, speed=0, static=True, left=None):
+    def __init__ (self, texture, column, row, tex_eng, speed=0, static=True, left=False):
         '''
         Constructor creates a hostile object which "is-an" object
 
@@ -20,7 +20,12 @@ class Hostile(arcade.Sprite):
         returns:
             nothing
         '''
+
         super().__init__(path_or_texture=texture)
+
+        if texture in tex_eng.wolf:
+             
+            self.running_textures = tex_eng.wolf
 
         self.center_x = c.TILE_WIDTH * column + c.TILE_WIDTH // 2
         self.x = column
@@ -28,13 +33,19 @@ class Hostile(arcade.Sprite):
         self.y = row
         self.angle = 0
 
+        self.cur_texture_index = 0
+
         self.static = static
         self.speed = speed
+
+        self.timer = 0
+        self.run_speed = speed * 0.2
+        self.next_run_frame = self.run_speed
 
         # Set movement values for moving hostiles
         if not self.static:
             self.timer = 0
-            self.is_moving_left = True
+            self.is_moving_left = left
             self.next_move = self.speed
 
     def try_move(self, delta_time, player):
@@ -106,3 +117,31 @@ class Hostile(arcade.Sprite):
             return True
         else:
             return False
+        
+    def run(self, delta_time):
+        '''
+        run changes the wolf textures so it appears as if it's running
+
+        param:
+            self
+        returns:
+            none
+        '''
+
+        self.timer += delta_time
+
+        if self.timer > self.next_run_frame:
+
+            self.texture = self.running_textures[self.cur_texture_index]
+
+            if self.is_moving_left:
+                
+                self.scale_x = -1
+
+            self.cur_texture_index += 1
+
+            if (self.cur_texture_index > 10):
+
+                            self.cur_texture_index = 0
+            
+            self.next_run_frame += self.run_speed

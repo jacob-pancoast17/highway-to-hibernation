@@ -46,8 +46,17 @@ class TextureEngine():
         self.tree2_no_bush = "sprites/tree2_no_bush.png"
         self.tree3_no_bush = "sprites/tree3_no_bush.png"
 
+        # Logs
+        self.logs = ["sprites/water_log_left_end.png",
+                     "sprites/water_log_connector.png",
+                     "sprites/water_log_right_end.png"]
+
         # Create the grid
         #self.grid = self.create_grid()
+
+        # Wolf
+        wolf_sheet = arcade.load_spritesheet("sprites/wolf_sheet.png")
+        self.wolf = wolf_sheet.get_texture_grid(size = (30, 30), columns=11, count=11)
 
     def add_player(self, player):
 
@@ -162,6 +171,27 @@ class TextureEngine():
                     trees.append(tree)
 
         return trees
+    
+    def get_log(self, length):
+
+        logs = []
+
+        # For each cell
+        for i in range(length):
+
+            if i == 0:
+
+                logs.append(self.logs[0])
+
+            elif i == length - 1:
+
+                logs.append(self.logs[2])
+
+            else:
+
+                logs.append(self.logs[1])
+                
+        return logs
 
     def draw_all_backgrounds(self):
         '''
@@ -193,7 +223,8 @@ class TextureEngine():
             if (self.world.rows[index] == 'Forest' or
                 self.world.rows[index] == 'Road' or
                 self.world.rows[index] == 'Bank' or
-                self.world.rows[index] == 'Victory'):
+                self.world.rows[index] == 'Victory' or
+                self.world.rows[index] == 'Pack'):
 
                 self.world.loaded[index - self.world.loaded_indices[0]].draw()
 

@@ -99,12 +99,12 @@ class WorldEngine():
                 # Forest
                 self.rows.append("Forest")
 
-            # Cars
+            # Wolfs
             elif (noise > 0.1 and
                 noise < 1):
 
-                # Road
-                self.rows.append("Road")
+                # Pack
+                self.rows.append("Pack")
 
             else:
                 print("ERROR GENERATING ARRAY IN WORLD_GEN.PY")
@@ -210,7 +210,7 @@ class WorldEngine():
             a SpriteList object from child function
         '''
 
-        if self.rows[row] == "Road":
+        if self.rows[row] == "Pack":
 
             return self.generate_grass(row)
 
@@ -252,9 +252,9 @@ class WorldEngine():
         returns:
             a SpriteList object from child function
         '''
-        if self.rows[row] == "Road":
+        if self.rows[row] == "Pack":
 
-            return self.generate_cars(row)
+            return self.generate_wolves(row)
 
         elif self.rows[row] == "Forest":
 
@@ -389,10 +389,10 @@ class WorldEngine():
         return bank
 
 
-    def generate_cars(self, row):
+    def generate_wolves(self, row):
         '''
-        generate_cars takes a row and generates it randomly based on
-        the "cars" quality -- moving objects across the screen
+        generate_wolves takes a row and generates it randomly based on
+        the "wolves" quality -- moving objects across the screen
 
         param:
             self
@@ -411,17 +411,17 @@ class WorldEngine():
         self.speed = random.uniform(c.LOWER_OBSTACLE_SPEED, c.UPPER_OBSTACLE_SPEED)
 
         if not moving_left:
-            hostiles.append(Hostile("sprites/rock1.png", 0, row - self.loaded_indices[0],
-                                    self.speed, static=False, left=False))
+            hostiles.append(Hostile(self.tex_eng.wolf[0], 0, row - self.loaded_indices[0],
+                                    self.tex_eng, self.speed, static=False, left=False))
         else:
-            hostiles.append(Hostile("sprites/rock1.png", 14, row - self.loaded_indices[0],
-                                    self.speed, static=False, left=True))
+            hostiles.append(Hostile(self.tex_eng.wolf[0], 14, row - self.loaded_indices[0],
+                                    self.tex_eng, self.speed, static=False, left=True))
 
         return hostiles
 
-    def update_cars(self, row):
+    def update_wolves(self, row):
         '''
-        update_cars takes a row and updates the cars in that row by trying
+        update_wolves takes a row and updates the wolves in that row by trying
         to move them and then trying to spawn new ones if we are at the next
         spawn check
 
@@ -434,19 +434,19 @@ class WorldEngine():
 
         hostiles = arcade.SpriteList()
 
-        # For each car in the row
-        for car in self.loaded[row - self.loaded_indices[0]]:
+        # For each Wolf in the row
+        for wolf in self.loaded[row - self.loaded_indices[0]]:
 
             # If it's still on screen, keep it
-            if not car.is_off_screen():
-                hostiles.append(car)
+            if not wolf.is_off_screen():
+                hostiles.append(wolf)
 
         index = 0
         while len(hostiles) == 0:
 
-            car = self.loaded[row - self.loaded_indices[0]][index]
-            if car.is_off_screen():
-                hostiles.append(car)
+            wolf = self.loaded[row - self.loaded_indices[0]][index]
+            if wolf.is_off_screen():
+                hostiles.append(wolf)
             else:
                 index += 1
 
@@ -458,7 +458,7 @@ class WorldEngine():
             return
 
         # First we need to determine  when the last in line
-        # arrives (we don't want cars lapping each other)
+        # arrives (we don't want wolves lapping each other)
         last_arrival = hostiles[-1]
 
         # Arrival time if going right
@@ -469,10 +469,10 @@ class WorldEngine():
             last_arrival_time = last_arrival.x * last_arrival.speed
 
         # Now that we know when the next one arrives, let's
-        # pick a speed that won't cause this new car to lap
-        # the last arriving of the previous cars
+        # pick a speed that won't cause this new wolf to lap
+        # the last arriving of the previous wolves
         next_avail_arrival_time = last_arrival_time + last_arrival.speed
-        # Max speed that would place the car arriving at the next available
+        # Max speed that would place the wolf arriving at the next available
         min_speed = next_avail_arrival_time / c.COLUMN_COUNT
 
         # Truncate that so we don't get any turtles
@@ -486,11 +486,11 @@ class WorldEngine():
             new_speed = c.UPPER_OBSTACLE_SPEED
 
         if last_arrival.is_moving_left:
-            hostiles.append(Hostile("sprites/rock1.png", 14, row - self.loaded_indices[0],
-                         speed = new_speed, static=False, left=True))
+            hostiles.append(Hostile(self.tex_eng.wolf[0], 14, row - self.loaded_indices[0],
+                         self.tex_eng, speed = new_speed, static=False, left=True))
         else:
-            hostiles.append(Hostile("sprites/rock1.png", 0, row - self.loaded_indices[0],
-                         speed = new_speed, static=False, left=False))
+            hostiles.append(Hostile(self.tex_eng.wolf[0], 0, row - self.loaded_indices[0],
+                         self.tex_eng, speed = new_speed, static=False, left=False))
 
         # Replace currently loaded row with the updated one
         self.loaded[row - self.loaded_indices[0]] = hostiles
@@ -655,7 +655,7 @@ class WorldEngine():
         for i in range(c.COLUMN_COUNT):
 
             river.append(
-                Hostile("sprites/water.png", i, row - self.loaded_indices[0]))
+                Hostile("sprites/water.png", i, row - self.loaded_indices[0], self.tex_eng))
 
         return river
 
@@ -718,12 +718,13 @@ class WorldEngine():
         rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST],
                                         weights = [1/3, 1/3, 1/3])
 
-
         for i in range(length):
 
             if moving_left:
 
-                log_cells.append(Platform('sprites/water_log.png',
+                log_textures = self.tex_eng.get_log(length)
+
+                log_cells.append(Platform(log_textures[length - 1 - i],
                                     15 - i,
                                     row= row - self.loaded_indices[0],
                                     static = False,
@@ -732,7 +733,9 @@ class WorldEngine():
 
             else:
 
-                log_cells.append(Platform('sprites/water_log.png',
+                log_textures = self.tex_eng.get_log(length)
+
+                log_cells.append(Platform(log_textures[i],
                                     i,
                                     row= row - self.loaded_indices[0],
                                     static = False,
@@ -885,17 +888,21 @@ class WorldEngine():
 
         # Randomly choose how many tiles the log is
         log_size = random.randint(c.SMALLEST_LOG, c.BIGGEST_LOG)
+
         for i in range(log_size):
             if moving_left:
+                log_textures = self.tex_eng.get_log(log_size)
                 # if there is a log on screen, copy the velocity for the next log spawned
                 new_row.append(
-                    Platform("sprites/water_log.png", c.COLUMN_COUNT - 1 + i,
+                    Platform(log_textures[i], c.COLUMN_COUNT - 1 + i,
                                 row - self.loaded_indices[0],
                                 speed = self.platforms[row - self.loaded_indices[0]][1],
                                 static=False, left=True))
             else:
+                log_textures = self.tex_eng.get_log(log_size)
+                log_textures = list(reversed(log_textures))
                 new_row.append(
-                    Platform("sprites/water_log.png", 0 - i, row - self.loaded_indices[0],
+                    Platform(log_textures[i], 0 - i, row - self.loaded_indices[0],
                              speed = self.platforms[row - self.loaded_indices[0]][1],
                              static=False, left=False))
         # Replace currently loaded row with the updated one
@@ -983,25 +990,25 @@ class WorldEngine():
         # [Obstacle, None, None, None, Obstacle] for example
         return return_list
 
-    def get_car_rows(self):
+    def get_wolf_rows(self):
         '''
-        get_car_rows returns all the indices of current car rows
+        get_wolf_rows returns all the indices of current wolf rows
 
         param:
             self
         returns:
-            A list of all car row indices
+            A list of all wolf row indices
         '''
 
-        cars = []
+        wolves = []
 
         for i in self.loaded_indices:
 
-            if self.rows[i] == "Road":
+            if self.rows[i] == "Pack":
 
-                cars.append(i)
+                wolves.append(i)
 
-        return cars
+        return wolves
 
     def get_log_rows(self):
         '''
