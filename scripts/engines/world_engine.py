@@ -763,7 +763,7 @@ class WorldEngine():
                                     static = False,
                                     speed= self.platforms[(row - self.loaded_indices[0])-1][1],
                                     left=False))
-        
+
         for log in log_cells:
             print(f"{log} x: {log.x}, y: {log.y}")
 
