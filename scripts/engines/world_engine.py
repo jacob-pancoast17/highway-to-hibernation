@@ -603,7 +603,7 @@ class WorldEngine():
                                     15 - i,
                                     row= row - self.loaded_indices[0],
                                     static = False,
-                                    speed= self.platforms[row-1][1],
+                                    speed= self.platforms[(row - self.loaded_indices[0])-1][1],
                                     left=True))
 
             else:
@@ -612,7 +612,7 @@ class WorldEngine():
                                     i,
                                     row= row - self.loaded_indices[0],
                                     static = False,
-                                    speed= self.platforms[row-1][1],
+                                    speed= self.platforms[(row - self.loaded_indices[0])-1][1],
                                     left=False))
 
         for log in log_cells:
