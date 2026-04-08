@@ -36,8 +36,8 @@ class StartScreen(arcade.View):
         self.sprites.append(title)
 
         # Load play button
-        play_texture = arcade.load_texture("sprites/play_button.png")
-        play_texture_hover = arcade.load_texture("sprites/play_button_hover.png")
+        play_texture = arcade.load_texture("sprites/infinity.png")
+        play_texture_hover = arcade.load_texture("sprites/infinity_hover.png")
 
         play_button = arcade.gui.UITextureButton(
             width = 100,
@@ -49,6 +49,7 @@ class StartScreen(arcade.View):
         @play_button.event("on_click")
         def on_click_play(event):
             print("Awesome!")
+            GameView.levels = "infinite"
             game_view = GameView()
             self.window.show_view(game_view)
 
