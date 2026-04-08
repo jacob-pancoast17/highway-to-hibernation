@@ -54,7 +54,7 @@ class GameView(arcade.View):
         self.achieve_game_over = None
 
         self.setup()
-        
+
         self.levels = None
 
     def setup(self):
@@ -191,12 +191,13 @@ class GameView(arcade.View):
 
                 print(self.current_bottom_of_screen)
                 if self.levels == "infinite":
-                    if (self.player.y > self.current_bottom_of_screen + (c.DIST_UNTIL_STAY_PUT - 1) and
-                        symbol == arcade.key.UP):
+                    if (self.player.y > self.current_bottom_of_screen + (c.DIST_UNTIL_STAY_PUT - 1)
+                        and symbol == arcade.key.UP):
                         self.move_screen_up()
                 else:
-                    if (self.player.y > self.current_bottom_of_screen + (c.DIST_UNTIL_STAY_PUT - 1) and
-                        self.current_top_of_screen != str(self.levels) - 1 and symbol == arcade.key.UP):
+                    if (self.player.y > self.current_bottom_of_screen + (c.DIST_UNTIL_STAY_PUT - 1)
+                        and self.current_top_of_screen != str(self.levels) - 1 and
+                        symbol == arcade.key.UP):
                         self.move_screen_up()
 
             print(f"[{self.player.x}, {self.player.y}]")
