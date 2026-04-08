@@ -101,26 +101,28 @@ class GameOver(arcade.View):
             anchor_y='center'
         )
 
-    # on_mouse_press detects when the mouse is pressed and
-    # changes the view to the game view again to restart
-
-    # param: self
-     #      _x - cursor x pos
-     #      _y - cursor y pos
-     #     _button - button on mouse pressed
-     #     _modifiers - shift, ctrl, numlock, etc.
     def on_mouse_press(self, _x, _y, _button, _modifiers):
+        '''
+        on_mouse_press detects when the mouse is pressed and
+        changes the view to the game view again to restart
+
+        param: self
+            _x - cursor x pos
+            _y - cursor y pos
+            _button - button on mouse pressed
+            _modifiers - shift, ctrl, numlock, etc.
+        '''
         self.window.show_view(self.previous_view.__class__())
 
-
-    # on_key_press detects when the E key is pressed
-    # and closes the game window
-
-    # param: self
-     #      symbol - key pressed
-     #      modifiers - e.g. capslock or numlock
-
     def on_key_press(self, symbol, modifiers):
+        '''
+        on_key_press detects when the E key is pressed
+        and closes the game window
+
+        param: self
+            symbol - key pressed
+            modifiers - e.g. capslock or numlock
+        '''
         if symbol == arcade.key.Q:
             self.window.close()
         if symbol == arcade.key.S:
