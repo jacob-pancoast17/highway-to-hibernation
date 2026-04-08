@@ -47,6 +47,7 @@ class WorldEngine():
         self.speed = None
         self.sprites = None
         self.spawn = [None]
+        self.log_moving_left = random.choice([True, False])
 
     def generate_array(self):
         '''
@@ -292,7 +293,7 @@ class WorldEngine():
 
         elif self.rows[row] == 'River_Logs':
 
-            return self.generate_logs(row)
+            return self.generate_logs(row, self.log_moving_left)
 
         else:
 
@@ -714,7 +715,7 @@ class WorldEngine():
 
         return lilypads
 
-    def generate_logs(self, row):
+    def generate_logs(self, row, moving_left):
         '''
         generate_logs takes a row and generates a line of water that 
         kills you with logs that move across the screen that you can 
@@ -723,6 +724,7 @@ class WorldEngine():
         param:
             self
             row
+            log_moving_left
         returns:
             a SpriteList object containing all of the log sprites for
                 that row
@@ -732,7 +734,6 @@ class WorldEngine():
         walkable = sorted(walkable, key=lambda x: x[1])
 
         log_cells = arcade.SpriteList()
-        moving_left = random.choice([True, False])
 
         length = random.randint(c.SMALLEST_LOG,c.BIGGEST_LOG)
 
@@ -765,6 +766,9 @@ class WorldEngine():
 
         # Update walk
         self.current_walk_coords = walkable[-1]
+
+        # Change log direction for next row
+        self.log_moving_left = not moving_left
 
         return log_cells
 
