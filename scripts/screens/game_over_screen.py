@@ -20,6 +20,55 @@ class GameOver(arcade.View):
         self.score = score
         self.previous_view = previous_view
 
+        self.game_over_text = arcade.Text(
+            "YOU ARE DEAD",
+            x = c.WINDOW_WIDTH / 2,
+            y = c.WINDOW_HEIGHT * 3 / 4,
+            color= c.blood_mwahaha,
+            font_size = 50,
+            font_name="Edit Undo BRK",
+            anchor_x = 'center',
+            anchor_y = 'center'
+        )
+
+        self.score_text = arcade.Text(
+            f"SCORE: {self.score}",
+            x = c.WINDOW_WIDTH / 2,
+            y = c.WINDOW_HEIGHT * 5 / 8,
+            font_size = 30,
+            font_name="Edit Undo BRK",
+            anchor_x = 'center',
+            anchor_y = 'center'
+        )
+
+        self.play_again_text = arcade.Text(
+            "Click to play again",
+            x = c.WINDOW_WIDTH / 2,
+            y = c.WINDOW_HEIGHT / 2,
+            font_size = 18,
+            font_name="Edit Undo BRK",
+            anchor_x = 'center',
+            anchor_y = 'center'
+        )
+        self.quit_text = arcade.Text(
+            "Press 'Q' to quit",
+            x = c.WINDOW_WIDTH / 2,
+            y = (c.WINDOW_HEIGHT / 2)-30,
+            font_size = 18,
+            font_name="Edit Undo BRK",
+            anchor_x = 'center',
+            anchor_y = 'center'
+        )
+        self.stats_text = arcade.Text(
+            "Press 'S' for stats",
+            x=c.WINDOW_WIDTH / 2,
+            y=(c.WINDOW_HEIGHT / 2) - 60,
+            font_size = 18,
+            font_name="Edit Undo BRK",
+            anchor_x = 'center',
+            anchor_y = 'center'
+        )
+
     def on_show_view(self):
         '''
         on_show_view defines events that happen when switching to the game over screen
@@ -47,59 +96,11 @@ class GameOver(arcade.View):
         # reset window
         self.clear()
 
-        #TODO: Change to text objects, same in start_screen
-        arcade.draw_text(
-            "YOU ARE DEAD",
-            font_name="Edit Undo BRK",
-            color= c.blood_mwahaha,
-            x = c.WINDOW_WIDTH / 2,
-            y = c.WINDOW_HEIGHT * 3 / 4,
-            font_size = 50,
-            anchor_x = 'center',
-            anchor_y = 'center'
-        )
-
-        arcade.draw_text(
-            f"SCORE: {self.score}",
-            font_name="Edit Undo BRK",
-            x = c.WINDOW_WIDTH / 2,
-            y = c.WINDOW_HEIGHT * 5 / 8,
-            font_size = 30,
-            anchor_x = 'center',
-            anchor_y = 'center'
-        )
-
-        #TODO: Change to text objects, same in start_screen
-        arcade.draw_text(
-            "Click to play again",
-            font_name="Edit Undo BRK",
-            x = c.WINDOW_WIDTH / 2,
-            y = c.WINDOW_HEIGHT / 2,
-            font_size = 20,
-            anchor_x = 'center',
-            anchor_y = 'center'
-        )
-
-        #TODO: Change to text objects, same in start_screen
-        arcade.draw_text(
-            "Press 'Q' to quit",
-            font_name="Edit Undo BRK",
-            x = c.WINDOW_WIDTH / 2,
-            y = (c.WINDOW_HEIGHT / 2)-30,
-            font_size = 20,
-            anchor_x = 'center',
-            anchor_y = 'center'
-        )
-
-        arcade.draw_text(
-            "Press 'S' for stats",
-            font_name="Edit Undo BRK",
-            x=c.WINDOW_WIDTH / 2,
-            y=(c.WINDOW_HEIGHT / 2) - 60,
-            font_size=20,
-            anchor_x='center',
-            anchor_y='center'
-        )
+        self.game_over_text.draw()
+        self.score_text.draw()
+        self.play_again_text.draw()
+        self.quit_text.draw()
+        self.stats_text.draw()
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
         '''

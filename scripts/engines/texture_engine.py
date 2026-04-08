@@ -32,8 +32,37 @@ class TextureEngine():
         wolf_sheet = arcade.load_spritesheet("sprites/wolf_sheet.png")
         self.wolf = drowning_sheet.get_texture_grid(size = (30, 30), columns=9, count=9)
 
+        wolf_sheet = arcade.load_spritesheet("sprites/wolf_sheet.png")
+        self.wolf = drowning_sheet.get_texture_grid(size = (30, 30), columns=9, count=9)
+
+        # Trees
+        self.tree1 = "sprites/tree1.png"
+        self.tree2 = "sprites/tree2.png"
+        self.tree3 = "sprites/tree3.png"
+
+        self.tree1_left_end = "sprites/tree1_left_end.png"
+        self.tree2_left_end = "sprites/tree2_left_end.png"
+        self.tree3_left_end = "sprites/tree3_left_end.png"
+
+        self.tree1_right_end = "sprites/tree1_right_end.png"
+        self.tree2_right_end = "sprites/tree2_right_end.png"
+        self.tree3_right_end = "sprites/tree3_right_end.png"
+
+        self.tree1_no_bush = "sprites/tree1_no_bush.png"
+        self.tree2_no_bush = "sprites/tree2_no_bush.png"
+        self.tree3_no_bush = "sprites/tree3_no_bush.png"
+
+        # Logs
+        self.logs = ["sprites/water_log_left_end.png",
+                     "sprites/water_log_connector.png",
+                     "sprites/water_log_right_end.png"]
+
         # Create the grid
-        self.grid = self.create_grid()
+        #self.grid = self.create_grid()
+
+        # Wolf
+        wolf_sheet = arcade.load_spritesheet("sprites/wolf_sheet.png")
+        self.wolf = wolf_sheet.get_texture_grid(size = (30, 30), columns=11, count=11)
 
     def add_player(self, player):
 
@@ -81,8 +110,111 @@ class TextureEngine():
                 grid.append(cell)
 
         return grid
+    
+    def get_trees(self, num_trees, right):
 
-    def draw_all_grassy_and_cars(self):
+        trees = []
+
+        bush_start_chance = 0.5
+        end_bush_chance = 0.3
+
+        if not right:
+            in_bush = random.choice([True, False])
+        else:
+            in_bush = False
+
+        # For each tree
+        for i in range(num_trees):
+
+            # If there is currently no bush
+            if not in_bush:
+
+                # Attempt to start bushes
+                if (random.random() < bush_start_chance or not
+                    (right == False and i == num_trees - 1)):
+
+                    # Bushes right end
+                    tree_right_end = random.choices([self.tree1_right_end, 
+                                         self.tree2_right_end, 
+                                         self.tree3_right_end], 
+                                         weights = [1/3, 1/3, 1/3])[0]
+                    trees.append(tree_right_end)
+
+                    in_bush = True
+                
+                # Otherwise, append a tree with no bush
+                else:
+
+                    tree_no_bush = random.choices([self.tree1_no_bush, 
+                                       self.tree2_no_bush, 
+                                       self.tree3_no_bush], 
+                                       weights = [1/3, 1/3, 1/3])[0]
+                    trees.append(tree_no_bush)
+            
+            # Otherwise 
+            else:
+
+                # See if we should end the bush
+                if (random.random() < end_bush_chance or
+                    (right == False and i == num_trees - 1)):
+                    
+                    # Bushes left end
+                    tree_left_end = random.choices([self.tree1_left_end, 
+                                    self.tree2_left_end, 
+                                    self.tree3_left_end], 
+                                    weights = [1/3, 1/3, 1/3])[0]
+                    trees.append(tree_left_end)
+
+                    in_bush = False
+                
+                # Otherwise, continue bushes
+                else:
+
+                    tree = random.choices([self.tree1, 
+                               self.tree2, 
+                               self.tree3], 
+                               weights = [1/3, 1/3, 1/3])[0]
+                    trees.append(tree)
+
+        return trees
+    
+    def get_log(self, length):
+
+        logs = []
+
+        # For each cell
+        for i in range(length):
+
+            if i == 0:
+
+                logs.append(self.logs[0])
+
+            elif i == length - 1:
+
+                logs.append(self.logs[2])
+
+            else:
+
+                logs.append(self.logs[1])
+                
+        return logs
+
+    def draw_all_backgrounds(self):
+        '''
+        draw_all_backgrounds is a helper function that draws all
+        currently background rows of the world engine
+
+        param: 
+            self
+        returns:
+            nothing
+        '''
+
+        for index in reversed(self.world.loaded_indices):
+
+            self.world.backgrounds[index - self.world.loaded_indices[0]].draw()
+
+    def draw_all_obstacle(self):
         '''
         draw_all_rows is a helper function that draws all
         currently loaded rows of the world engine
@@ -94,9 +226,11 @@ class TextureEngine():
         '''
         for index in reversed(self.world.loaded_indices):
 
-            if (self.world.rows[index] == 'Grassy' or
+            if (self.world.rows[index] == 'Forest' or
                 self.world.rows[index] == 'Road' or
-                self.world.rows[index] == 'Victory'):
+                self.world.rows[index] == 'Bank' or
+                self.world.rows[index] == 'Victory' or
+                self.world.rows[index] == 'Pack'):
 
                 self.world.loaded[index - self.world.loaded_indices[0]].draw()
 
@@ -168,9 +302,9 @@ class TextureEngine():
             nothing
         '''
 
-        self.grid.draw()
+        self.draw_all_backgrounds()
         self.draw_all_rivers()
         self.draw_all_platforms()
         self.player.draw()
         self.draw_all_collectibles()
-        self.draw_all_grassy_and_cars()
+        self.draw_all_obstacle()

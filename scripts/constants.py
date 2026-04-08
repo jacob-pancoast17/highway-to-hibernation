@@ -13,9 +13,9 @@ WINDOW_HEIGHT = TILE_HEIGHT * ROW_COUNT
 TITLE = "SEEKER"
 
 # Generation details
-LEVEL_SIZE = 30 # Should be >= 15
-NUM_START_GRASSY_ROWS = 3 # How many grassy rows at the beginning?
-NUM_ENDING_GRASSY_ROWS = 5 # how many grassy rows at the end?
+LEVEL_SIZE = 100 # Should be >= 15
+NUM_START_FOREST_ROWS = 3 # How many grassy rows at the beginning?
+NUM_ENDING_FOREST_ROWS = 5 # how many grassy rows at the end?
 
 ## River
 MIN_LILYPADS_PER_RIVER = 3

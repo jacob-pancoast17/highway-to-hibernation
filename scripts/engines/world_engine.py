@@ -14,7 +14,7 @@ class WorldEngine():
     the world pseudo-randomly
     '''
 
-    def __init__(self, window, player):
+    def __init__(self, window, player, tex_eng):
         '''
         Constructor
         Sets a random seed for the perlin noise function and
@@ -33,7 +33,10 @@ class WorldEngine():
         self.rows = []
         self.generate_array()
 
+        self.tex_eng = tex_eng
+
         self.loaded_indices = []
+        self.backgrounds = []
         self.loaded = []
         self.platforms = []
         self.collectibles = []
@@ -44,6 +47,7 @@ class WorldEngine():
         self.speed = None
         self.sprites = None
         self.spawn = [None]
+        self.log_moving_left = random.choice([True, False])
 
     def generate_array(self):
         '''
@@ -58,47 +62,58 @@ class WorldEngine():
         '''
         # Make sure the first rows are always grass at the
         # beginning of the game
-        for i in range(c.NUM_START_GRASSY_ROWS):
-            self.rows.append('Grassy')
+        for i in range(c.NUM_START_FOREST_ROWS):
+            self.rows.append('Forest')
 
         # For each row... (excluding the first three which
         # should be grass
-        for i in range(c.LEVEL_SIZE - c.NUM_START_GRASSY_ROWS - c.NUM_ENDING_GRASSY_ROWS):
+        for i in range(c.LEVEL_SIZE - c.NUM_START_FOREST_ROWS - c.NUM_ENDING_FOREST_ROWS):
 
             # Offset the seed a bit depending on the iteration and
             # find the value on the perlin noise wave
-            x = self.seed + i * .3
+            x = self.seed + i * .2
             noise = pnoise1(x)
 
             # Depending on the noise function's value, set the
             # appropriate value based on the legend
-            if (noise > -1 and noise < -0.5):
+
+            # Gravel if the last row was a river
+            if (self.rows[-1] == "River_Logs" or
+                self.rows[-1] == "River_Lilypads"):
+
+                self.rows.append("Bank")
+
+            # River (lilypads)
+            elif (noise > -1 and noise < -0.5):
 
                 # River with lilypads
                 self.rows.append("River_Lilypads")
 
+            # River (with logs)
             elif(noise> -0.5 and noise < -0.1):
 
                 # River with logs
                 self.rows.append("River_Logs")
 
+            # Forest
             elif (noise > -0.1 and noise < 0.1):
 
-                # Grassy
-                self.rows.append("Grassy")
+                # Forest
+                self.rows.append("Forest")
 
+            # Wolfs
             elif (noise > 0.1 and
                 noise < 1):
 
-                # Road
-                self.rows.append("Road")
+                # Pack
+                self.rows.append("Pack")
 
             else:
                 print("ERROR GENERATING ARRAY IN WORLD_GEN.PY")
 
         # Make sure the first last rows are always grass at the
         # beginning of the game
-        for i in range(c.NUM_ENDING_GRASSY_ROWS):
+        for i in range(c.NUM_ENDING_FOREST_ROWS):
 
             self.rows.append('Victory')
 
@@ -115,6 +130,9 @@ class WorldEngine():
 
         for i in range(c.ROW_COUNT):
             self.loaded_indices.append(i)
+
+            background = self.generate_background(i)
+            self.backgrounds.append(background)
 
             bottom_row = self.generate_row(i)
             self.loaded.append(bottom_row)
@@ -141,12 +159,16 @@ class WorldEngine():
             nothing
         '''
         # Delete the first row
+        self.backgrounds.pop(0)
         self.loaded.pop(0)
         self.platforms.pop(0)
         self.collectibles.pop(0)
         self.loaded_indices.pop(0)
 
         # Generate a new row
+        new_background = self.generate_background(new_row_index)
+        self.backgrounds.append(new_background)
+
         new_row = self.generate_row(new_row_index)
         self.loaded.append(new_row)
 
@@ -165,6 +187,8 @@ class WorldEngine():
         # Move everything else down (iterate over rows - 1 because
         # we have 1 less row)
         for i in range(c.ROW_COUNT - 1):
+            self.backgrounds[i].move(change_x = 0,
+                                     change_y = -c.TILE_HEIGHT)
             self.loaded[i].move(change_x = 0,
                                 change_y = -c.TILE_HEIGHT)
             self.platforms[i][0].move(change_x = 0,
@@ -173,6 +197,49 @@ class WorldEngine():
                                 change_y = -c.TILE_HEIGHT)
         self.player.center_y -= c.VELOCITY_MULTIPLIER
         self.player.angle = 180
+
+    def generate_background(self, row):
+        '''
+        generate_background is a helper function that takes a row index 
+        and generates that row of backgrounds by calling a child generate 
+        function based on what type of row it should be, assigned by the
+        WorldGen's "rows" varaiable
+
+        param: 
+            self
+            row - the current row to be generated
+        returns:
+            a SpriteList object from child function
+        '''
+
+        if self.rows[row] == "Pack":
+
+            return self.generate_grass(row)
+
+        elif self.rows[row] == "Forest":
+
+            return self.generate_grass(row)
+
+        # Rivers don't need a background
+        elif (self.rows[row] == "River_Lilypads" or
+              self.rows[row] =="River_Logs"):
+
+            return arcade.SpriteList()
+        
+        elif (self.rows[row] == "Bank"):
+
+            return self.generate_bank(row)
+
+        elif self.rows[row] == "Victory":
+
+            return self.generate_grass(row)
+
+        else:
+
+            print("PROBLEM IN GENERATION.")
+            exit()
+
+
 
     def generate_row(self, row):
         '''
@@ -187,18 +254,22 @@ class WorldEngine():
         returns:
             a SpriteList object from child function
         '''
-        if self.rows[row] == "Road":
+        if self.rows[row] == "Pack":
 
-            return self.generate_cars(row)
+            return self.generate_wolves(row)
 
-        elif self.rows[row] == "Grassy":
+        elif self.rows[row] == "Forest":
 
-            return self.generate_grassy(row)
+            return self.generate_forest(row)
 
         elif (self.rows[row] == "River_Lilypads" or
               self.rows[row] =="River_Logs"):
 
             return self.generate_river(row)
+        
+        elif (self.rows[row] == "Bank"):
+
+            return arcade.SpriteList()
 
         elif self.rows[row] == "Victory":
 
@@ -222,7 +293,7 @@ class WorldEngine():
 
         elif self.rows[row] == 'River_Logs':
 
-            return self.generate_logs(row)
+            return self.generate_logs(row, self.log_moving_left)
 
         else:
 
@@ -240,18 +311,90 @@ class WorldEngine():
         returns:
             a SpriteList object from child function
         '''
-        if self.rows[row] == 'Grassy':
+        if self.rows[row] == 'Forest':
 
             return self.generate_honey(row)
 
         else:
 
             return arcade.SpriteList()
-
-    def generate_cars(self, row):
+        
+    def generate_grass(self, row):
         '''
-        generate_cars takes a row and generates it randomly based on
-        the "cars" quality -- moving objects across the screen
+        generate_grass takes a row and generates the grass background
+        for it
+
+        param:
+            self
+            row - the row index to be drawn at
+        returns:
+            a spritelist of grass objects
+        '''
+
+        grass = arcade.SpriteList()
+
+        for i in range(c.COLUMN_COUNT):
+
+            grass_texture = random.choices(
+                    ['sprites/grass_1.png',
+                    'sprites/grass_2.png',
+                    'sprites/grass_3.png',
+                    'sprites/flowers_1.png',
+                    'sprites/flowers_2.png',
+                    'sprites/flowers_3.png'],
+                    weights = [0.22, 0.22, 0.22,
+                               0.11, 0.11, 0.11])[0]
+            
+            cell = arcade.Sprite(grass_texture)
+            
+            # Set the cell's center based on grid position
+            cell.center_x = c.TILE_WIDTH * i + c.TILE_WIDTH // 2
+            cell.center_y = c.TILE_HEIGHT * (row - self.loaded_indices[0]) + c.TILE_HEIGHT // 2
+
+            grass.append(cell)
+        
+        return grass
+    
+    def generate_bank(self, row):
+        '''
+        generate_bank takes a row and generates the bank background
+        for it
+
+        param:
+            self
+            row - the row index to be drawn at
+        returns:
+            a spritelist of gravel objects
+        '''
+
+        bank = arcade.SpriteList()
+
+        for i in range(c.COLUMN_COUNT):            
+                
+            bank_texture = random.choices(["sprites/bank_1.png",
+                                           "sprites/bank_2.png",
+                                           "sprites/bank_3.png"],
+                                           weights = [
+                                               1/3,
+                                               1/3,
+                                               1/3
+                                           ])[0]
+
+            cell = arcade.Sprite(bank_texture)
+
+            # Set the cell's center based on grid position
+            cell.center_x = c.TILE_WIDTH * i + c.TILE_WIDTH // 2
+            cell.center_y = c.TILE_HEIGHT * (row - self.loaded_indices[0]) + c.TILE_HEIGHT // 2
+
+            bank.append(cell)
+        
+        return bank
+
+
+    def generate_wolves(self, row):
+        '''
+        generate_wolves takes a row and generates it randomly based on
+        the "wolves" quality -- moving objects across the screen
 
         param:
             self
@@ -275,19 +418,20 @@ class WorldEngine():
         self.speed = random.uniform(c.LOWER_OBSTACLE_SPEED, c.UPPER_OBSTACLE_SPEED)
 
         if not moving_left:
-            hostiles.append(Hostile("sprites/rock1.png", 0, row - self.loaded_indices[0],
-                                    self.speed, static=False, left=False))
+            hostiles.append(Hostile(self.tex_eng.wolf[0], 0, row - self.loaded_indices[0],
+                                    self.tex_eng, self.speed, static=False, left=False))
         else:
-            hostiles.append(Hostile("sprites/rock1.png", 14, row - self.loaded_indices[0],
-                                    self.speed, static=False, left=True))
+            hostiles.append(Hostile(self.tex_eng.wolf[0], 14, row - self.loaded_indices[0],
+                                    self.tex_eng, self.speed, static=False, left=True))
+            
 
         self.current_walk_coords = walkable[-1]
 
         return hostiles
 
-    def update_cars(self, row):
+    def update_wolves(self, row):
         '''
-        update_cars takes a row and updates the cars in that row by trying
+        update_wolves takes a row and updates the wolves in that row by trying
         to move them and then trying to spawn new ones if we are at the next
         spawn check
 
@@ -300,19 +444,19 @@ class WorldEngine():
 
         hostiles = arcade.SpriteList()
 
-        # For each car in the row
-        for car in self.loaded[row - self.loaded_indices[0]]:
+        # For each Wolf in the row
+        for wolf in self.loaded[row - self.loaded_indices[0]]:
 
             # If it's still on screen, keep it
-            if not car.is_off_screen():
-                hostiles.append(car)
+            if not wolf.is_off_screen():
+                hostiles.append(wolf)
 
         index = 0
         while len(hostiles) == 0:
 
-            car = self.loaded[row - self.loaded_indices[0]][index]
-            if car.is_off_screen():
-                hostiles.append(car)
+            wolf = self.loaded[row - self.loaded_indices[0]][index]
+            if wolf.is_off_screen():
+                hostiles.append(wolf)
             else:
                 index += 1
 
@@ -324,7 +468,7 @@ class WorldEngine():
             return
 
         # First we need to determine  when the last in line
-        # arrives (we don't want cars lapping each other)
+        # arrives (we don't want wolves lapping each other)
         last_arrival = hostiles[-1]
 
         # Arrival time if going right
@@ -335,10 +479,10 @@ class WorldEngine():
             last_arrival_time = last_arrival.x * last_arrival.speed
 
         # Now that we know when the next one arrives, let's
-        # pick a speed that won't cause this new car to lap
-        # the last arriving of the previous cars
+        # pick a speed that won't cause this new wolf to lap
+        # the last arriving of the previous wolves
         next_avail_arrival_time = last_arrival_time + last_arrival.speed
-        # Max speed that would place the car arriving at the next available
+        # Max speed that would place the wolf arriving at the next available
         min_speed = next_avail_arrival_time / c.COLUMN_COUNT
 
         # Truncate that so we don't get any turtles
@@ -352,20 +496,20 @@ class WorldEngine():
             new_speed = c.UPPER_OBSTACLE_SPEED
 
         if last_arrival.is_moving_left:
-            hostiles.append(Hostile("sprites/rock1.png", 14, row - self.loaded_indices[0],
-                         speed = new_speed, static=False, left=True))
+            hostiles.append(Hostile(self.tex_eng.wolf[0], 14, row - self.loaded_indices[0],
+                         self.tex_eng, speed = new_speed, static=False, left=True))
         else:
-            hostiles.append(Hostile("sprites/rock1.png", 0, row - self.loaded_indices[0],
-                         speed = new_speed, static=False, left=False))
+            hostiles.append(Hostile(self.tex_eng.wolf[0], 0, row - self.loaded_indices[0],
+                         self.tex_eng, speed = new_speed, static=False, left=False))
 
         # Replace currently loaded row with the updated one
         self.loaded[row - self.loaded_indices[0]] = hostiles
 
 
-    def generate_grassy(self, row):
+    def generate_forest(self, row):
         '''
-        generate_grassy takes a row and generates it randomly based on
-        the "grassy" quality -- surrounded by trees, with randomly placed
+        generate_forest takes a row and generates it randomly based on
+        the "Forest" quality -- surrounded by trees, with randomly placed
         rocks
 
         param:
@@ -379,35 +523,35 @@ class WorldEngine():
         sprites = arcade.SpriteList()
 
         # Generate a random number of trees
-        trees_left = random.randint(1,4)
-        trees_right = random.randint(1,4)
+        num_trees_left = random.randint(1,4)
+        num_trees_right = random.randint(1,4)
 
         walkable = self.drunkards_walk(self.current_walk_coords[0],
                                        self.current_walk_coords[1],
-                                       trees_left,
-                                       c.COLUMN_COUNT - trees_right)
+                                       num_trees_left,
+                                       c.COLUMN_COUNT - num_trees_right)
         walkable = sorted(walkable, key=lambda x: x[1])
 
         last_rock = None
+
         # Append trees to the left
-        for i in range(trees_left):
+        tree_textures_left = self.tex_eng.get_trees(num_trees_left, False)
 
-            tree_texture = random.choices(
-                    ['sprites/tree1_no_bush.png',
-                    'sprites/tree2_no_bush.png',
-                    'sprites/tree3_no_bush.png'],
-                    weights = [0.33, 0.34, 0.33])
+        for i in range(num_trees_left):
 
-            sprites.append(Obstacle(tree_texture[0], i, row=row - self.loaded_indices[0]))
+            tree_texture = tree_textures_left[i]
 
-            sprites[-1].scale = 0.95
-            sprites[-1].center_y = (c.TILE_HEIGHT * (row - self.loaded_indices[0])
-                                    + c.TILE_HEIGHT * 0.95)
+            tree = Obstacle(tree_texture, i, row=row - self.loaded_indices[0])
+
+            tree.center_y = (c.TILE_HEIGHT * (row - self.loaded_indices[0])
+                                    + c.TILE_HEIGHT)
+            
+            sprites.append(tree)
 
         # Append rocks
-        for i in range(c.COLUMN_COUNT - (trees_left + trees_right)):
+        for i in range(c.COLUMN_COUNT - (num_trees_left + num_trees_right)):
 
-            x = i + trees_left
+            x = i + num_trees_left
 
             # We should not spawn in a rock
             if row == c.STARTING_Y and x == c.STARTING_X:
@@ -439,20 +583,20 @@ class WorldEngine():
                         sprites.append(last_rock)
 
         # Trees on the right
-        for i in range(trees_right):
+        tree_textures_right = self.tex_eng.get_trees(num_trees_right, True)
 
-            x = c.COLUMN_COUNT - trees_right + i
+        for i in range(num_trees_right):
+            
+            x = c.COLUMN_COUNT - num_trees_right + i
 
-            tree_texture = random.choices(
-                    ['sprites/tree1_no_bush.png',
-                    'sprites/tree2_no_bush.png',
-                    'sprites/tree3_no_bush.png'],
-                    weights = [0.33, 0.34, 0.33])
-            sprites.append(
-                    Obstacle(tree_texture[0], x, row - self.loaded_indices[0]))
-            sprites[-1].scale = 0.95
-            sprites[-1].center_y = (c.TILE_HEIGHT * (row - self.loaded_indices[0]) +
-                                    c.TILE_HEIGHT * 0.95)
+            tree_texture = tree_textures_right[i]
+
+            tree = Obstacle(tree_texture, x, row=row - self.loaded_indices[0])
+
+            tree.center_y = (c.TILE_HEIGHT * (row - self.loaded_indices[0])
+                                    + c.TILE_HEIGHT)
+            
+            sprites.append(tree)
 
 
         # Update walk
@@ -520,7 +664,7 @@ class WorldEngine():
         for i in range(c.COLUMN_COUNT):
 
             river.append(
-                Hostile("sprites/water.png", i, row - self.loaded_indices[0]))
+                Hostile("sprites/water.png", i, row - self.loaded_indices[0], self.tex_eng))
 
         return river
 
@@ -549,8 +693,6 @@ class WorldEngine():
             lilypads.append(Platform('sprites/lilypad.png',
                                             walkable[i][0],
                                             walkable[i][1]))
-            print("Lilypad on")
-            print(walkable[i][0], walkable[i][1])
 
         for i in range(4, c.COLUMN_COUNT - 4):
 
@@ -573,7 +715,7 @@ class WorldEngine():
 
         return lilypads
 
-    def generate_logs(self, row):
+    def generate_logs(self, row, moving_left):
         '''
         generate_logs takes a row and generates a line of water that 
         kills you with logs that move across the screen that you can 
@@ -582,6 +724,7 @@ class WorldEngine():
         param:
             self
             row
+            log_moving_left
         returns:
             a SpriteList object containing all of the log sprites for
                 that row
@@ -591,7 +734,6 @@ class WorldEngine():
         walkable = sorted(walkable, key=lambda x: x[1])
 
         log_cells = arcade.SpriteList()
-        moving_left = random.choice([True, False])
 
         length = random.randint(c.SMALLEST_LOG,c.BIGGEST_LOG)
 
@@ -599,7 +741,9 @@ class WorldEngine():
 
             if moving_left:
 
-                log_cells.append(Platform('sprites/water_log.png',
+                log_textures = self.tex_eng.get_log(length)
+
+                log_cells.append(Platform(log_textures[length - 1 - i],
                                     15 - i,
                                     row= row - self.loaded_indices[0],
                                     static = False,
@@ -608,7 +752,9 @@ class WorldEngine():
 
             else:
 
-                log_cells.append(Platform('sprites/water_log.png',
+                log_textures = self.tex_eng.get_log(length)
+
+                log_cells.append(Platform(log_textures[i],
                                     i,
                                     row= row - self.loaded_indices[0],
                                     static = False,
@@ -621,13 +767,16 @@ class WorldEngine():
         # Update walk
         self.current_walk_coords = walkable[-1]
 
+        # Change log direction for next row
+        self.log_moving_left = not moving_left
+
         return log_cells
 
     def generate_victory(self, row):
         '''
         generate_victory takes a row and generates it randomly based on
         the "victory" quality -- surrounded by trees, with randomly placed
-        rocks (similar to grassy). If the row is the last one in the game,
+        rocks (similar to Forest). If the row is the last one in the game,
         place the victory cell, the "den"
 
         param:
@@ -767,18 +916,22 @@ class WorldEngine():
 
         # Randomly choose how many tiles the log is
         log_size = random.randint(c.SMALLEST_LOG, c.BIGGEST_LOG)
+
         for i in range(log_size):
             if moving_left:
+                log_textures = self.tex_eng.get_log(log_size)
                 # if there is a log on screen, copy the velocity for the next log spawned
                 new_row.append(
-                    Platform("sprites/water_log.png", c.COLUMN_COUNT - 1 + i,
+                    Platform(log_textures[i], c.COLUMN_COUNT - 1 + i,
                                 row - self.loaded_indices[0],
                                 speed = self.platforms[(row - self.loaded_indices[0])-1][1],
                                 static=False, left=True))
             else:
+                log_textures = self.tex_eng.get_log(log_size)
+                log_textures = list(reversed(log_textures))
                 new_row.append(
-                    Platform("sprites/water_log.png", 0 - i, row - self.loaded_indices[0],
-                             speed = self.platforms[(row - self.loaded_indices[0])-1][1],
+                    Platform(log_textures[i], 0 - i, row - self.loaded_indices[0],
+                             speed = self.platforms[row - self.loaded_indices[0]][1],
                              static=False, left=False))
         # Replace currently loaded row with the updated one
         self.platforms[row - self.loaded_indices[0]][0] = new_row
@@ -865,25 +1018,25 @@ class WorldEngine():
         # [Obstacle, None, None, None, Obstacle] for example
         return return_list
 
-    def get_car_rows(self):
+    def get_wolf_rows(self):
         '''
-        get_car_rows returns all the indices of current car rows
+        get_wolf_rows returns all the indices of current wolf rows
 
         param:
             self
         returns:
-            A list of all car row indices
+            A list of all wolf row indices
         '''
 
-        cars = []
+        wolves = []
 
         for i in self.loaded_indices:
 
-            if self.rows[i] == "Road":
+            if self.rows[i] == "Pack":
 
-                cars.append(i)
+                wolves.append(i)
 
-        return cars
+        return wolves
 
     def get_log_rows(self):
         '''

@@ -48,6 +48,8 @@ class StartScreen(arcade.View):
         # Initialize button and define on-click event
         @play_button.event("on_click")
         def on_click_play(event):
+            c.LEVEL_SIZE = 30
+            print(c.LEVEL_SIZE)
             print("Awesome!")
             GameView.levels = "infinite"
             game_view = GameView()
@@ -62,6 +64,15 @@ class StartScreen(arcade.View):
             child = play_button
         )
 
+        self.stats_text = arcade.Text(
+            "Press 'S' for stats",
+            x=c.WINDOW_WIDTH / 2,
+            y=c.WINDOW_HEIGHT / 5,
+            font_size = 17,
+            font_name="Edit Undo BRK",
+            anchor_x = 'center',
+            anchor_y = 'center'
+        )
     def on_show_view(self):
         '''
         on_show_view defines events that happen when switching to the start screen view
@@ -108,14 +119,7 @@ class StartScreen(arcade.View):
         self.uimanager.draw()
 
         # draw stats window
-        arcade.draw_text(
-            "Press S for stats",
-            x=c.WINDOW_WIDTH / 2,
-            y=c.WINDOW_HEIGHT / 5,
-            font_name="Edit Undo BRK",
-            font_size=18,
-            anchor_x="center"
-        )
+        self.stats_text.draw()
 
     def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.S:

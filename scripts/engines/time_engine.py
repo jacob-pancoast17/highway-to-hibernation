@@ -5,7 +5,7 @@ import random
 class TimeEngine():
     '''
     The TimeEngine class is the engine that manages world time
-    and spawning behavior for certain objects including "cars"
+    and spawning behavior for certain objects including "wolvess"
     and logs
     '''
 
@@ -92,15 +92,17 @@ class TimeEngine():
         '''
 
         # Get the current hostile rows
-        curr_car_rows = self.world.get_car_rows()
-        #print(f"curr car rows: {curr_car_rows}")
+        curr_wolf_rows = self.world.get_wolf_rows()
+        #print(f"curr wolf rows: {curr_wolf_rows}")
 
-        # Try to move each car in each row
-        for row in curr_car_rows:
+        # Try to move each wolf in each row
+        for row in curr_wolf_rows:
 
-            for car in self.world.loaded[row - self.world.loaded_indices[0]]:
+            for wolf in self.world.loaded[row - self.world.loaded_indices[0]]:
 
-                car.try_move(delta_time, self.world.player)
+                wolf.run(delta_time)
+
+                wolf.try_move(delta_time, self.world.player)
 
     def spawn_hostiles(self):
         '''
@@ -115,13 +117,14 @@ class TimeEngine():
         self.next_spawn_check += c.TIME_BETWEEN_SPAWNS
 
         # Get the current hostile rows
-        curr_car_rows = self.world.get_car_rows()
+        curr_wolf_rows = self.world.get_wolf_rows()
 
         # Then for each row update the board using the world
         # engine
-        for row in curr_car_rows:
+        for row in curr_wolf_rows:
 
-            self.world.update_cars(row)
+            self.world.update_wolves(row)
+            pass
 
     def spawn_platforms(self):
             '''
