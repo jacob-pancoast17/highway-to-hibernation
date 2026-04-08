@@ -48,6 +48,8 @@ class StartScreen(arcade.View):
         # Initialize button and define on-click event
         @play_button.event("on_click")
         def on_click_play(event):
+            c.LEVEL_SIZE = 30
+            print(c.LEVEL_SIZE)
             print("Awesome!")
             game_view = GameView()
             self.window.show_view(game_view)
