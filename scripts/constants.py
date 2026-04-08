@@ -8,7 +8,6 @@ COLUMN_COUNT = 15
 TILE_WIDTH = 30
 TILE_HEIGHT = 30
 TILE_SIZE = 30
-MARGIN = 0
 WINDOW_WIDTH = TILE_WIDTH * COLUMN_COUNT
 WINDOW_HEIGHT = TILE_HEIGHT * ROW_COUNT
 TITLE = "SEEKER"
@@ -56,3 +55,14 @@ victory = arcade.csscolor.GOLD
 
 # Fonts
 arcade.load_font("fonts/edit-undo.brk.ttf")
+
+# Sounds
+ADVENTURE_MUSIC = arcade.load_sound("sfx/bear_adventure.mp3")
+WALK_SFX = arcade.load_sound("sfx/footstep.mp3")
+DEATH_SFX = arcade.load_sound("sfx/death.mp3")
+HUNNY_SFX = arcade.load_sound("sfx/hunny_pickup.mp3")
+VICTORY_JINGLE = arcade.load_sound("sfx/victory.wav")
+GAME_OVER_JINGLE = arcade.load_sound("sfx/game_over.wav")
+
+MAIN_THEME = arcade.play_sound(ADVENTURE_MUSIC)
+MAIN_THEME.pause()

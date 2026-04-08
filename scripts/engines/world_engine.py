@@ -27,6 +27,7 @@ class WorldEngine():
         '''
         # Set a random seed for the perlin noise function
         self.seed = random.random() * 1000
+        print(self.seed)
         random.seed(self.seed)
 
         self.rows = []
@@ -135,11 +136,9 @@ class WorldEngine():
             bottom_row = self.generate_row(i)
             self.loaded.append(bottom_row)
 
-            # Randomly pick a velocity to add to list
+            # Randomly pick a velocity to add to list for initial screen generation
             rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST],
                                         weights = [1/3, 1/3, 1/3])
-            #print(rand_speed)
-
             middle_row = self.generate_platforms(i)
             self.platforms.append([middle_row, rand_speed[0]])
 
@@ -172,10 +171,12 @@ class WorldEngine():
         new_row = self.generate_row(new_row_index)
         self.loaded.append(new_row)
 
+        # Randomly pick a velocity for each row in the updated screen
         rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST],
                                     weights = [1/3, 1/3, 1/3])
         new_platform  = self.generate_platforms(new_row_index)
         self.platforms.append([new_platform, rand_speed[0]])
+
 
         new_collectible = self.generate_collectible(new_row_index)
         self.collectibles.append(new_collectible)
@@ -402,6 +403,11 @@ class WorldEngine():
                 that row
         '''
 
+        walkable = self.drunkards_walk(self.current_walk_coords[0],
+                                       self.current_walk_coords[1],
+                                       4, c.COLUMN_COUNT - 4)
+        walkable = sorted(walkable, key=lambda x: x[1])
+
         hostiles = arcade.SpriteList()
 
         # For each tile, just generate a hostile object that kills you
@@ -416,6 +422,9 @@ class WorldEngine():
         else:
             hostiles.append(Hostile(self.tex_eng.wolf[0], 14, row - self.loaded_indices[0],
                                     self.tex_eng, self.speed, static=False, left=True))
+            
+
+        self.current_walk_coords = walkable[-1]
 
         return hostiles
 
@@ -613,7 +622,6 @@ class WorldEngine():
         if random.random() < .25:
 
             spawnable_spots = list(range(15))
-            #print(row - self.loaded_indices[0])
             cells = self.loaded[row - self.loaded_indices[0]]
 
             # Remove not spawnable spots
@@ -674,22 +682,32 @@ class WorldEngine():
 
         lilypads = arcade.SpriteList()
 
-        walkable = self.drunkards_walk(self.current_walk_coords[0], row, 4, c.COLUMN_COUNT - 4)
+        walkable = self.drunkards_walk(self.current_walk_coords[0], row - self.loaded_indices[0],
+                                       4, c.COLUMN_COUNT - 4)
         walkable = sorted(walkable, key=lambda x: x[1])
 
         # Append all except the last one
         for i in range(len(walkable) - 1):
 
-            lilypads.append(Obstacle('sprites/lilypad.png',
+            lilypads.append(Platform('sprites/lilypad.png',
                                             walkable[i][0],
                                             walkable[i][1]))
 
-        for i in range(c.COLUMN_COUNT):
+        for i in range(4, c.COLUMN_COUNT - 4):
 
-            if ((i, row) not in walkable and
-                random.random() < .2):
+            if ((i, row) not in walkable and random.random() < .2):
 
-                lilypads.append(Obstacle('sprites/lilypad.png', i, row - self.loaded_indices[0]))
+                lilypad_texture = random.choices(
+                    ['sprites/lilypad.png',
+                    'sprites/lilypad-with-frog.png'],
+                    weights = [0.9, 0.1])
+
+                for lilypad in lilypads:
+
+                    if lilypad.x is not i:
+
+                        lilypads.append(Platform(lilypad_texture[0], i,
+                                                row - self.loaded_indices[0]))
 
         # Update walk
         self.current_walk_coords = walkable[-1]
@@ -710,13 +728,13 @@ class WorldEngine():
                 that row
         '''
 
+        walkable = self.drunkards_walk(self.current_walk_coords[0], row, 4, c.COLUMN_COUNT - 4)
+        walkable = sorted(walkable, key=lambda x: x[1])
+
         log_cells = arcade.SpriteList()
         moving_left = random.choice([True, False])
 
         length = random.randint(c.SMALLEST_LOG,c.BIGGEST_LOG)
-
-        rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST],
-                                        weights = [1/3, 1/3, 1/3])
 
         for i in range(length):
 
@@ -728,7 +746,7 @@ class WorldEngine():
                                     15 - i,
                                     row= row - self.loaded_indices[0],
                                     static = False,
-                                    speed= rand_speed[0],
+                                    speed= self.platforms[(row - self.loaded_indices[0])-1][1],
                                     left=True))
 
             else:
@@ -739,8 +757,14 @@ class WorldEngine():
                                     i,
                                     row= row - self.loaded_indices[0],
                                     static = False,
-                                    speed= rand_speed[0],
+                                    speed= self.platforms[(row - self.loaded_indices[0])-1][1],
                                     left=False))
+
+        for log in log_cells:
+            print(f"{log} x: {log.x}, y: {log.y}")
+
+        # Update walk
+        self.current_walk_coords = walkable[-1]
 
         return log_cells
 
@@ -874,14 +898,14 @@ class WorldEngine():
         spawn = random.choices([True, False], weights=[50, 50])
 
         if self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_SLOW:
-            spawn = random.choices([True, False], weights=[70, 30])
-            #print("WE GOT SLOW!")
+            spawn = random.choices([True, False], weights=[65, 35])
+            # print("WE GOT SLOW!")
         elif self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_MED:
-            spawn = random.choices([True, False], weights=[60, 40])
-            #print("WE GOT MED")
+            spawn = random.choices([True, False], weights=[70, 30])
+            # print("WE GOT MED!")
         elif self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_FAST:
-            spawn = random.choices([True, False], weights=[50, 50])
-            #print("WE GOT FAST")
+            spawn = random.choices([True, False], weights=[90, 10])
+            # print("WE GOT FAST!")
 
         if not spawn[0]:
             return
@@ -896,7 +920,7 @@ class WorldEngine():
                 new_row.append(
                     Platform(log_textures[i], c.COLUMN_COUNT - 1 + i,
                                 row - self.loaded_indices[0],
-                                speed = self.platforms[row - self.loaded_indices[0]][1],
+                                speed = self.platforms[(row - self.loaded_indices[0])-1][1],
                                 static=False, left=True))
             else:
                 log_textures = self.tex_eng.get_log(log_size)
@@ -1053,7 +1077,7 @@ class WorldEngine():
                 path.append((x, y))
                 return path
 
-            elif a[0] == 'right' and x != right_bound:
+            elif a[0] == 'right' and x < right_bound:
 
                 x += 1
 
@@ -1061,7 +1085,7 @@ class WorldEngine():
 
                     path.append((x, y))
 
-            elif a[0] == 'left' and x != left_bound:
+            elif a[0] == 'left' and x > left_bound:
 
                 x += -1
 

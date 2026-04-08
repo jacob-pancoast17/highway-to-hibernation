@@ -8,7 +8,6 @@ from scripts.engines.texture_engine import TextureEngine
 from scripts.engines.time_engine import TimeEngine
 from scripts.engines.world_engine import WorldEngine
 from scripts.stats_manager import record_score
-import time
 
 #from pause_screen import Pause
 
@@ -49,6 +48,10 @@ class GameView(arcade.View):
         self.current_top_of_screen = None
 
         self.farthest_y = None
+
+        self.walk_playback = None
+        self.hunny_pickup = None
+        self.achieve_game_over = None
 
         self.setup()
 
@@ -98,6 +101,11 @@ class GameView(arcade.View):
         self.current_bottom_of_screen = 0
         self.current_top_of_screen = c.ROW_COUNT - 1
 
+        # Music
+        c.MAIN_THEME = arcade.play_sound(c.ADVENTURE_MUSIC)
+        c.MAIN_THEME.loop = True
+        c.MAIN_THEME.volume = 0.4
+
     def on_draw(self):
         """
         Render the screen every frame
@@ -113,24 +121,28 @@ class GameView(arcade.View):
         '''
         Happens every frame
         '''
+
+        c.MAIN_THEME.play()
+
         if not self.time_stopped:
 
             self.time_engine.pass_time(delta_time)
 
         if self.player.dead:
-                
-                self.time_stopped = True
-                self.controls_removed = True
-                self.player.angle = 180
-                self.death_timer += delta_time
-                self.play_death_animation(delta_time)
-                
-                if self.death_timer > c.DEATH_ANIMATION_LENGTH:
-                
-                    record_score(self.player.score)
-                    self.window.show_view(GameOver(self))
-                
-                return
+
+            self.time_stopped = True
+            self.controls_removed = True
+            self.player.angle = 180
+            self.death_timer += delta_time
+            self.play_death_animation(delta_time)
+
+            if self.death_timer > c.DEATH_ANIMATION_LENGTH:
+
+                record_score(self.player.score)
+                self.window.show_view(GameOver(self.player.score, self))
+                self.achieve_game_over = arcade.play_sound(c.GAME_OVER_JINGLE)
+
+            return
 
         # checks for collision between player and collectibles
 
@@ -143,6 +155,7 @@ class GameView(arcade.View):
 
                 self.world.collectibles[self.world.collectibles.index(hunny)] = arcade.SpriteList()
                 self.player.score += 300
+                self.hunny_pickup = arcade.play_sound(c.HUNNY_SFX)
 
             self.score_text.text = f"Score: {self.player.score}"
 
@@ -166,7 +179,10 @@ class GameView(arcade.View):
             did_move = self.player.try_move(symbol, self.world, self.window)
 
             if did_move:
-                #print("made it!")
+                # print("made it!")
+                # play movement sfx
+                self.walk_playback = arcade.play_sound(c.WALK_SFX)
+
                 if self.player.y > self.farthest_y:
                     self.farthest_y = self.player.y
                     self.player.score += 100
@@ -182,6 +198,7 @@ class GameView(arcade.View):
         elif symbol == arcade.key.ESCAPE:
             # Pass in the current game state into Pause()
             self.window.show_view(Pause(self))
+            c.MAIN_THEME.pause()
 
     def move_screen_up(self):
         '''
@@ -194,5 +211,15 @@ class GameView(arcade.View):
         self.current_top_of_screen += 1
 
     def play_death_animation(self, delta_time):
+        '''
+        play_death_aninmation runs the death animation when the player dies
 
+        param:
+            self
+            delta_time
+        returns:
+            nothing
+        '''
+
+        arcade.stop_sound(c.MAIN_THEME)
         self.player.die(delta_time)

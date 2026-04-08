@@ -42,6 +42,8 @@ class Hostile(arcade.Sprite):
         self.run_speed = speed * 0.2
         self.next_run_frame = self.run_speed
 
+        self.death_sound = None
+
         # Set movement values for moving hostiles
         if not self.static:
             self.timer = 0
@@ -60,7 +62,6 @@ class Hostile(arcade.Sprite):
         returns:
             nothing
         '''
-        #TODO: Delete object after moving off screen
 
         # Don't move static objects
         if self.static:
@@ -89,13 +90,14 @@ class Hostile(arcade.Sprite):
                 self.move_back()
                 player.dead = True
                 player.death = 'Mauled'
+                self.death_sound = arcade.play_sound(c.DEATH_SFX)
 
     def move_back(self):
         '''
         move_back takes a key and moves the hostile back
         '''
 
-        if self.is_moving_left == True:
+        if self.is_moving_left is True:
 
             self.x += 1
             self.center_x += c.VELOCITY_MULTIPLIER
