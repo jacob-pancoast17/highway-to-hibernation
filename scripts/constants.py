@@ -66,3 +66,6 @@ GAME_OVER_JINGLE = arcade.load_sound("sfx/game_over.wav")
 
 MAIN_THEME = arcade.play_sound(ADVENTURE_MUSIC)
 MAIN_THEME.pause()
+
+# Settings
+BLINK_RATE = 0.5
