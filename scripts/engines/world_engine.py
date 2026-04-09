@@ -703,7 +703,7 @@ class WorldEngine():
 
                 lilypad_texture = random.choices(
                     ['sprites/lilypad.png',
-                    'sprites/lilypad-with-frog.png'],
+                    'sprites/pink frog.png'],
                     weights = [0.9, 0.1])
 
                 for lilypad in lilypads:
