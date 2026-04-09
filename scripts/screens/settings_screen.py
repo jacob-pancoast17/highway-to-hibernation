@@ -13,9 +13,7 @@ class Settings(arcade.View):
         self.next_blink = c.BLINK_RATE
         self.blinked = False
 
-        self.space_between_options = 50
-        self.space_between_volume_bars = 15
-        self.num_volume_bars = 10
+        self.num_volume_bars = 10 
 
         # Change these if adding more options
         self.options = ['Volume',
@@ -24,8 +22,6 @@ class Settings(arcade.View):
                         'Debug Mode']
         self.num_options = len(self.options)
         self.currently_selected = self.options[0]
-        self.options_coords = [(c.WINDOW_WIDTH * 5 / 16, c.WINDOW_HEIGHT * 0.70)]
-        self.options_coords = self.generate_coords(self.num_options, self.options_coords[0])
 
         self.window_options = ['Windowed',
                                'Borderless Windowed',
@@ -33,7 +29,18 @@ class Settings(arcade.View):
         
         self.resolution_options = [450,
                                    900]
+        
+        self.size_dependent_constructor()
 
+    def size_dependent_constructor(self):
+
+        print('constructing')
+
+        self.space_between_options = 50 * c.RESOLUTION_RATIO
+        self.space_between_volume_bars = 15 * c.RESOLUTION_RATIO
+
+        self.options_coords = [(c.WINDOW_WIDTH * 5 / 16, c.WINDOW_HEIGHT * 0.70)]
+        self.options_coords = self.generate_coords(self.num_options, self.options_coords[0])
 
     def on_show_view(self):
         self.window.default_camera.use()
@@ -122,6 +129,8 @@ class Settings(arcade.View):
                     c.RESOLUTION = self.resolution_options[-1]
                 else:
                     c.RESOLUTION = self.resolution_options[index]
+            
+                self.change_resolution()
 
             # For debug
             if (self.currently_selected == 'Debug Mode'):
@@ -159,6 +168,8 @@ class Settings(arcade.View):
                 else:
                     c.RESOLUTION = self.resolution_options[index]
 
+                self.change_resolution()
+
             # For debug
             if (self.currently_selected == 'Debug Mode'):
 
@@ -171,12 +182,14 @@ class Settings(arcade.View):
 
     def draw_settings(self):
 
+        print(f"font size: {40 * c.RESOLUTION_RATIO}")
+
         arcade.draw_text(
             "SETTINGS",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT * 0.82,
             font_name="Edit Undo BRK",
-            font_size=40,
+            font_size=40 * c.RESOLUTION_RATIO,
             anchor_x="center")
     
     def draw_volume(self):
@@ -193,7 +206,7 @@ class Settings(arcade.View):
 
                 align='right',
                 font_name="Edit Undo BRK",
-                font_size=30,
+                font_size=30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
                 anchor_y="center",
                 color = arcade.csscolor.BLACK)
@@ -219,7 +232,7 @@ class Settings(arcade.View):
 
                 align='right',
                 font_name="Edit Undo BRK",
-                font_size=30,
+                font_size=30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
                 anchor_y="center",
                 color = arcade.csscolor.WHITE)
@@ -231,8 +244,8 @@ class Settings(arcade.View):
             arcade.draw_rect_filled(
                     arcade.XYWH((self.options_coords[0][0] + (volume_title.content_width / 2) + 40 + (self.space_between_volume_bars * i)),
                     self.options_coords[0][1],
-                    10,
-                    30),
+                    10 * c.RESOLUTION_RATIO,
+                    30 * c.RESOLUTION_RATIO),
                     arcade.csscolor.WHITE
                 )
         
@@ -243,8 +256,8 @@ class Settings(arcade.View):
             arcade.draw_rect_filled(
                     arcade.XYWH((self.options_coords[0][0] + (volume_title.content_width / 2) + 40 + (self.space_between_volume_bars * x)),
                     self.options_coords[0][1],
-                    10,
-                    30),
+                    10 * c.RESOLUTION_RATIO,
+                    30 * c.RESOLUTION_RATIO),
                     arcade.csscolor.DIM_GRAY
                 )
             
@@ -262,7 +275,7 @@ class Settings(arcade.View):
 
                 align='right',
                 font_name="Edit Undo BRK",
-                font_size=30,
+                font_size=30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
                 anchor_y="center",
                 color = arcade.csscolor.BLACK)
@@ -286,7 +299,7 @@ class Settings(arcade.View):
 
                 align='right',
                 font_name="Edit Undo BRK",
-                font_size=30,
+                font_size=30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
                 anchor_y="center",
                 color = arcade.csscolor.WHITE)
@@ -303,7 +316,7 @@ class Settings(arcade.View):
 
                     align='right',
                     font_name="Edit Undo BRK",
-                    font_size=30,
+                    font_size=30 * c.RESOLUTION_RATIO,
                     anchor_x="center",
                     anchor_y="center",
                     color = arcade.csscolor.WHITE)
@@ -318,7 +331,7 @@ class Settings(arcade.View):
 
                     align='right',
                     font_name="Edit Undo BRK",
-                    font_size=30,
+                    font_size=30 * c.RESOLUTION_RATIO,
                     anchor_x="center",
                     anchor_y="center",
                     color = arcade.csscolor.WHITE)
@@ -333,8 +346,8 @@ class Settings(arcade.View):
                     align='center',
                     font_name="Edit Undo BRK",
                     multiline=True,
-                    width = 300,
-                    font_size=20,
+                    width = 300 * c.RESOLUTION_RATIO,
+                    font_size=20 * c.RESOLUTION_RATIO,
                     anchor_x="center",
                     anchor_y="center",
                     color = arcade.csscolor.WHITE)
@@ -355,7 +368,7 @@ class Settings(arcade.View):
 
                 align='right',
                 font_name="Edit Undo BRK",
-                font_size=30,
+                font_size=30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
                 anchor_y="center",
                 color = arcade.csscolor.BLACK)
@@ -380,7 +393,7 @@ class Settings(arcade.View):
 
                 align='right',
                 font_name="Edit Undo BRK",
-                font_size=30,
+                font_size=30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
                 anchor_y="center",
                 color = arcade.csscolor.WHITE)
@@ -397,7 +410,7 @@ class Settings(arcade.View):
 
                     align='right',
                     font_name="Edit Undo BRK",
-                    font_size=25,
+                    font_size=25 * c.RESOLUTION_RATIO,
                     anchor_x="center",
                     anchor_y="center",
                     color = arcade.csscolor.WHITE)
@@ -412,7 +425,7 @@ class Settings(arcade.View):
 
                     align='right',
                     font_name="Edit Undo BRK",
-                    font_size=25,
+                    font_size=25 * c.RESOLUTION_RATIO,
                     anchor_x="center",
                     anchor_y="center",
                     color = arcade.csscolor.WHITE)
@@ -449,7 +462,7 @@ class Settings(arcade.View):
 
                 align='right',
                 font_name="Edit Undo BRK",
-                font_size=30,
+                font_size=30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
                 anchor_y="center",
                 color = arcade.csscolor.BLACK)
@@ -473,7 +486,7 @@ class Settings(arcade.View):
 
                 align='right',
                 font_name="Edit Undo BRK",
-                font_size=30,
+                font_size=30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
                 anchor_y="center",
                 color = arcade.csscolor.WHITE)
@@ -490,7 +503,7 @@ class Settings(arcade.View):
 
                     align='right',
                     font_name="Edit Undo BRK",
-                    font_size=30,
+                    font_size=30 * c.RESOLUTION_RATIO,
                     anchor_x="center",
                     anchor_y="center",
                     color = arcade.csscolor.WHITE)
@@ -504,7 +517,7 @@ class Settings(arcade.View):
 
                     align='right',
                     font_name="Edit Undo BRK",
-                    font_size=30,
+                    font_size=30 * c.RESOLUTION_RATIO,
                     anchor_x="center",
                     anchor_y="center",
                     color = arcade.csscolor.WHITE)
@@ -518,7 +531,7 @@ class Settings(arcade.View):
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT * 0.08,
             font_name="Edit Undo BRK",
-            font_size=16,
+            font_size=16 * c.RESOLUTION_RATIO,
             anchor_x="center"
         )
 
@@ -548,4 +561,22 @@ class Settings(arcade.View):
             self.window.set_fullscreen(True)
             self.window.style = arcade.Window.WINDOW_STYLE_DEFAULT
 
-        self.window.update()
+        #self.window.update()
+    
+    def change_resolution(self):
+
+        if c.RESOLUTION == 450:
+
+            c.WINDOW_HEIGHT = c.TILE_SIZE * c.ROW_COUNT
+            c.WINDOW_WIDTH = c.TILE_SIZE * c.COLUMN_COUNT
+
+        elif c.RESOLUTION == 900:
+
+            c.WINDOW_HEIGHT = 2 * c.TILE_SIZE * c.ROW_COUNT
+            c.WINDOW_WIDTH = 2 * c.TILE_SIZE * c.COLUMN_COUNT
+
+        c.RESOLUTION_RATIO = c.RESOLUTION / 450
+
+        self.window.set_size(c.WINDOW_WIDTH, c.WINDOW_HEIGHT)
+        #self.window.update()
+        self.size_dependent_constructor()
