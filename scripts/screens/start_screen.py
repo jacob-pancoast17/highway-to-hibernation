@@ -5,7 +5,6 @@ from scripts import constants as c
 from scripts.game_view import GameView
 from scripts.screens.leaderboard_screen import LeaderboardScreen
 
-
 class StartScreen(arcade.View):
     '''
     StartScreen represents the start screen view
@@ -117,9 +116,42 @@ class StartScreen(arcade.View):
         self.sprites.draw()
         self.uimanager.draw()
 
+
         # draw stats window
-        self.stats_text.draw()
+        arcade.draw_text(
+            "Press L for leaderboard",
+            x=c.WINDOW_WIDTH / 2,
+            y=c.WINDOW_HEIGHT / 3.4,
+            font_name="Edit Undo BRK",
+            font_size=18,
+            anchor_x="center"
+        )
+
+        arcade.draw_text(
+            "Press 'S' for personal stats",
+            x=c.WINDOW_WIDTH / 2,
+            y=c.WINDOW_HEIGHT / 4.5,
+            font_name="Edit Undo BRK",
+            font_size=18,
+            anchor_x="center"
+        )
+
+        arcade.draw_text(
+            "Press 'Q' to Quit",
+            x=c.WINDOW_WIDTH / 2,
+            y=c.WINDOW_HEIGHT / 6.5,
+            font_name="Edit Undo BRK",
+            font_size=18,
+            anchor_x="center"
+        )
+
+
 
     def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.L:
             self.window.show_view(LeaderboardScreen(self))
+        elif symbol == arcade.key.S:
+            from scripts.screens.stats_screen import StatsScreen
+            self.window.show_view(StatsScreen())
+        elif symbol == arcade.key.Q:
+            self.window.close()

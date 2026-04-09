@@ -18,9 +18,9 @@ class LeaderboardScreen(arcade.View):
         arcade.draw_text(
             "LEADERBOARD",
             x=c.WINDOW_WIDTH / 2,
-            y=c.WINDOW_HEIGHT * 0.82,
+            y=c.WINDOW_HEIGHT * 0.86,
             font_name="Edit Undo BRK",
-            font_size=36,
+            font_size=32,
             anchor_x="center"
         )
 
@@ -34,25 +34,27 @@ class LeaderboardScreen(arcade.View):
                 anchor_x="center"
             )
         else:
-            y_pos = c.WINDOW_HEIGHT * 0.68
+            y_pos = c.WINDOW_HEIGHT * 0.76
             for i, entry in enumerate(self.scores, start=1):
                 arcade.draw_text(
                     f"{i}. {entry['name']} - {entry['score']}",
                     x=c.WINDOW_WIDTH / 2,
                     y=y_pos,
                     font_name="Edit Undo BRK",
-                    font_size=22,
+                    font_size=18,
                     anchor_x="center"
                 )
-                y_pos -= 35
+                y_pos -= 26
+
 
         arcade.draw_text(
-            "Press ESC to go back",
-            x=c.WINDOW_WIDTH / 2,
-            y=c.WINDOW_HEIGHT * 0.08,
+            "Press 'ESC' for previous screen",
             font_name="Edit Undo BRK",
-            font_size=16,
-            anchor_x="center"
+            x=c.WINDOW_WIDTH / 2,
+            y=c.WINDOW_HEIGHT * 0.15,
+            font_size=17,
+            anchor_x='center',
+            anchor_y='center'
         )
 
     def on_key_press(self, key, modifiers):
