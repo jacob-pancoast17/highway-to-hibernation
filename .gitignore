@@ -1,3 +1,4 @@
 ./vscode
 **/__pycache__/
 firebase_key/
+stats.json
