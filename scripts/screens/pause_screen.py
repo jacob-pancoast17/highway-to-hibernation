@@ -1,6 +1,7 @@
 ''' Module representing the pause screen. '''
 import arcade
 from scripts import constants as c
+from scripts.screens.settings_screen import Settings
 from scripts.screens.stats_screen import StatsScreen
 
 class Pause(arcade.View):
@@ -113,3 +114,6 @@ class Pause(arcade.View):
             self.window.show_view(self.game_view.__class__())
         if symbol == arcade.key.S:
             self.window.show_view(StatsScreen(self))
+        
+        elif symbol == arcade.key.F:
+            self.window.show_view(Settings(self))

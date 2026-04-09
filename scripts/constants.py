@@ -57,6 +57,11 @@ victory = arcade.csscolor.GOLD
 arcade.load_font("fonts/edit-undo.brk.ttf")
 
 # Sounds
+VOLUME = 5
+MIN_VOLUME = 0
+MAX_VOLUME = 10
+
+# Sounds
 ADVENTURE_MUSIC = arcade.load_sound("sfx/bear_adventure.mp3")
 WALK_SFX = arcade.load_sound("sfx/footstep.mp3")
 DEATH_SFX = arcade.load_sound("sfx/death.mp3")
@@ -69,3 +74,6 @@ MAIN_THEME.pause()
 
 # Settings
 BLINK_RATE = 0.5
+DEBUG = False
+WINDOW = 'Windowed'
+RESOLUTION = 450

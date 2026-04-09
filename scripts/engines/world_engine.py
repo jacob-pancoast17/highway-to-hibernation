@@ -26,8 +26,7 @@ class WorldEngine():
             nothing
         '''
         # Set a random seed for the perlin noise function
-        self.seed = random.random() * 1000
-        print(self.seed)
+        self.seed = round(random.random() * 10000000)
         random.seed(self.seed)
 
         self.rows = []

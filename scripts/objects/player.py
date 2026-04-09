@@ -42,6 +42,7 @@ class Player(arcade.Sprite):
         self.next_death_anim = c.DEATH_ANIMATION_UPDATE_INTERVAL
         self.dead = False
         self.score = 0
+        self.hunny_collected = 0
 
     def try_move(self, key, world, window):
         '''

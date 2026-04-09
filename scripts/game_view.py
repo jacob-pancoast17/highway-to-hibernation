@@ -53,6 +53,8 @@ class GameView(arcade.View):
         self.hunny_pickup = None
         self.achieve_game_over = None
 
+        self.debug_text = None
+
         self.setup()
 
 
@@ -97,12 +99,26 @@ class GameView(arcade.View):
             font_name="Edit Undo BRK",
             font_size=25,
             bold= True)
+        
+        # Initialize our arcade.Text object for debug
+        if c.DEBUG:
+            self.debug_text = arcade.Text(
+                f"Debug Menu\nSEED: {self.world.seed}\nHUNNY: {self.player.hunny_collected}\nX: {self.player.x}\nY {self.player.y}\n",
+                x=5,
+                y=c.WINDOW_HEIGHT - 5,
+                anchor_x = 'left',
+                anchor_y = 'top',
+                font_name="Edit Undo BRK",
+                font_size=25,
+                multiline=True,
+                width = 300,
+                bold= True)
 
         self.current_bottom_of_screen = 0
         self.current_top_of_screen = c.ROW_COUNT - 1
 
         # Music
-        c.MAIN_THEME = arcade.play_sound(c.ADVENTURE_MUSIC)
+        c.MAIN_THEME = arcade.play_sound(c.ADVENTURE_MUSIC, volume = c.VOLUME / 10)
         c.MAIN_THEME.loop = True
         c.MAIN_THEME.volume = 0.4
 
@@ -116,6 +132,8 @@ class GameView(arcade.View):
 
         # Load score text
         self.score_text.draw()
+        if c.DEBUG:
+            self.debug_text.draw()
 
     def on_update(self, delta_time):
         '''
@@ -123,6 +141,7 @@ class GameView(arcade.View):
         '''
 
         c.MAIN_THEME.play()
+        c.MAIN_THEME.volume = c.VOLUME / 10
 
         if not self.time_stopped:
 
@@ -140,7 +159,7 @@ class GameView(arcade.View):
 
                 record_score(self.player.score)
                 self.window.show_view(GameOver(self.player.score, self))
-                self.achieve_game_over = arcade.play_sound(c.GAME_OVER_JINGLE)
+                self.achieve_game_over = arcade.play_sound(c.GAME_OVER_JINGLE, volume = c.VOLUME / 10)
 
             return
 
@@ -155,9 +174,24 @@ class GameView(arcade.View):
 
                 self.world.collectibles[self.world.collectibles.index(hunny)] = arcade.SpriteList()
                 self.player.score += 300
-                self.hunny_pickup = arcade.play_sound(c.HUNNY_SFX)
+                self.player.hunny_collected += 1
+                self.hunny_pickup = arcade.play_sound(c.HUNNY_SFX, volume = c.VOLUME / 10)
 
             self.score_text.text = f"Score: {self.player.score}"
+            if c.DEBUG and self.debug_text != None:
+                self.debug_text.text = f"Debug Menu\nSEED: {self.world.seed}\nHUNNY: {self.player.hunny_collected}\nX: {self.player.x}\nY {self.player.y}\n"
+            elif c.DEBUG:
+                self.debug_text = arcade.Text(
+                    f"Debug Menu\nSEED: {self.world.seed}\nHUNNY: {self.player.hunny_collected}\nX: {self.player.x}\nY {self.player.y}\n",
+                    x=5,
+                    y=c.WINDOW_HEIGHT - 5,
+                    anchor_x = 'left',
+                    anchor_y = 'top',
+                    font_name="Edit Undo BRK",
+                    font_size=25,
+                    multiline=True,
+                    width = 300,
+                    bold= True)
 
     def on_key_press(self, symbol, modifiers):
         '''
@@ -181,7 +215,7 @@ class GameView(arcade.View):
             if did_move:
                 # print("made it!")
                 # play movement sfx
-                self.walk_playback = arcade.play_sound(c.WALK_SFX)
+                self.walk_playback = arcade.play_sound(c.WALK_SFX, volume=c.VOLUME / 10)
 
                 if self.player.y > self.farthest_y:
                     self.farthest_y = self.player.y
