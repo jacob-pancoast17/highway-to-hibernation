@@ -97,8 +97,8 @@ class GameOver(arcade.View):
             anchor_y='center'
         )
 
-        self.quit_text = arcade.Text(
-            "Press 'Q' to quit",
+        self.main_text = arcade.Text(
+            "Press 'M' to go to main menu",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT * 0.18,
             font_size=20,
@@ -158,7 +158,7 @@ class GameOver(arcade.View):
         else:
             self.play_again_text.draw()
             self.leaderboard_text.draw()
-            self.quit_text.draw()
+            self.main_text.draw()
 
         self.submit_message_text.draw()
 
@@ -236,7 +236,8 @@ class GameOver(arcade.View):
                     self.name_text.text = " ".join(self.player_name)
 
         else:
-            if symbol == arcade.key.Q:
-                self.window.close()
+            if symbol == arcade.key.M:
+                from scripts.screens.start_screen import StartScreen
+                self.window.show_view(StartScreen())
             elif symbol == arcade.key.L:
                 self.window.show_view(LeaderboardScreen(self))

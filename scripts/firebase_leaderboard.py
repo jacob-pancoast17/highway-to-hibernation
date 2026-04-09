@@ -62,7 +62,7 @@ def get_top_scores(limit_count=10):
 
 def get_player_stats(name):
     """
-    Return stats for one player name.
+    Return stats for one player.
     """
     try:
         docs = (
@@ -80,15 +80,15 @@ def get_player_stats(name):
             return {
                 "name": name,
                 "high_score": 0,
-                "games_played": 0,
-                "top_scores": []
+                "last_score": 0,
+                "games_played": 0
             }
 
         return {
             "name": name,
             "high_score": max(scores),
-            "games_played": len(scores),
-            "top_scores": sorted(scores, reverse=True)[:5]
+            "last_score": scores[-1],
+            "games_played": len(scores)
         }
 
     except Exception as e:
@@ -96,6 +96,6 @@ def get_player_stats(name):
         return {
             "name": name,
             "high_score": 0,
-            "games_played": 0,
-            "top_scores": []
+            "last_score": 0,
+            "games_played": 0
         }
