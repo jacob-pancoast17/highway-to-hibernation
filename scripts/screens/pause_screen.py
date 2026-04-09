@@ -74,8 +74,9 @@ class Pause(arcade.View):
         )
 
         # TODO: Change to text objects, same in start_screen
+
         arcade.draw_text(
-            "Press 'Q' to quit",
+            "Press 'ENTER' to restart",
             font_name="Edit Undo BRK",
             x = c.WINDOW_WIDTH / 2,
             y = c.WINDOW_HEIGHT / 2.4,
@@ -84,8 +85,10 @@ class Pause(arcade.View):
             anchor_y = 'center'
         )
 
+
+
         arcade.draw_text(
-            "Press 'ENTER' to reset",
+            "Press 'M' to return to main menu",
             font_name="Edit Undo BRK",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT / 2.8,
@@ -107,9 +110,10 @@ class Pause(arcade.View):
     def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.ESCAPE:
             self.window.show_view(self.game_view)
-        if symbol == arcade.key.Q:
-            self.window.close()
         if symbol == arcade.key.ENTER:
             self.window.show_view(self.game_view.__class__())
+        if symbol == arcade.key.M:
+            from scripts.screens.start_screen import StartScreen
+            self.window.show_view(StartScreen())
         if symbol == arcade.key.L:
             self.window.show_view(LeaderboardScreen(self))
