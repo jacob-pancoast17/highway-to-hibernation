@@ -17,14 +17,19 @@ LEVEL_SIZE = 100 # Should be >= 15
 NUM_START_FOREST_ROWS = 3 # How many grassy rows at the beginning?
 NUM_ENDING_FOREST_ROWS = 5 # how many grassy rows at the end?
 
-## River
+# River
 MIN_LILYPADS_PER_RIVER = 3
 SMALLEST_LOG = 2
 BIGGEST_LOG = 4
 
-## Cars
+# Cars
 TIME_BETWEEN_SPAWNS = 1.0
-TIME_BETWEEN_LOG_SPAWNS = 2.0
+
+# SLOW = 2.0, MED = 1.5, FAST = 1.0
+TIME_BETWEEN_FAST_LOG_SPAWNS = 1.0
+TIME_BETWEEN_MED_LOG_SPAWNS = 1.5
+TIME_BETWEEN_SLOW_LOG_SPAWNS = 2.0
+MAX_LOG_WAIT_TIME = 4.0
 UPPER_OBSTACLE_SPEED = 1.0 # Tiles per second
 LOWER_OBSTACLE_SPEED = 0.2 # Tiles per second
 
@@ -40,7 +45,7 @@ DEATH_ANIMATION_LENGTH = 2.0
 DEATH_ANIMATION_UPDATE_INTERVAL = 0.1
 
 
-## Log Speed
+# Log Speed
 LOG_SPEED_SLOW = 0.4
 LOG_SPEED_MED = 0.3
 LOG_SPEED_FAST= 0.2
@@ -56,7 +61,7 @@ victory = arcade.csscolor.GOLD
 # Fonts
 arcade.load_font("fonts/edit-undo.brk.ttf")
 
-# Sounds
+# Sound Effects
 ADVENTURE_MUSIC = arcade.load_sound("sfx/bear_adventure.mp3")
 WALK_SFX = arcade.load_sound("sfx/footstep.mp3")
 DEATH_SFX = arcade.load_sound("sfx/death.mp3")
@@ -64,6 +69,8 @@ HUNNY_SFX = arcade.load_sound("sfx/hunny_pickup.mp3")
 VICTORY_JINGLE = arcade.load_sound("sfx/victory.wav")
 GAME_OVER_JINGLE = arcade.load_sound("sfx/game_over.wav")
 
+
+# Music 
 MAIN_THEME = arcade.play_sound(ADVENTURE_MUSIC)
 MAIN_THEME.pause()
 
