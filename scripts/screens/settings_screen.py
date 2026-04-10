@@ -34,8 +34,6 @@ class Settings(arcade.View):
 
     def size_dependent_constructor(self):
 
-        print('constructing')
-
         self.space_between_options = 50 * c.RESOLUTION_RATIO
         self.space_between_volume_bars = 15 * c.RESOLUTION_RATIO
 
@@ -179,10 +177,9 @@ class Settings(arcade.View):
         elif symbol == arcade.key.ESCAPE:
             
             self.window.show_view(self.previous_view)
+            self.previous_view.initialize()
 
     def draw_settings(self):
-
-        print(f"font size: {40 * c.RESOLUTION_RATIO}")
 
         arcade.draw_text(
             "SETTINGS",

@@ -27,13 +27,26 @@ class StartScreen(arcade.View):
         self.uimanager = arcade.gui.UIManager()
         self.uimanager.enable()
 
+        self.initialize()
+
+    def initialize(self):
+        '''
+        initialize is part of the start screen's constructor, but has a special property.
+        initialize only sets logic that is dependent on the size of the screen, which must
+        be updated every time the user changes the resolution in settings.
+
+        param:
+            self
+        returns:
+            nothing
+        '''
+
         # Load title
         self.sprites = arcade.SpriteList()
-        #title_texture = arcade.load_texture()
         title = arcade.Sprite("sprites/title.png")
         title.center_x = c.WINDOW_WIDTH / 2
         title.center_y = c.WINDOW_HEIGHT * 3 / 4
-        title.scale = 0.85
+        title.scale = 0.85 * c.RESOLUTION_RATIO
         self.sprites.append(title)
 
         # Load play button
@@ -41,36 +54,36 @@ class StartScreen(arcade.View):
         play_texture_hover = arcade.load_texture("sprites/play_button_hover.png")
 
         play_button = arcade.gui.UITextureButton(
-            width = 100,
+            width = play_texture.width * c.RESOLUTION_RATIO,
+            height = play_texture.height * c.RESOLUTION_RATIO,
             texture = play_texture,
             texture_hovered = play_texture_hover
         )
+        play_button.center_x = c.WINDOW_WIDTH / 2
+        play_button.center_y = c.WINDOW_HEIGHT / 2
+        print(f"width: {play_button.width} height: {play_button.height}")
 
         # Initialize button and define on-click event
         @play_button.event("on_click")
         def on_click_play(event):
-            print("Awesome!")
             game_view = GameView()
             self.window.show_view(game_view)
 
         # Tell the button how to position itself
-        anchor = self.uimanager.add(arcade.gui.UIAnchorLayout())
-
-        anchor.add(
-            anchor_x = "center_x",
-            anchor_y = "center_y",
-            child = play_button
-        )
+        self.uimanager.clear()
+        self.uimanager.add(play_button)
 
         self.stats_text = arcade.Text(
             "Press 'S' for stats",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT / 5,
-            font_size = 17,
+            font_size = 17 * c.RESOLUTION_RATIO,
             font_name="Edit Undo BRK",
             anchor_x = 'center',
             anchor_y = 'center'
         )
+
+
     def on_show_view(self):
         '''
         on_show_view defines events that happen when switching to the start screen view
@@ -125,3 +138,4 @@ class StartScreen(arcade.View):
 
         elif symbol == arcade.key.F:
             self.window.show_view(Settings(self))
+
