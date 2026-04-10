@@ -31,51 +31,26 @@ class StartScreen(arcade.View):
         #title_texture = arcade.load_texture()
         title = arcade.Sprite("sprites/title.png")
         title.center_x = c.WINDOW_WIDTH / 2
-        title.center_y = c.WINDOW_HEIGHT * 3 / 4
+        title.center_y = c.WINDOW_HEIGHT * .8
         title.scale = 0.85
         self.sprites.append(title)
 
-        self.options = ['Infinite']
+        self.time_elapsed = 0
+        self.next_blink = c.BLINK_RATE
+        self.blinked = False
+
+        self.options = ['Infinite', 'Hundred', 'Fifty', 'Thirty']
         self.space_between_options = 50
 
         self.num_options = len(self.options)
         self.currently_selected = self.options[0]
-        self.options_coords = [(c.WINDOW_WIDTH * 5 / 16, c.WINDOW_HEIGHT * 0.70)]
+        self.options_coords = [(c.WINDOW_WIDTH / 2, c.WINDOW_HEIGHT * 0.57)]
         self.options_coords = self.generate_coords(self.num_options, self.options_coords[0])
-
-        # Load play button
-        play_texture = arcade.load_texture("sprites/infinity.png")
-        play_texture_hover = arcade.load_texture("sprites/infinity_hover.png")
-
-        play_button = arcade.gui.UITextureButton(
-            width = 100,
-            texture = play_texture,
-            texture_hovered = play_texture_hover
-        )
-
-        # Initialize button and define on-click event
-        @play_button.event("on_click")
-        def on_click_play(event):
-            c.LEVEL_SIZE = 30
-            print(c.LEVEL_SIZE)
-            print("Awesome!")
-            GameView.levels = "infinite"
-            game_view = GameView()
-            self.window.show_view(game_view)
-
-        # Tell the button how to position itself
-        anchor = self.uimanager.add(arcade.gui.UIAnchorLayout())
-
-        anchor.add(
-            anchor_x = "center_x",
-            anchor_y = "center_y",
-            child = play_button
-        )
 
         self.stats_text = arcade.Text(
             "Press 'S' for stats",
             x=c.WINDOW_WIDTH / 2,
-            y=c.WINDOW_HEIGHT / 5,
+            y=c.WINDOW_HEIGHT / 8,
             font_size = 17,
             font_name="Edit Undo BRK",
             anchor_x = 'center',
@@ -129,9 +104,24 @@ class StartScreen(arcade.View):
         # draw stats window
         self.stats_text.draw()
 
-    def on_key_press(self, symbol, modifiers):
-        if symbol == arcade.key.S:
-            self.window.show_view(StatsScreen(self))
+        # draw "buttons"
+        self.draw_infinity()
+        self.draw_hundred()
+        self.draw_fifty()
+        self.draw_thirty()
+
+    def on_update(self, delta_time):
+        '''
+        Happens every frame
+        '''
+
+        self.time_elapsed += delta_time
+
+        if self.time_elapsed > self.next_blink:
+
+            self.next_blink += c.BLINK_RATE
+
+            self.blink()
 
     def generate_coords(self, num_options, previous_coord):
 
@@ -142,3 +132,188 @@ class StartScreen(arcade.View):
             return_list.append((return_list[-1][0], return_list[-1][1] - self.space_between_options))
 
         return return_list
+
+    def on_key_press(self, symbol, modifiers):
+
+        # Move up
+        if (symbol == arcade.key.UP and
+            self.currently_selected != self.options[0]):
+
+            # Get curr index
+            curr_index = self.options.index(self.currently_selected)
+
+            self.currently_selected = self.options[curr_index - 1]
+
+        # Move down
+        elif (symbol == arcade.key.DOWN and
+            self.currently_selected != self.options[-1]):
+
+            # Get curr index
+            curr_index = self.options.index(self.currently_selected)
+
+            self.currently_selected = self.options[curr_index + 1]
+        
+        # Open stats page
+        elif symbol == arcade.key.S:
+            self.window.show_view(StatsScreen(self))
+        
+        elif symbol == arcade.key.ENTER:
+            if self.currently_selected == "Hundred":
+                c.LEVEL_SIZE = 100
+            elif self.currently_selected == "Fifty":
+                c.LEVEL_SIZE = 50
+            elif self.currently_selected == "Thirty":
+                c.LEVEL_SIZE = 30
+            else:
+                c.LEVEL_SIZE = 10000
+            game_view = GameView()
+            self.window.show_view(game_view)
+
+    
+    def draw_infinity(self):
+
+        if (self.blinked and self.currently_selected == 'Infinite'):
+
+            infinite = arcade.Text(
+                "INFINITE",
+                x=self.options_coords[0][0],
+                y=self.options_coords[0][1],
+                font_name="Edit Undo BRK",
+                font_size=30,
+                anchor_x="center",
+                anchor_y="center",
+                color = arcade.csscolor.BLACK)
+
+            arcade.draw_rect_filled(
+                arcade.XYWH(self.options_coords[0][0],
+                self.options_coords[0][1],
+                infinite.content_width + 6,
+                infinite.content_height),
+                arcade.csscolor.WHITE
+            )
+
+        else:
+            infinite = arcade.Text(
+                "INFINITE",
+                x=self.options_coords[0][0],
+                y=self.options_coords[0][1],
+                font_name="Edit Undo BRK",
+                font_size=30,
+                anchor_x="center",
+                anchor_y="center",
+                color = arcade.csscolor.WHITE)
+
+        infinite.draw()
+
+    def draw_hundred(self):
+        
+        if (self.blinked and self.currently_selected == 'Hundred'):
+            hundred = arcade.Text(
+                "HUNDRED",
+                # Would need to be changed to change order
+                x=self.options_coords[1][0],
+                y=self.options_coords[1][1],
+                font_name="Edit Undo BRK",
+                font_size=30,
+                anchor_x="center",
+                anchor_y="center",
+                color=arcade.csscolor.BLACK)
+            
+            arcade.draw_rect_filled(
+                arcade.XYWH(self.options_coords[1][0],
+                self.options_coords[1][1],
+                hundred.content_width + 6,
+                hundred.content_height),
+                arcade.csscolor.WHITE
+            )
+
+        else:
+            hundred = arcade.Text(
+                "HUNDRED",
+                # Would need to be changed to change order
+                x=self.options_coords[1][0],
+                y=self.options_coords[1][1],
+                font_name="Edit Undo BRK",
+                font_size=30,
+                anchor_x="center",
+                anchor_y="center",
+                color = arcade.csscolor.WHITE)
+
+        hundred.draw()
+
+    def draw_fifty(self):
+        if (self.blinked and self.currently_selected == 'Fifty'):
+            fifty = arcade.Text(
+                "FIFTY",
+                # Would need to be changed to change order
+                x=self.options_coords[2][0],
+                y=self.options_coords[2][1],
+                font_name="Edit Undo BRK",
+                font_size=30,
+                anchor_x="center",
+                anchor_y="center",
+                color=arcade.csscolor.BLACK)
+            
+            arcade.draw_rect_filled(
+                arcade.XYWH(self.options_coords[2][0],
+                self.options_coords[2][1],
+                fifty.content_width + 6,
+                fifty.content_height),
+                arcade.csscolor.WHITE)
+
+        else:
+            fifty = arcade.Text(
+                "FIFTY",
+                x=self.options_coords[2][0],
+                y=self.options_coords[2][1],
+                font_name="Edit Undo BRK",
+                font_size=30,
+                anchor_x="center",
+                anchor_y="center",
+                color = arcade.csscolor.WHITE)
+
+        fifty.draw()
+        
+    def draw_thirty(self):
+
+        if (self.blinked and self.currently_selected == 'Thirty'):
+            thirty = arcade.Text(
+                "THIRTY",
+                # Would need to be changed to change order
+                x=self.options_coords[3][0],
+                y=self.options_coords[3][1],
+                font_name="Edit Undo BRK",
+                font_size=30,
+                anchor_x="center",
+                anchor_y="center",
+                color=arcade.csscolor.BLACK)
+            
+            arcade.draw_rect_filled(
+                arcade.XYWH(self.options_coords[3][0],
+                self.options_coords[3][1],
+                thirty.content_width + 6,
+                thirty.content_height),
+                arcade.csscolor.WHITE
+            )
+
+        else:
+            thirty = arcade.Text(
+                "THIRTY",
+                x=self.options_coords[3][0],
+                y=self.options_coords[3][1],
+                font_name="Edit Undo BRK",
+                font_size=30,
+                anchor_x="center",
+                anchor_y="center",
+                color=arcade.csscolor.WHITE)
+
+        thirty.draw()
+
+    def blink(self):
+
+        if self.blinked is False:
+
+            self.blinked = True
+
+        else:
+            self.blinked = False
