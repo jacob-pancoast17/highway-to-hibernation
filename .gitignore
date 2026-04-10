@@ -2,3 +2,4 @@
 **/__pycache__/
 firebase_key/
 stats.json
+.DS_Store
