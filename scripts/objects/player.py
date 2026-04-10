@@ -30,9 +30,9 @@ class Player(arcade.Sprite):
         self.mauled_texture = tex_eng.mauled
 
         # Define all coordinates
-        self.center_x = c.TILE_WIDTH * column + c.TILE_WIDTH // 2
+        self.center_x = c.TILE_SIZE * column + c.TILE_SIZE // 2
         self.x = column
-        self.center_y = c.TILE_HEIGHT * row + c.TILE_HEIGHT // 2
+        self.center_y = c.TILE_SIZE * row + c.TILE_SIZE // 2
         self.y = row
         self.angle = 180.0
         self.cur_texture_index = 0

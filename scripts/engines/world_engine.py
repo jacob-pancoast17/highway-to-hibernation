@@ -186,13 +186,13 @@ class WorldEngine():
         # we have 1 less row)
         for i in range(c.ROW_COUNT - 1):
             self.backgrounds[i].move(change_x = 0,
-                                     change_y = -c.TILE_HEIGHT)
+                                     change_y = -c.TILE_SIZE)
             self.loaded[i].move(change_x = 0,
-                                change_y = -c.TILE_HEIGHT)
+                                change_y = -c.TILE_SIZE)
             self.platforms[i][0].move(change_x = 0,
-                                change_y = -c.TILE_HEIGHT)
+                                change_y = -c.TILE_SIZE)
             self.collectibles[i].move(change_x = 0,
-                                change_y = -c.TILE_HEIGHT)
+                                change_y = -c.TILE_SIZE)
         self.player.center_y -= c.VELOCITY_MULTIPLIER
         self.player.angle = 180
 
@@ -333,21 +333,13 @@ class WorldEngine():
 
         for i in range(c.COLUMN_COUNT):
 
-            grass_texture = random.choices(
-                    ['sprites/grass_1.png',
-                    'sprites/grass_2.png',
-                    'sprites/grass_3.png',
-                    'sprites/flowers_1.png',
-                    'sprites/flowers_2.png',
-                    'sprites/flowers_3.png'],
-                    weights = [0.22, 0.22, 0.22,
-                               0.11, 0.11, 0.11])[0]
+            grass_texture = self.tex_eng.get_grass()
             
             cell = arcade.Sprite(grass_texture)
             
             # Set the cell's center based on grid position
-            cell.center_x = c.TILE_WIDTH * i + c.TILE_WIDTH // 2
-            cell.center_y = c.TILE_HEIGHT * (row - self.loaded_indices[0]) + c.TILE_HEIGHT // 2
+            cell.center_x = c.TILE_SIZE * i + c.TILE_SIZE // 2
+            cell.center_y = c.TILE_SIZE * (row - self.loaded_indices[0]) + c.TILE_SIZE // 2
 
             grass.append(cell)
         
@@ -381,8 +373,8 @@ class WorldEngine():
             cell = arcade.Sprite(bank_texture)
 
             # Set the cell's center based on grid position
-            cell.center_x = c.TILE_WIDTH * i + c.TILE_WIDTH // 2
-            cell.center_y = c.TILE_HEIGHT * (row - self.loaded_indices[0]) + c.TILE_HEIGHT // 2
+            cell.center_x = c.TILE_SIZE * i + c.TILE_SIZE // 2
+            cell.center_y = c.TILE_SIZE * (row - self.loaded_indices[0]) + c.TILE_SIZE // 2
 
             bank.append(cell)
         
@@ -541,8 +533,8 @@ class WorldEngine():
 
             tree = Obstacle(tree_texture, i, row=row - self.loaded_indices[0])
 
-            tree.center_y = (c.TILE_HEIGHT * (row - self.loaded_indices[0])
-                                    + c.TILE_HEIGHT)
+            tree.center_y = (c.TILE_SIZE * (row - self.loaded_indices[0])
+                                    + c.TILE_SIZE)
             
             sprites.append(tree)
 
@@ -591,8 +583,8 @@ class WorldEngine():
 
             tree = Obstacle(tree_texture, x, row=row - self.loaded_indices[0])
 
-            tree.center_y = (c.TILE_HEIGHT * (row - self.loaded_indices[0])
-                                    + c.TILE_HEIGHT)
+            tree.center_y = (c.TILE_SIZE * (row - self.loaded_indices[0])
+                                    + c.TILE_SIZE)
             
             sprites.append(tree)
 
@@ -803,8 +795,8 @@ class WorldEngine():
                     Obstacle(tree_texture[0], i, row - self.loaded_indices[0]))
 
             sprites[-1].scale = 0.95
-            sprites[-1].center_y = (c.TILE_HEIGHT * (row - self.loaded_indices[0])
-                                    + c.TILE_HEIGHT * 0.95)
+            sprites[-1].center_y = (c.TILE_SIZE * (row - self.loaded_indices[0])
+                                    + c.TILE_SIZE * 0.95)
 
         for i in range(c.COLUMN_COUNT - trees_left - trees_right):
 
@@ -855,8 +847,8 @@ class WorldEngine():
                     Obstacle(tree_texture[0], x, row - self.loaded_indices[0]))
 
             sprites[-1].scale = 0.95
-            sprites[-1].center_y = (c.TILE_HEIGHT * (row - self.loaded_indices[0])
-                                    + c.TILE_HEIGHT * 0.95)
+            sprites[-1].center_y = (c.TILE_SIZE * (row - self.loaded_indices[0])
+                                    + c.TILE_SIZE * 0.95)
 
         return sprites
 

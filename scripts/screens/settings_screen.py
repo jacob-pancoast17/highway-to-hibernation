@@ -564,13 +564,21 @@ class Settings(arcade.View):
 
         if c.RESOLUTION == 450:
 
+            # Change window size
             c.WINDOW_HEIGHT = c.TILE_SIZE * c.ROW_COUNT
             c.WINDOW_WIDTH = c.TILE_SIZE * c.COLUMN_COUNT
 
+            # Change tile sizes
+            c.TILE_SIZE = 30
+
         elif c.RESOLUTION == 900:
 
+            # Change window size
             c.WINDOW_HEIGHT = 2 * c.TILE_SIZE * c.ROW_COUNT
             c.WINDOW_WIDTH = 2 * c.TILE_SIZE * c.COLUMN_COUNT
+
+            # Change tile sizes
+            c.TILE_SIZE = 2 * 30
 
         c.RESOLUTION_RATIO = c.RESOLUTION / 450
 

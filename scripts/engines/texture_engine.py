@@ -21,6 +21,7 @@ class TextureEngine():
         '''
         
         ## SPRITES
+
         # Bear
         self.bear = "sprites/bear_rev2.png"
         # Deaths
@@ -35,6 +36,17 @@ class TextureEngine():
         wolf_sheet = arcade.load_spritesheet("sprites/wolf_sheet.png")
         self.wolf = drowning_sheet.get_texture_grid(size = (30, 30), columns=9, count=9)
 
+        ## BACKGROUNDS
+
+        # Grass
+        self.grass1 = 'sprites/grass_1.png'
+        self.grass2 = 'sprites/grass_2.png'
+        self.grass3 = 'sprites/grass_3.png'
+        self.flowers1 = 'sprites/flowers_1.png'
+        self.flowers2 = 'sprites/flowers_2.png'
+        self.flowers3 = 'sprites/flowers_3.png'
+
+        ## OBSTACLES
         # Trees
         self.tree1 = "sprites/tree1.png"
         self.tree2 = "sprites/tree2.png"
@@ -103,13 +115,35 @@ class TextureEngine():
                 cell = arcade.Sprite(grass_texture[0])
 
                 # Set the cell's center based on grid position
-                cell.center_x = c.TILE_WIDTH * column + c.TILE_WIDTH // 2
-                cell.center_y = c.TILE_HEIGHT * row + c.TILE_HEIGHT // 2
+                cell.center_x = c.TILE_SIZE * column + c.TILE_SIZE // 2
+                cell.center_y = c.TILE_SIZE * row + c.TILE_SIZE // 2
 
                 # Append to list of all grid sprites to draw
                 grid.append(cell)
 
         return grid
+    
+    def get_grass(self):
+        '''
+        get_grass returns a random grass texture
+
+        param:
+            self
+        returns:
+            a random grass texture
+        '''
+
+        grass_texture = random.choices(
+                    [self.grass1,
+                     self.grass2,
+                     self.grass3,
+                     self.flowers1,
+                     self.flowers2,
+                     self.flowers3],
+                    weights = [0.22, 0.22, 0.22,
+                               0.11, 0.11, 0.11])[0]
+        
+        return grass_texture
     
     def get_trees(self, num_trees, right):
 

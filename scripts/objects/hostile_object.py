@@ -27,9 +27,9 @@ class Hostile(arcade.Sprite):
              
             self.running_textures = tex_eng.wolf
 
-        self.center_x = c.TILE_WIDTH * column + c.TILE_WIDTH // 2
+        self.center_x = c.TILE_SIZE * column + c.TILE_SIZE // 2
         self.x = column
-        self.center_y = c.TILE_HEIGHT * row + c.TILE_HEIGHT // 2
+        self.center_y = c.TILE_SIZE * row + c.TILE_SIZE // 2
         self.y = row
         self.angle = 0
 
@@ -113,7 +113,7 @@ class Hostile(arcade.Sprite):
         should be deleted
         '''
 
-        if (self.center_x < c.TILE_WIDTH or
+        if (self.center_x < c.TILE_SIZE or
             self.center_x > c.WINDOW_WIDTH):
             self.speed = 0
             return True
