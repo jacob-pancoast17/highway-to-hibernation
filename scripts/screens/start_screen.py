@@ -35,6 +35,14 @@ class StartScreen(arcade.View):
         title.scale = 0.85
         self.sprites.append(title)
 
+        self.options = ['Infinite']
+        self.space_between_options = 50
+
+        self.num_options = len(self.options)
+        self.currently_selected = self.options[0]
+        self.options_coords = [(c.WINDOW_WIDTH * 5 / 16, c.WINDOW_HEIGHT * 0.70)]
+        self.options_coords = self.generate_coords(self.num_options, self.options_coords[0])
+
         # Load play button
         play_texture = arcade.load_texture("sprites/infinity.png")
         play_texture_hover = arcade.load_texture("sprites/infinity_hover.png")
@@ -124,3 +132,13 @@ class StartScreen(arcade.View):
     def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.S:
             self.window.show_view(StatsScreen(self))
+
+    def generate_coords(self, num_options, previous_coord):
+
+        return_list = [previous_coord]
+
+        for i in range(num_options - 1):
+
+            return_list.append((return_list[-1][0], return_list[-1][1] - self.space_between_options))
+
+        return return_list
