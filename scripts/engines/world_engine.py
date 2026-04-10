@@ -10,6 +10,7 @@ from scripts import constants as c
 # Subengines
 from scripts.engines.world_subengines.background_subengine import generate_background
 from scripts.engines.world_subengines.obstacle_subengine import generate_obstacles
+from scripts.engines.world_subengines.platform_subengine import generate_platforms
 
 # Objects
 from scripts.objects.den_object import Den
@@ -154,9 +155,17 @@ class WorldEngine():
 
             # Randomly pick a velocity to add to list for initial screen generation
             rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST],
-                                        weights = [1/3, 1/3, 1/3])
-            middle_row = self.generate_platforms(i)
-            self.platforms.append([middle_row, rand_speed[0]])
+                                        weights = [1/3, 1/3, 1/3])[0]
+            
+            platform_info = generate_platforms(self.tex_eng, # Texture engine
+                                               self.platforms, # Current platforms
+                                               self.current_walk_coords, # Current walk coords
+                                               self.rows[i], # Biome
+                                               i, # Current row
+                                               self.loaded_indices[0]) # Current bottom row
+            print(platform_info)
+            self.platforms.append([platform_info[0], rand_speed])
+            self.current_walk_coords = platform_info[1]
 
             top_row = self.generate_collectible(i)
             self.collectibles.append(top_row)
@@ -197,9 +206,15 @@ class WorldEngine():
 
         # Randomly pick a velocity for each row in the updated screen
         rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST],
-                                    weights = [1/3, 1/3, 1/3])
-        new_platform  = self.generate_platforms(new_row_index)
-        self.platforms.append([new_platform, rand_speed[0]])
+                                    weights = [1/3, 1/3, 1/3])[0]
+        new_platform_info  = generate_platforms(self.tex_eng, # Texture engine
+                                                self.platforms, # Current platforms
+                                                self.current_walk_coords, # Current walk coords
+                                                self.rows[new_row_index], # Biome
+                                                new_row_index, # New row index
+                                                self.loaded_indices[0]) # Bottom row
+        self.platforms.append([new_platform_info[0], rand_speed])
+        self.current_walk_coords = new_platform_info[1]
 
 
         new_collectible = self.generate_collectible(new_row_index)
@@ -220,25 +235,6 @@ class WorldEngine():
                                 change_y = -c.TILE_SIZE)
         self.player.center_y -= c.VELOCITY_MULTIPLIER
         self.player.angle = 180
-
-    def generate_platforms(self, row):
-        '''
-        generates platforms
-        '''
-
-        # Use self.row[row] to figure out if the row generated was with lilypads or logs
-
-        if self.rows[row] == 'River_Lilypads':
-
-            return self.generate_lilypads(row)
-
-        elif self.rows[row] == 'River_Logs':
-
-            return self.generate_logs(row)
-
-        else:
-
-            return arcade.SpriteList()
 
     def generate_collectible(self, row):
         '''
@@ -379,106 +375,7 @@ class WorldEngine():
             return arcade.SpriteList()
 
 
-    def generate_lilypads(self, row):
-        """
-        generate_lilypads takes a row and generates a lilypad that you
-        can walk on to cross the river, with a random chance of spawning in each
 
-        param:
-            self
-            row
-        returns:
-            a SpriteList object containing all of the lilypad sprites for
-                that row
-        """
-
-        lilypads = arcade.SpriteList()
-
-        walkable = self.drunkards_walk(self.current_walk_coords[0], row - self.loaded_indices[0],
-                                       4, c.COLUMN_COUNT - 4)
-        walkable = sorted(walkable, key=lambda x: x[1])
-
-        # Append all except the last one
-        for i in range(len(walkable) - 1):
-
-            lilypads.append(Platform('sprites/lilypad.png',
-                                            walkable[i][0],
-                                            walkable[i][1]))
-
-        for i in range(4, c.COLUMN_COUNT - 4):
-
-            if ((i, row) not in walkable and random.random() < .2):
-
-                lilypad_texture = random.choices(
-                    ['sprites/lilypad.png',
-                    'sprites/lilypad-with-frog.png'],
-                    weights = [0.9, 0.1])
-
-                for lilypad in lilypads:
-
-                    if lilypad.x is not i:
-
-                        lilypads.append(Platform(lilypad_texture[0], i,
-                                                row - self.loaded_indices[0]))
-
-        # Update walk
-        self.current_walk_coords = walkable[-1]
-
-        return lilypads
-
-    def generate_logs(self, row):
-        '''
-        generate_logs takes a row and generates a line of water that 
-        kills you with logs that move across the screen that you can 
-        jump on to cross
-
-        param:
-            self
-            row
-        returns:
-            a SpriteList object containing all of the log sprites for
-                that row
-        '''
-
-        walkable = self.drunkards_walk(self.current_walk_coords[0], row, 4, c.COLUMN_COUNT - 4)
-        walkable = sorted(walkable, key=lambda x: x[1])
-
-        log_cells = arcade.SpriteList()
-        moving_left = random.choice([True, False])
-
-        length = random.randint(c.SMALLEST_LOG,c.BIGGEST_LOG)
-
-        for i in range(length):
-
-            if moving_left:
-
-                log_textures = self.tex_eng.get_log(length)
-
-                log_cells.append(Platform(log_textures[length - 1 - i],
-                                    15 - i,
-                                    row= row - self.loaded_indices[0],
-                                    static = False,
-                                    speed= self.platforms[(row - self.loaded_indices[0])-1][1],
-                                    left=True))
-
-            else:
-
-                log_textures = self.tex_eng.get_log(length)
-
-                log_cells.append(Platform(log_textures[i],
-                                    i,
-                                    row= row - self.loaded_indices[0],
-                                    static = False,
-                                    speed= self.platforms[(row - self.loaded_indices[0])-1][1],
-                                    left=False))
-
-        for log in log_cells:
-            print(f"{log} x: {log.x}, y: {log.y}")
-
-        # Update walk
-        self.current_walk_coords = walkable[-1]
-
-        return log_cells
 
     def update_logs(self, row):
         '''
