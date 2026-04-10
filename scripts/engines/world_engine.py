@@ -9,6 +9,7 @@ from scripts import constants as c
 
 # Subengines
 from scripts.engines.world_subengines.background_subengine import generate_background
+from scripts.engines.world_subengines.collectible_subengine import generate_collectible
 from scripts.engines.world_subengines.obstacle_subengine import generate_obstacles
 from scripts.engines.world_subengines.platform_subengine import generate_platforms
 
@@ -167,7 +168,11 @@ class WorldEngine():
             self.platforms.append([platform_info[0], rand_speed])
             self.current_walk_coords = platform_info[1]
 
-            top_row = self.generate_collectible(i)
+            top_row = generate_collectible(self.tex_eng, # Texture engine
+                                            self.obstacles, # Current obstacles
+                                            self.rows[i], # Current walk coords
+                                            i, # Current row
+                                            self.loaded_indices[0]) # Current bottom row
             self.collectibles.append(top_row)
 
     def update_screen(self, new_row_index):
@@ -217,7 +222,11 @@ class WorldEngine():
         self.current_walk_coords = new_platform_info[1]
 
 
-        new_collectible = self.generate_collectible(new_row_index)
+        new_collectible = generate_collectible(self.tex_eng, # Texture engine
+                                                self.obstacles, # Current platforms
+                                                self.rows[new_row_index], # Biome
+                                                new_row_index, # New row index
+                                                self.loaded_indices[0]) # Bottom row
         self.collectibles.append(new_collectible)
 
         self.loaded_indices.append(new_row_index)
@@ -235,27 +244,6 @@ class WorldEngine():
                                 change_y = -c.TILE_SIZE)
         self.player.center_y -= c.VELOCITY_MULTIPLIER
         self.player.angle = 180
-
-    def generate_collectible(self, row):
-        '''
-        generate_collectible is a helper function that takes a row index 
-        and generates the collectibles in that row by calling a child generate function
-        based on what type of collectible it should be
-
-        param: 
-            self
-            row - the current row to be generated
-        returns:
-            a SpriteList object from child function
-        '''
-        if self.rows[row] == 'Forest':
-
-            return self.generate_honey(row)
-
-        else:
-
-            return arcade.SpriteList()
-
 
     def update_wolves(self, row):
         '''
@@ -332,50 +320,6 @@ class WorldEngine():
 
         # Replace currently loaded row with the updated one
         self.obstacles[row - self.loaded_indices[0]] = hostiles
-
-    def generate_honey(self, row):
-        """
-        generate_honey takes a row and generates it randomly
-        to spawn honey that gives you points if you get it
-
-        param:
-            self
-            row - a row index to be generated
-        returns:
-            a SpriteList object containing all of the object sprites for
-                that row
-        """
-
-        self.sprites = arcade.SpriteList()
-
-        # Will honey spawn in this row?
-        if random.random() < .25:
-
-            spawnable_spots = list(range(15))
-            cells = self.obstacles[row - self.loaded_indices[0]]
-
-            # Remove not spawnable spots
-            for cell in cells:
-
-                spawnable_spots.remove(cell.x)
-
-            # Pick a random one and put it there
-            x = random.choices(spawnable_spots)
-
-            hunny = Obstacle('sprites/hunny.png',
-                                            x[0],
-                                            row - self.loaded_indices[0])
-            self.sprites.append(hunny)
-
-            return self.sprites
-
-        # If no honey spawn, just return a blank list
-        else:
-
-            return arcade.SpriteList()
-
-
-
 
     def update_logs(self, row):
         '''
@@ -569,45 +513,6 @@ class WorldEngine():
                 logs.append(i)
 
         return logs
-
-    def drunkards_walk(self, x, y, left_bound, right_bound):
-        '''
-        drunkards_walk returns the tiles in a given row which need to be empty
-
-        param:
-            x
-            y
-        returns:
-            a list of coordinates in a row that must be empty
-        '''
-        path = [(x, y)]
-
-        while True:
-            a = random.choices(['up', 'left', 'right'],
-                            weights = [1/3, 1/3, 1/3])
-
-            if a[0] == 'up':
-
-                y += 1
-
-                path.append((x, y))
-                return path
-
-            elif a[0] == 'right' and x < right_bound:
-
-                x += 1
-
-                if (x, y)not in path:
-
-                    path.append((x, y))
-
-            elif a[0] == 'left' and x > left_bound:
-
-                x += -1
-
-                if (x, y)not in path:
-
-                    path.append((x, y))
 
     def update_resolution(self):
 

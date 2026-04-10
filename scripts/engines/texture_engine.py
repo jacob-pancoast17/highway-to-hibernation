@@ -20,10 +20,11 @@ class TextureEngine():
             player - a player
         '''
         
-        ## SPRITES
+        ### SPRITES
 
-        # Bear
+        ## BEAR
         self.bear = "sprites/bear_rev2.png"
+
         # Deaths
         drowning_sheet = arcade.load_spritesheet("sprites/bear_death2_sheet.png")
         self.drowning = drowning_sheet.get_texture_grid(size = (30, 30), columns=9, count=9)
@@ -35,6 +36,9 @@ class TextureEngine():
 
         wolf_sheet = arcade.load_spritesheet("sprites/wolf_sheet.png")
         self.wolf = drowning_sheet.get_texture_grid(size = (30, 30), columns=9, count=9)
+
+        ## HUNNY
+        self.hunny = 'sprites/hunny.png'
 
         ## BACKGROUNDS
 
