@@ -30,7 +30,9 @@ class TimeEngine():
         # Set the first spawn check
         self.next_spawn_check = c.TIME_BETWEEN_SPAWNS
 
-        self.next_log_spawn_check = c. TIME_BETWEEN_LOG_SPAWNS
+        self.next_fast_log_spawn_check = c.TIME_BETWEEN_FAST_LOG_SPAWNS
+        self.next_med_log_spawn_check = c.TIME_BETWEEN_MED_LOG_SPAWNS
+        self.next_slow_log_spawn_check = c.TIME_BETWEEN_SLOW_LOG_SPAWNS
     
     def pass_time(self, time):
         '''
@@ -54,8 +56,16 @@ class TimeEngine():
         if self.world_time > self.next_spawn_check:
             self.spawn_hostiles()
         
-        if self.world_time > self.next_log_spawn_check:
-            self.spawn_platforms()
+        if self.world_time > self.next_fast_log_spawn_check:
+            # Check to see if a fast log row exists and append to list to pass into function
+            if(len(self.world.fast_log_rows) > 0):
+                self.spawn_platforms("FAST", self.world.fast_log_rows)
+        if self.world_time > self.next_med_log_spawn_check:
+            if(len(self.world.med_log_rows) > 0):
+                self.spawn_platforms("MED", self.world.med_log_rows)
+        if self.world_time > self.next_slow_log_spawn_check:
+            if(len(self.world.slow_log_rows) > 0):
+                self.spawn_platforms("SLOW", self.world.slow_log_rows)
         
     
     def try_to_move_log(self, delta_time):
@@ -75,7 +85,7 @@ class TimeEngine():
         # Try to move each log in each row
         for row in curr_log_rows:
 
-            for log in self.world.platforms[row - self.world.loaded_indices[0]][0]:
+            for log in self.world.platforms[row - self.world.loaded_indices[0]]:
                 
                 log.try_move(delta_time, self.world.player)
 
@@ -93,7 +103,7 @@ class TimeEngine():
 
         # Get the current hostile rows
         curr_wolf_rows = self.world.get_wolf_rows()
-        #print(f"curr wolf rows: {curr_wolf_rows}")
+        # print(f"curr wolf rows: {curr_wolf_rows}")
 
         # Try to move each wolf in each row
         for row in curr_wolf_rows:
@@ -126,7 +136,7 @@ class TimeEngine():
             self.world.update_wolves(row)
             pass
 
-    def spawn_platforms(self):
+    def spawn_platforms(self, row_speed, curr_rows):
             '''
             spawn_platforms tries to spawn platforms in each row 
 
@@ -137,12 +147,18 @@ class TimeEngine():
             '''
 
             # Add TIME_BETWEEN_LOG_SPAWNS to log spawns
-            self.next_log_spawn_check += c.TIME_BETWEEN_LOG_SPAWNS
+            if(row_speed == "FAST"):
+                self.next_fast_log_spawn_check += c.TIME_BETWEEN_FAST_LOG_SPAWNS
+            elif(row_speed == "MED"):
+                self.next_med_log_spawn_check += c.TIME_BETWEEN_MED_LOG_SPAWNS
+            elif(row_speed == "SLOW"):
+                self.next_slow_log_spawn_check += c.TIME_BETWEEN_SLOW_LOG_SPAWNS
+            else:
+                print("UNKNOWN SPEED ERROR")
+                return
+            # print(self.next_log_spawn_check)
 
-            # Get the current log rows
-            curr_log_rows = self.world.get_log_rows()
-
-            # Then for each row update the board using the world
+            # Then for each row passed in, update the board using the world
             # engine
-            for row in curr_log_rows:
+            for row in curr_rows:
                 self.world.update_logs(row)

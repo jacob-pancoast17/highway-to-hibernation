@@ -226,11 +226,11 @@ class TextureEngine():
         '''
         for index in reversed(self.world.loaded_indices):
 
-            if (self.world.rows[index] == 'Forest' or
-                self.world.rows[index] == 'Road' or
-                self.world.rows[index] == 'Bank' or
-                self.world.rows[index] == 'Victory' or
-                self.world.rows[index] == 'Pack'):
+            if (self.world.rows[index][0] == 'Forest' or
+                self.world.rows[index][0] == 'Road' or
+                self.world.rows[index][0] == 'Bank' or
+                self.world.rows[index][0] == 'Victory' or
+                self.world.rows[index][0] == 'Pack'):
 
                 self.world.loaded[index - self.world.loaded_indices[0]].draw()
 
@@ -246,8 +246,8 @@ class TextureEngine():
         '''
         for index in reversed(self.world.loaded_indices):
 
-            if (self.world.rows[index] == 'River_Lilypads' or
-                self.world.rows[index] == 'River_Logs'):
+            if (self.world.rows[index][0] == 'River_Lilypads' or
+                self.world.rows[index][0] == 'River_Logs'):
 
                 self.world.loaded[index - self.world.loaded_indices[0]].draw()
 

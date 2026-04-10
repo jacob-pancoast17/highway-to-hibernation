@@ -62,6 +62,7 @@ class Platform(arcade.Sprite):
         self.timer += delta_time
 
         # If the current timer exceeds the time to next move, then move
+
         if self.timer >= self.next_move:
 
             # Set the next move
