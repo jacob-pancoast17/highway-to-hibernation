@@ -179,7 +179,7 @@ class GameOver(arcade.View):
 
         name = self.player_name.strip()
         if not name:
-            name = "Player"
+            name = "BOT"
 
         success = record_score(name, self.score)
 
