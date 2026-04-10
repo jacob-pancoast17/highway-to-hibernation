@@ -226,7 +226,6 @@ class GameView(arcade.View):
                     self.player.score += 100
                     self.score_text.text = f"Score: {self.player.score}"
 
-                print(self.current_bottom_of_screen)
                 if (self.player.y > self.current_bottom_of_screen + (c.DIST_UNTIL_STAY_PUT - 1) and
                     self.current_top_of_screen != c.LEVEL_SIZE - 1 and symbol == arcade.key.UP):
                     self.move_screen_up()
@@ -266,6 +265,7 @@ class GameView(arcade.View):
         print("initializing . . .")
 
         self.update_resolution()
+        print(c.RESOLUTION_RATIO)
 
         self.player.update_resolution(self.player.x, self.player.y - self.current_bottom_of_screen)
         self.world.update_resolution()

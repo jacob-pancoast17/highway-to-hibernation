@@ -3,11 +3,16 @@ from scripts import constants as c
 
 
 class Settings(arcade.View):
-    def __init__(self, previous_view):
+    def __init__(self, previous_view, from_pause=False):
 
         super().__init__()
 
         self.previous_view = previous_view
+        
+        if from_pause:
+            self.came_from_game = True
+        else:
+            self.came_from_game = False
 
         self.time_elapsed = 0
         self.next_blink = c.BLINK_RATE
@@ -85,8 +90,11 @@ class Settings(arcade.View):
 
             # Get curr index
             curr_index = self.options.index(self.currently_selected)
-
-            self.currently_selected = self.options[curr_index - 1]
+            
+            if not self.came_from_game:
+                self.currently_selected = self.options[curr_index - 1]
+            else:
+                self.currently_selected = self.options[curr_index - 3]
 
         # Move down
         elif (symbol == arcade.key.DOWN and
@@ -95,7 +103,10 @@ class Settings(arcade.View):
             # Get curr index
             curr_index = self.options.index(self.currently_selected)
 
-            self.currently_selected = self.options[curr_index + 1]
+            if not self.came_from_game:
+                self.currently_selected = self.options[curr_index + 1]
+            else:
+                self.currently_selected = self.options[curr_index + 3]
         
         # Move left or right
         elif (symbol == arcade.key.LEFT):
@@ -300,11 +311,15 @@ class Settings(arcade.View):
                 anchor_x="center",
                 anchor_y="center",
                 color = arcade.csscolor.WHITE)
+            
+        if self.came_from_game:
+
+            window_title.color = arcade.csscolor.DIM_GRAY
         
         window_title.draw()
 
         if c.WINDOW == 'Windowed':
-            debug_status = arcade.Text(
+            window_status = arcade.Text(
                     "Windowed",
 
                     # Would need to be changed to change order
@@ -319,7 +334,7 @@ class Settings(arcade.View):
                     color = arcade.csscolor.WHITE)
             
         elif c.WINDOW == 'Fullscreen':
-            debug_status = arcade.Text(
+            window_status = arcade.Text(
                     "Fullscreen",
 
                     # Would need to be changed to change order
@@ -333,7 +348,7 @@ class Settings(arcade.View):
                     anchor_y="center",
                     color = arcade.csscolor.WHITE)
         else:
-            debug_status = arcade.Text(
+            window_status = arcade.Text(
                     f"Borderless\nWindowed",
 
                     # Would need to be changed to change order
@@ -348,8 +363,12 @@ class Settings(arcade.View):
                     anchor_x="center",
                     anchor_y="center",
                     color = arcade.csscolor.WHITE)
+            
+        if self.came_from_game:
 
-        debug_status.draw()
+            window_status.color = arcade.csscolor.DIM_GRAY
+
+        window_status.draw()
             
     def draw_resolution(self):
 
@@ -394,6 +413,10 @@ class Settings(arcade.View):
                 anchor_x="center",
                 anchor_y="center",
                 color = arcade.csscolor.WHITE)
+            
+        if self.came_from_game:
+
+            resolution_title.color = arcade.csscolor.DIM_GRAY
         
         resolution_title.draw()
 
@@ -442,6 +465,10 @@ class Settings(arcade.View):
         #             anchor_x="center",
         #             anchor_y="center",
         #             color = arcade.csscolor.WHITE)
+
+        if self.came_from_game:
+
+            resolution_status.color = arcade.csscolor.DIM_GRAY
 
         resolution_status.draw()
     
@@ -564,23 +591,22 @@ class Settings(arcade.View):
 
         if c.RESOLUTION == 450:
 
+            # Change tile sizes
+            c.TILE_SIZE = 30
+
             # Change window size
             c.WINDOW_HEIGHT = c.TILE_SIZE * c.ROW_COUNT
             c.WINDOW_WIDTH = c.TILE_SIZE * c.COLUMN_COUNT
 
-            # Change tile sizes
-            c.TILE_SIZE = 30
-
         elif c.RESOLUTION == 900:
+            # Change tile sizes
+            c.TILE_SIZE = 1.5 * 30
 
             # Change window size
-            c.WINDOW_HEIGHT = 2 * c.TILE_SIZE * c.ROW_COUNT
-            c.WINDOW_WIDTH = 2 * c.TILE_SIZE * c.COLUMN_COUNT
+            c.WINDOW_HEIGHT = c.TILE_SIZE * c.ROW_COUNT
+            c.WINDOW_WIDTH = c.TILE_SIZE * c.COLUMN_COUNT
 
-            # Change tile sizes
-            c.TILE_SIZE = 2 * 30
-
-        c.RESOLUTION_RATIO = c.RESOLUTION / 450
+        c.RESOLUTION_RATIO = c.TILE_SIZE / 30
 
         self.window.set_size(c.WINDOW_WIDTH, c.WINDOW_HEIGHT)
         #self.window.update()

@@ -164,7 +164,6 @@ class WorldEngine():
                                                self.rows[i], # Biome
                                                i, # Current row
                                                self.loaded_indices[0]) # Current bottom row
-            print(platform_info)
             self.platforms.append([platform_info[0], rand_speed])
             self.current_walk_coords = platform_info[1]
 
@@ -242,7 +241,7 @@ class WorldEngine():
                                 change_y = -c.TILE_SIZE)
             self.collectibles[i].move(change_x = 0,
                                 change_y = -c.TILE_SIZE)
-        self.player.center_y -= c.VELOCITY_MULTIPLIER
+        self.player.center_y -= c.VELOCITY_MULTIPLIER * c.RESOLUTION_RATIO
         self.player.angle = 180
 
     def update_wolves(self, row):
@@ -524,14 +523,20 @@ class WorldEngine():
         for row in self.backgrounds:
 
             for cell in row:
+
+                if cell == None:
+
+                    pass
+
+                else:
                 
-                # Set the cell's center based on grid position
-                cell.center_x = (c.TILE_SIZE * row.index(cell) + c.TILE_SIZE // 2)
-                cell.center_y = (c.TILE_SIZE * 
-                                 (self.backgrounds.index(row) - self.loaded_indices[0]) 
-                                 + c.TILE_SIZE // 2)
-                
-                cell.scale = c.RESOLUTION_RATIO
+                    # Set the cell's center based on grid position
+                    cell.center_x = (c.TILE_SIZE * row.index(cell) + c.TILE_SIZE // 2)
+                    cell.center_y = (c.TILE_SIZE * 
+                                    (self.backgrounds.index(row)) 
+                                    + c.TILE_SIZE // 2)
+                    
+                    cell.scale = c.RESOLUTION_RATIO
 
         ## FOR OBSTACLES
         for row in self.obstacles:
@@ -544,7 +549,24 @@ class WorldEngine():
 
                 else:
 
-                    cell.update_resolution(cell.x, cell.y)
+                    # For trees specifically
+                    if (isinstance(cell, Obstacle) and 
+                        cell.texture in [self.tex_eng.tree1, self.tex_eng.tree2, self.tex_eng.tree3,
+                                        self.tex_eng.tree1_left_end, self.tex_eng.tree2_left_end,
+                                        self.tex_eng.tree3_left_end, self.tex_eng.tree1_right_end,
+                                        self.tex_eng.tree2_right_end, self.tex_eng.tree3_right_end,
+                                        self.tex_eng.tree1_no_bush, self.tex_eng.tree2_no_bush,
+                                        self.tex_eng.tree3_no_bush]):
+                        
+                        cell.update_resolution(cell.x, cell.y, False)
+                        
+                    elif isinstance(cell, Obstacle):
+
+                        cell.update_resolution(cell.x, cell.y, True)
+
+                    else:
+
+                        cell.update_resolution(cell.x, cell.y)
 
         ## FOR PLATFORMS
 
@@ -560,7 +582,7 @@ class WorldEngine():
 
             for cell in row:
 
-                cell.update_resolution(cell.x, cell.y)
+                cell.update_resolution(cell.x, cell.y, True)
 
 
     

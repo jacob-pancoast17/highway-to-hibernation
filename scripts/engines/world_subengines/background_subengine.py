@@ -67,9 +67,11 @@ def generate_grass(texture_engine, row, curr_bottom):
         cell = arcade.Sprite(grass_texture)
         
         # Set the cell's center based on grid position
-        cell.center_x = (c.TILE_SIZE * i + c.TILE_SIZE // 2) * c.RESOLUTION_RATIO
-        cell.center_y = (c.TILE_SIZE * (row - curr_bottom) + c.TILE_SIZE // 2) * c.RESOLUTION_RATIO
-
+        cell.center_x = (c.TILE_SIZE * i + c.TILE_SIZE // 2)
+        cell.center_y = (c.TILE_SIZE * 
+                            (row - curr_bottom) 
+                            + c.TILE_SIZE // 2)
+        
         cell.scale = c.RESOLUTION_RATIO
 
         grass.append(cell)
@@ -98,9 +100,11 @@ def generate_bank(texture_engine, row, curr_bottom):
         cell = arcade.Sprite(bank_texture)
 
         # Set the cell's center based on grid position
-        cell.center_x = c.TILE_SIZE * i + c.TILE_SIZE // 2
-        cell.center_y = c.TILE_SIZE * (row - curr_bottom) + c.TILE_SIZE // 2
-
+        cell.center_x = (c.TILE_SIZE * i + c.TILE_SIZE // 2)
+        cell.center_y = (c.TILE_SIZE * 
+                            (row - curr_bottom) 
+                            + c.TILE_SIZE // 2)
+        
         cell.scale = c.RESOLUTION_RATIO
 
         bank.append(cell)

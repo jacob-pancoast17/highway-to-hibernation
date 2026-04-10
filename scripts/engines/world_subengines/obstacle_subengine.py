@@ -132,7 +132,7 @@ def generate_forest(texture_engine, curr_walk_coords, row, curr_bottom):
 
         tree_texture = tree_textures_left[i]
 
-        tree = Obstacle(tree_texture, i, row=row - curr_bottom)
+        tree = Obstacle(tree_texture, i, row - curr_bottom, False)
 
         tree.center_y = (c.TILE_SIZE * (row - curr_bottom)
                                 + c.TILE_SIZE)
@@ -170,7 +170,7 @@ def generate_forest(texture_engine, curr_walk_coords, row, curr_bottom):
                         'sprites/log_mushrooms.png'],
                         weights = [0.18, 0.18, 0.18, 0.08, 0.08, 0.08, 0.12, 0.06, 0.04])
 
-                    last_rock = Obstacle(rock_texture[0], x, row - curr_bottom)
+                    last_rock = Obstacle(rock_texture[0], x, row - curr_bottom, True)
                     sprites.append(last_rock)
 
     # Trees on the right
@@ -182,7 +182,7 @@ def generate_forest(texture_engine, curr_walk_coords, row, curr_bottom):
 
         tree_texture = tree_textures_right[i]
 
-        tree = Obstacle(tree_texture, x, row=row - curr_bottom)
+        tree = Obstacle(tree_texture, x, row - curr_bottom, False)
 
         tree.center_y = (c.TILE_SIZE * (row - curr_bottom)
                                 + c.TILE_SIZE)
@@ -251,11 +251,11 @@ def generate_victory(texture_engine, curr_walk_coords, row, curr_bottom):
         tree_texture = tree_textures_left[i]
 
         sprites.append(
-                Obstacle(tree_texture, i, row - curr_bottom))
+                Obstacle(tree_texture, i, row - curr_bottom, False))
 
-        sprites[-1].scale = 0.95
+        sprites[-1].scale = c.RESOLUTION_RATIO
         sprites[-1].center_y = (c.TILE_SIZE * (row - curr_bottom)
-                                + c.TILE_SIZE * 0.95)
+                                + c.TILE_SIZE)
 
     for i in range(c.COLUMN_COUNT - num_trees_left - num_trees_right):
 
@@ -288,7 +288,7 @@ def generate_victory(texture_engine, curr_walk_coords, row, curr_bottom):
                         'sprites/log_mushrooms.png'],
                         weights = [0.18, 0.18, 0.18, 0.08, 0.08, 0.08, 0.12, 0.06, 0.04])
 
-                    last_rock = Obstacle(rock_texture[0], x, row - curr_bottom)
+                    last_rock = Obstacle(rock_texture[0], x, row - curr_bottom, True)
                     sprites.append(last_rock)
 
     # Trees on the right
@@ -301,10 +301,10 @@ def generate_victory(texture_engine, curr_walk_coords, row, curr_bottom):
         tree_texture = tree_textures_right[i]
 
         sprites.append(
-                Obstacle(tree_texture, x, row - curr_bottom))
+                Obstacle(tree_texture, x, row - curr_bottom, False))
 
-        sprites[-1].scale = 0.95
+        sprites[-1].scale = c.RESOLUTION_RATIO
         sprites[-1].center_y = (c.TILE_SIZE * (row - curr_bottom)
-                                + c.TILE_SIZE * 0.95)
+                                + c.TILE_SIZE)
 
     return [sprites, curr_walk_coords]

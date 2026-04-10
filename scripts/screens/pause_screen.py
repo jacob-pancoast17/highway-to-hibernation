@@ -130,4 +130,4 @@ class Pause(arcade.View):
             self.window.show_view(StatsScreen(self))
         
         elif symbol == arcade.key.F:
-            self.window.show_view(Settings(self))
+            self.window.show_view(Settings(self, True))

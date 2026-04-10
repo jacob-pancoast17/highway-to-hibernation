@@ -62,7 +62,8 @@ def generate_honey(texture_engine, obstacles, row, curr_bottom):
 
         hun = Obstacle(texture_engine.hunny,
                                         x[0],
-                                        row - curr_bottom)
+                                        row - curr_bottom,
+                                        True)
         hunny.append(hun)
 
         return hunny
