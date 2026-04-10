@@ -151,12 +151,23 @@ class StartScreen(arcade.View):
             self.blink()
 
     def generate_coords(self, num_options, previous_coord):
+        '''
+        generate_coords uses the number of options to create coordinates for each of the "buttons"
+
+        param:
+            self
+            num_options
+            previous_coord
+        returns:
+            return_list
+        '''
 
         return_list = [previous_coord]
 
         for i in range(num_options - 1):
 
-            return_list.append((return_list[-1][0], return_list[-1][1] - self.space_between_options))
+            return_list.append((return_list[-1][0],
+                                return_list[-1][1] - self.space_between_options))
 
         return return_list
 
@@ -179,7 +190,7 @@ class StartScreen(arcade.View):
             curr_index = self.options.index(self.currently_selected)
 
             self.currently_selected = self.options[curr_index + 1]
-        
+
         # Open stats page
         elif symbol == arcade.key.L:
             self.window.show_view(LeaderboardScreen(self))
@@ -188,7 +199,7 @@ class StartScreen(arcade.View):
             self.window.show_view(StatsScreen())
         elif symbol == arcade.key.Q:
             self.window.close()
-        
+
         elif symbol == arcade.key.ENTER:
             if self.currently_selected == "Hundred":
                 c.LEVEL_SIZE = 100
@@ -201,8 +212,15 @@ class StartScreen(arcade.View):
             game_view = GameView()
             self.window.show_view(game_view)
 
-    
     def draw_infinity(self):
+        '''
+        draw_infinity is a helper function which draws the infinite levels button
+
+        param:
+            self
+        returns:
+            nothing
+        '''
 
         if (self.blinked and self.currently_selected == 'Infinite'):
 
@@ -235,10 +253,17 @@ class StartScreen(arcade.View):
                 anchor_y="center",
                 color = arcade.csscolor.WHITE)
 
-        infinite.draw()
+        infinite.draw()\
 
     def draw_hundred(self):
-        
+        '''
+        draw_hundred is a helper function which draws the hundred levels button
+
+        param:
+            self
+        returns:
+            nothing
+        '''
         if (self.blinked and self.currently_selected == 'Hundred'):
             hundred = arcade.Text(
                 "HUNDRED",
@@ -250,7 +275,7 @@ class StartScreen(arcade.View):
                 anchor_x="center",
                 anchor_y="center",
                 color=arcade.csscolor.BLACK)
-            
+
             arcade.draw_rect_filled(
                 arcade.XYWH(self.options_coords[1][0],
                 self.options_coords[1][1],
@@ -274,6 +299,14 @@ class StartScreen(arcade.View):
         hundred.draw()
 
     def draw_fifty(self):
+        '''
+        draw_fifty is a helper function which draws the fifty levels button
+
+        param:
+            self
+        returns:
+            nothing
+        '''
         if (self.blinked and self.currently_selected == 'Fifty'):
             fifty = arcade.Text(
                 "FIFTY",
@@ -285,7 +318,7 @@ class StartScreen(arcade.View):
                 anchor_x="center",
                 anchor_y="center",
                 color=arcade.csscolor.BLACK)
-            
+
             arcade.draw_rect_filled(
                 arcade.XYWH(self.options_coords[2][0],
                 self.options_coords[2][1],
@@ -305,9 +338,16 @@ class StartScreen(arcade.View):
                 color = arcade.csscolor.WHITE)
 
         fifty.draw()
-        
-    def draw_thirty(self):
 
+    def draw_thirty(self):
+        '''
+        draw_thirty is a helper function which draws the thirty levels button
+
+        param:
+            self
+        returns:
+            nothing
+        '''
         if (self.blinked and self.currently_selected == 'Thirty'):
             thirty = arcade.Text(
                 "THIRTY",
@@ -319,7 +359,7 @@ class StartScreen(arcade.View):
                 anchor_x="center",
                 anchor_y="center",
                 color=arcade.csscolor.BLACK)
-            
+
             arcade.draw_rect_filled(
                 arcade.XYWH(self.options_coords[3][0],
                 self.options_coords[3][1],
@@ -342,6 +382,15 @@ class StartScreen(arcade.View):
         thirty.draw()
 
     def blink(self):
+        '''
+        blink takes the variable blinked and changes it on or off depending on what the
+        current value is
+
+        param:
+            self
+        returns:
+            nothing
+        '''
 
         if self.blinked is False:
 

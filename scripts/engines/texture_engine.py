@@ -16,13 +16,17 @@ class TextureEngine():
 
         param:
             self
-            world - a world engine
-            player - a player
+        returns:
+            nothing
         '''
-        
+
         ## SPRITES
         # Bear
         self.bear = "sprites/bear_rev2.png"
+        # player
+        self.player = None
+        # world
+        self.world = None
         # Deaths
         drowning_sheet = arcade.load_spritesheet("sprites/bear_death2_sheet.png")
         self.drowning = drowning_sheet.get_texture_grid(size = (30, 30), columns=9, count=9)
@@ -65,12 +69,30 @@ class TextureEngine():
         self.wolf = wolf_sheet.get_texture_grid(size = (30, 30), columns=11, count=11)
 
     def add_player(self, player):
+        '''
+        add_player is a helper function with initializes the player sprite and adds
+        it to the game
+        
+        param:
+            self
+            player - a player
+        returns:
+            nothing
+        '''
 
         self.player = arcade.SpriteList()
         self.player.append(player)
 
     def add_world(self, world):
-
+        '''
+        add_world is a helper function with initializes the world and adds it to the game
+        
+        param:
+            self
+            world - a world
+        returns:
+            nothing
+        '''
         self.world = world
 
     def create_grid(self):
@@ -110,8 +132,19 @@ class TextureEngine():
                 grid.append(cell)
 
         return grid
-    
+
     def get_trees(self, num_trees, right):
+        '''
+        get_trees is a helper function which takes a number of trees and randomly picks
+        their textures and ensures that bushes don't get cut off
+        param:
+            self
+            num_trees - number of trees on the edges of a row
+            right - boolean of whether or not the trees are on the right side of 
+                the screen
+        returns:
+            trees - list of the textures
+        '''
 
         trees = []
 
@@ -131,55 +164,64 @@ class TextureEngine():
 
                 # Attempt to start bushes
                 if (random.random() < bush_start_chance or not
-                    (right == False and i == num_trees - 1)):
+                    (right is False and i == num_trees - 1)):
 
                     # Bushes right end
-                    tree_right_end = random.choices([self.tree1_right_end, 
-                                         self.tree2_right_end, 
-                                         self.tree3_right_end], 
+                    tree_right_end = random.choices([self.tree1_right_end,
+                                         self.tree2_right_end,
+                                         self.tree3_right_end],
                                          weights = [1/3, 1/3, 1/3])[0]
                     trees.append(tree_right_end)
 
                     in_bush = True
-                
+
                 # Otherwise, append a tree with no bush
                 else:
 
-                    tree_no_bush = random.choices([self.tree1_no_bush, 
-                                       self.tree2_no_bush, 
-                                       self.tree3_no_bush], 
+                    tree_no_bush = random.choices([self.tree1_no_bush,
+                                       self.tree2_no_bush,
+                                       self.tree3_no_bush],
                                        weights = [1/3, 1/3, 1/3])[0]
                     trees.append(tree_no_bush)
-            
-            # Otherwise 
+
+            # Otherwise
             else:
 
                 # See if we should end the bush
                 if (random.random() < end_bush_chance or
-                    (right == False and i == num_trees - 1)):
-                    
+                    (right is False and i == num_trees - 1)):
+
                     # Bushes left end
-                    tree_left_end = random.choices([self.tree1_left_end, 
-                                    self.tree2_left_end, 
-                                    self.tree3_left_end], 
+                    tree_left_end = random.choices([self.tree1_left_end,
+                                    self.tree2_left_end,
+                                    self.tree3_left_end],
                                     weights = [1/3, 1/3, 1/3])[0]
                     trees.append(tree_left_end)
 
                     in_bush = False
-                
+
                 # Otherwise, continue bushes
                 else:
 
-                    tree = random.choices([self.tree1, 
-                               self.tree2, 
-                               self.tree3], 
+                    tree = random.choices([self.tree1,
+                               self.tree2,
+                               self.tree3],
                                weights = [1/3, 1/3, 1/3])[0]
                     trees.append(tree)
 
         return trees
-    
-    def get_log(self, length):
 
+    def get_log(self, length):
+        '''
+        get_log is a helper function which takes a length of the log picks the correct
+        textures so each tile is correctly connected
+        
+        param:
+            self
+            length - length of the log
+        returns:
+            logs - list of the textures
+        '''
         logs = []
 
         # For each cell
@@ -196,7 +238,7 @@ class TextureEngine():
             else:
 
                 logs.append(self.logs[1])
-                
+
         return logs
 
     def draw_all_backgrounds(self):
@@ -267,14 +309,14 @@ class TextureEngine():
 
             # For logs
             if isinstance(row, list):
-    
+
                 row[0].draw()
 
             # For lilypads
             else:
 
                 row.draw()
-    
+
     def draw_all_collectibles(self):
         '''
         draw_all_collectibles is a helper function that
@@ -290,7 +332,6 @@ class TextureEngine():
 
             collectibles.draw()
 
-    
     def draw_all_sprites(self):
         '''
         draw_all_sprites draws the currently loaded

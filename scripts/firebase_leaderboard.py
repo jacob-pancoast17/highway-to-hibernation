@@ -1,6 +1,7 @@
+"This module holds the firebase information for our leaderboard"
+from datetime import datetime
 import firebase_admin
 from firebase_admin import credentials, firestore
-from datetime import datetime
 
 # initialize firebase app if not already initialized
 if not firebase_admin._apps:
@@ -13,6 +14,12 @@ db = firestore.client()
 def add_score(name, score):
     '''
     Add one score to the leaderboard collection
+
+    param:
+        name - player name
+        score - score
+    returns:
+        nothing
     '''
     db.collection("leaderboard").document().set({
         "name": name,
@@ -22,9 +29,14 @@ def add_score(name, score):
 
 
 def get_top_scores(limit_count=10):
-    """
+    '''
     Return top scores, highest first.
-    """
+    
+    param:
+        limit_count - limits how many scores are displayed
+    returns:
+        scores - list of the scores with in the limit
+    '''
     try:
         docs = (
             db.collection("leaderboard")
@@ -61,9 +73,14 @@ def get_top_scores(limit_count=10):
 
 
 def get_player_stats(name):
-    """
+    '''
     Return stats for one player.
-    """
+
+    param:
+        name - name of player
+    returns:
+        a dictionary with players stats
+    '''
     try:
         docs = (
             db.collection("leaderboard")
