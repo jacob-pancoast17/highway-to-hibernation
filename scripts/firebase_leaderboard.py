@@ -14,6 +14,12 @@ db = firestore.client()
 def add_score(name, score):
     '''
     Add one score to the leaderboard collection
+
+    param:
+        name - player name
+        score - score
+    returns:
+        nothing
     '''
     db.collection("leaderboard").document().set({
         "name": name,
@@ -23,9 +29,14 @@ def add_score(name, score):
 
 
 def get_top_scores(limit_count=10):
-    """
+    '''
     Return top scores, highest first.
-    """
+    
+    param:
+        limit_count - limits how many scores are displayed
+    returns:
+        scores - list of the scores with in the limit
+    '''
     try:
         docs = (
             db.collection("leaderboard")
@@ -62,9 +73,14 @@ def get_top_scores(limit_count=10):
 
 
 def get_player_stats(name):
-    """
+    '''
     Return stats for one player.
-    """
+
+    param:
+        name - name of player
+    returns:
+        a dictionary with players stats
+    '''
     try:
         docs = (
             db.collection("leaderboard")
