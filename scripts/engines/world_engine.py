@@ -312,11 +312,15 @@ class WorldEngine():
             new_speed = c.UPPER_OBSTACLE_SPEED
 
         if last_arrival.is_moving_left:
-            hostiles.append(Hostile(self.tex_eng.wolf[0], 14, row - self.loaded_indices[0],
-                         self.tex_eng, speed = new_speed, static=False, left=True))
+            wolf = Hostile(self.tex_eng.wolf[0], 14, row - self.loaded_indices[0],
+                         self.tex_eng, speed = new_speed, static=False, left=True)
+            wolf.scale = c.RESOLUTION_RATIO
+            hostiles.append(wolf)
         else:
-            hostiles.append(Hostile(self.tex_eng.wolf[0], 0, row - self.loaded_indices[0],
-                         self.tex_eng, speed = new_speed, static=False, left=False))
+            wolf = Hostile(self.tex_eng.wolf[0], 0, row - self.loaded_indices[0],
+                         self.tex_eng, speed = new_speed, static=False, left=False)
+            wolf.scale = c.RESOLUTION_RATIO
+            hostiles.append(wolf)
 
         # Replace currently loaded row with the updated one
         self.obstacles[row - self.loaded_indices[0]] = hostiles
@@ -529,18 +533,34 @@ class WorldEngine():
                 
                 cell.scale = c.RESOLUTION_RATIO
 
-        ## FOR ROW
-        for row in self.rows:
+        ## FOR OBSTACLES
+        for row in self.obstacles:
 
             for cell in row:
 
-                # Set the cell's center based on grid position
-                cell.center_x = (c.TILE_SIZE * row.index(cell) + c.TILE_SIZE // 2)
-                cell.center_y = (c.TILE_SIZE * 
-                                 (self.backgrounds.index(row) - self.loaded_indices[0]) 
-                                 + c.TILE_SIZE // 2)
-                
-                cell.scale = c.RESOLUTION_RATIO
+                if cell == None:
+
+                    pass
+
+                else:
+
+                    cell.update_resolution(cell.x, cell.y)
+
+        ## FOR PLATFORMS
+
+        for row in self.platforms:
+
+            for cell in row[0]:
+
+                cell.update_resolution(cell.x, cell.y)
+
+        ## FOR COLLECTIBLES
+
+        for row in self.collectibles:
+
+            for cell in row:
+
+                cell.update_resolution(cell.x, cell.y)
 
 
     

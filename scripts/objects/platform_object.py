@@ -40,6 +40,8 @@ class Platform(arcade.Sprite):
             # Set the first time to move based on the speed
             self.next_move = self.speed
 
+        self.update_resolution(self.x, self.y)
+
     def try_move(self, delta_time, player):
         '''
         try_move takes the elapsed time and tests if we can move
@@ -110,3 +112,22 @@ class Platform(arcade.Sprite):
             return True
         else:
             return False
+        
+    def update_resolution(self, curr_x_on_screen, curr_y_on_screen):
+        '''
+        Updates the current resolution
+        
+        param:
+            self
+            curr_x_on_screen
+            curr_y_on_screen
+        return:
+            nothing
+        '''
+
+        # Update resolution
+        self.scale = c.RESOLUTION_RATIO
+
+        # Update the current position
+        self.center_x = c.TILE_SIZE * curr_x_on_screen + c.TILE_SIZE // 2
+        self.center_y = c.TILE_SIZE * curr_y_on_screen + c.TILE_SIZE // 2

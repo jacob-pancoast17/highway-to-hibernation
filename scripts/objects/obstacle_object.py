@@ -24,3 +24,24 @@ class Obstacle(arcade.Sprite):
         self.center_y = c.TILE_SIZE * row + c.TILE_SIZE // 2
         self.y = row
         self.angle = 0
+
+        self.update_resolution(self.x, self.y)
+    
+    def update_resolution(self, curr_x_on_screen, curr_y_on_screen):
+        '''
+        Updates the current resolution
+        
+        param:
+            self
+            curr_x_on_screen
+            curr_y_on_screen
+        return:
+            nothing
+        '''
+
+        # Update resolution
+        self.scale = c.RESOLUTION_RATIO
+
+        # Update the current position
+        self.center_x = c.TILE_SIZE * curr_x_on_screen + c.TILE_SIZE // 2
+        self.center_y = c.TILE_SIZE * curr_y_on_screen + c.TILE_SIZE // 2
