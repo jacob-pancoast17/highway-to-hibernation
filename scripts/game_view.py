@@ -107,9 +107,9 @@ class GameView(arcade.View):
         c.MAIN_THEME.volume = 0.4
 
     def on_draw(self):
-        """
+        '''
         Render the screen every frame
-        """
+        '''
         self.clear()
 
         self.texture_engine.draw_all_sprites()

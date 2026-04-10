@@ -151,7 +151,7 @@ class StartScreen(arcade.View):
             self.blink()
 
     def generate_coords(self, num_options, previous_coord):
-        """
+        '''
         generate_coords uses the number of options to create coordinates for each of the "buttons"
 
         param:
@@ -160,7 +160,7 @@ class StartScreen(arcade.View):
             previous_coord
         returns:
             return_list
-        """
+        '''
 
         return_list = [previous_coord]
 

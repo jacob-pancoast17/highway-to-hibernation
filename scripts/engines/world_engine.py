@@ -643,7 +643,7 @@ class WorldEngine():
         return sprites
 
     def generate_honey(self, row):
-        """
+        '''
         generate_honey takes a row and generates it randomly
         to spawn honey that gives you points if you get it
 
@@ -653,7 +653,7 @@ class WorldEngine():
         returns:
             a SpriteList object containing all of the object sprites for
                 that row
-        """
+        '''
 
         self.sprites = arcade.SpriteList()
 
@@ -707,7 +707,7 @@ class WorldEngine():
         return river
 
     def generate_lilypads(self, row):
-        """
+        '''
         generate_lilypads takes a row and generates a lilypad that you
         can walk on to cross the river, with a random chance of spawning in each
 
@@ -717,7 +717,7 @@ class WorldEngine():
         returns:
             a SpriteList object containing all of the lilypad sprites for
                 that row
-        """
+        '''
 
         lilypads = arcade.SpriteList()
 
