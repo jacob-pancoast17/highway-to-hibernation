@@ -257,3 +257,8 @@ class GameView(arcade.View):
 
         arcade.stop_sound(c.MAIN_THEME)
         self.player.die(delta_time)
+
+    def initialize(self):
+        print("initializing . . .")
+
+        self.player.update_resolution(self.player.x, self.player.y - self.current_bottom_of_screen)
