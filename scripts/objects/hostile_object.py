@@ -163,7 +163,12 @@ class Hostile(arcade.Sprite):
         '''
 
         # Update resolution
-        self.scale = c.RESOLUTION_RATIO
+        if not self.static and self.is_moving_left is False:
+            self.scale = c.RESOLUTION_RATIO
+        elif not self.static and self.is_moving_left is True:
+            self.scale = c.RESOLUTION_RATIO
+        else:
+            self.scale = c.RESOLUTION_RATIO
 
         # Update the current position
         self.center_x = c.TILE_SIZE * curr_x_on_screen + c.TILE_SIZE // 2

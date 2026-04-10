@@ -74,11 +74,11 @@ class Platform(arcade.Sprite):
                                                   player)
             # If moving right, increase x
             if not self.is_moving_left:
-                self.center_x += c.VELOCITY_MULTIPLIER
+                self.center_x += c.VELOCITY_MULTIPLIER * c.RESOLUTION_RATIO
                 self.x += 1
                 # if the player is colliding with log, and they aren't offscreen
                 if hit_list:
-                    player.center_x += c.VELOCITY_MULTIPLIER
+                    player.center_x += c.VELOCITY_MULTIPLIER * c.RESOLUTION_RATIO
                     player.x += 1
                     if player.x > c.COLUMN_COUNT - 1:
                         player.dead = True
@@ -89,7 +89,7 @@ class Platform(arcade.Sprite):
                 self.center_x -= c.VELOCITY_MULTIPLIER
                 self.x -= 1
                 if hit_list and player.x >= 0:
-                    player.center_x -= c.VELOCITY_MULTIPLIER
+                    player.center_x -= c.VELOCITY_MULTIPLIER * c.RESOLUTION_RATIO
                     player.x -= 1
                     if player.x < 0:
                         player.dead = True
@@ -107,7 +107,7 @@ class Platform(arcade.Sprite):
         '''
 
         if (self.center_x < c.TILE_SIZE or
-            self.center_x > c.WINDOW_WIDTH / c.RESOLUTION_RATIO):
+            self.center_x > c.WINDOW_WIDTH):
             self.speed = 0
             return True
         else:
