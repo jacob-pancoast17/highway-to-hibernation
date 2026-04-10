@@ -47,13 +47,17 @@ class WorldEngine():
         self.speed = None
         self.sprites = None
         self.spawn = [None]
+
+        self.fast_log_rows = []
+        self.med_log_rows = []
+        self.slow_log_rows = []
         self.log_moving_left = random.choice([True, False])
 
     def generate_array(self):
         '''
         generate_array fills the array created in the constructor
-        with values that indicate whether that row is a road, river,
-        grass, etc.
+        with array values that indicate whether that row is a road, river,
+        grass, etc, as well as other info each row may need, such as log speed.
 
         param: 
             self
@@ -63,7 +67,7 @@ class WorldEngine():
         # Make sure the first rows are always grass at the
         # beginning of the game
         for i in range(c.NUM_START_FOREST_ROWS):
-            self.rows.append('Forest')
+            self.rows.append(['Forest'])
 
         # For each row... (excluding the first three which
         # should be grass
@@ -78,35 +82,38 @@ class WorldEngine():
             # appropriate value based on the legend
 
             # Gravel if the last row was a river
-            if (self.rows[-1] == "River_Logs" or
-                self.rows[-1] == "River_Lilypads"):
+            if (self.rows[-1][0] == "River_Logs" or
+                self.rows[-1][0] == "River_Lilypads"):
 
-                self.rows.append("Bank")
+                self.rows.append(["Bank"])
 
             # River (lilypads)
             elif (noise > -1 and noise < -0.5):
 
                 # River with lilypads
-                self.rows.append("River_Lilypads")
+                self.rows.append(["River_Lilypads"])
 
             # River (with logs)
             elif(noise> -0.5 and noise < -0.1):
 
+                # random speed for log velocity
+                rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST],
+                                        weights = [1/3, 1/3, 1/3])
                 # River with logs
-                self.rows.append("River_Logs")
+                self.rows.append(["River_Logs", rand_speed[0]])
 
             # Forest
             elif (noise > -0.1 and noise < 0.1):
 
                 # Forest
-                self.rows.append("Forest")
+                self.rows.append(["Forest"])
 
             # Wolfs
             elif (noise > 0.1 and
                 noise < 1):
 
                 # Pack
-                self.rows.append("Pack")
+                self.rows.append(["Pack"])
 
             else:
                 print("ERROR GENERATING ARRAY IN WORLD_GEN.PY")
@@ -115,7 +122,8 @@ class WorldEngine():
         # beginning of the game
         for i in range(c.NUM_ENDING_FOREST_ROWS):
 
-            self.rows.append('Victory')
+            self.rows.append(['Victory'])
+        #TODO create fast_log_rows, med_log_rows, and slow_log_rows here and update in update screen
 
     def generate_screen(self):
         '''
@@ -138,13 +146,16 @@ class WorldEngine():
             self.loaded.append(bottom_row)
 
             # Randomly pick a velocity to add to list for initial screen generation
-            rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST],
-                                        weights = [1/3, 1/3, 1/3])
+    
             middle_row = self.generate_platforms(i)
-            self.platforms.append([middle_row, rand_speed[0]])
+
+            self.platforms.append(middle_row)
 
             top_row = self.generate_collectible(i)
             self.collectibles.append(top_row)
+
+        print("WHATEVER?")
+        print(self.rows)
 
     def update_screen(self, new_row_index):
         '''
@@ -172,11 +183,8 @@ class WorldEngine():
         new_row = self.generate_row(new_row_index)
         self.loaded.append(new_row)
 
-        # Randomly pick a velocity for each row in the updated screen
-        rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST],
-                                    weights = [1/3, 1/3, 1/3])
         new_platform  = self.generate_platforms(new_row_index)
-        self.platforms.append([new_platform, rand_speed[0]])
+        self.platforms.append(new_platform)
 
 
         new_collectible = self.generate_collectible(new_row_index)
@@ -191,7 +199,7 @@ class WorldEngine():
                                      change_y = -c.TILE_HEIGHT)
             self.loaded[i].move(change_x = 0,
                                 change_y = -c.TILE_HEIGHT)
-            self.platforms[i][0].move(change_x = 0,
+            self.platforms[i].move(change_x = 0,
                                 change_y = -c.TILE_HEIGHT)
             self.collectibles[i].move(change_x = 0,
                                 change_y = -c.TILE_HEIGHT)
@@ -212,25 +220,25 @@ class WorldEngine():
             a SpriteList object from child function
         '''
 
-        if self.rows[row] == "Pack":
+        if self.rows[row][0] == "Pack":
 
             return self.generate_grass(row)
 
-        elif self.rows[row] == "Forest":
+        elif self.rows[row][0] == "Forest":
 
             return self.generate_grass(row)
 
         # Rivers don't need a background
-        elif (self.rows[row] == "River_Lilypads" or
-              self.rows[row] =="River_Logs"):
+        elif (self.rows[row][0] == "River_Lilypads" or
+              self.rows[row][0] =="River_Logs"):
 
             return arcade.SpriteList()
         
-        elif (self.rows[row] == "Bank"):
+        elif (self.rows[row][0] == "Bank"):
 
             return self.generate_bank(row)
 
-        elif self.rows[row] == "Victory":
+        elif self.rows[row][0] == "Victory":
 
             return self.generate_grass(row)
 
@@ -254,24 +262,24 @@ class WorldEngine():
         returns:
             a SpriteList object from child function
         '''
-        if self.rows[row] == "Pack":
+        if self.rows[row][0] == "Pack":
 
             return self.generate_wolves(row)
 
-        elif self.rows[row] == "Forest":
+        elif self.rows[row][0] == "Forest":
 
             return self.generate_forest(row)
 
-        elif (self.rows[row] == "River_Lilypads" or
-              self.rows[row] =="River_Logs"):
+        elif (self.rows[row][0] == "River_Lilypads" or
+              self.rows[row][0] =="River_Logs"):
 
             return self.generate_river(row)
         
-        elif (self.rows[row] == "Bank"):
+        elif (self.rows[row][0] == "Bank"):
 
             return arcade.SpriteList()
 
-        elif self.rows[row] == "Victory":
+        elif self.rows[row][0] == "Victory":
 
             return self.generate_victory(row)
 
@@ -287,11 +295,11 @@ class WorldEngine():
 
         # Use self.row[row] to figure out if the row generated was with lilypads or logs
 
-        if self.rows[row] == 'River_Lilypads':
+        if self.rows[row][0] == 'River_Lilypads':
 
             return self.generate_lilypads(row)
 
-        elif self.rows[row] == 'River_Logs':
+        elif self.rows[row][0] == 'River_Logs':
 
             return self.generate_logs(row, self.log_moving_left)
 
@@ -311,7 +319,7 @@ class WorldEngine():
         returns:
             a SpriteList object from child function
         '''
-        if self.rows[row] == 'Forest':
+        if self.rows[row][0] == 'Forest':
 
             return self.generate_honey(row)
 
@@ -743,11 +751,13 @@ class WorldEngine():
 
                 log_textures = self.tex_eng.get_log(length)
 
+                #speed for this one: self.platforms[(row - self.loaded_indices[0])-1][1]
+
                 log_cells.append(Platform(log_textures[length - 1 - i],
                                     15 - i,
                                     row= row - self.loaded_indices[0],
                                     static = False,
-                                    speed= self.platforms[(row - self.loaded_indices[0])-1][1],
+                                    speed= self.rows[row][1],
                                     left=True))
 
             else:
@@ -758,7 +768,7 @@ class WorldEngine():
                                     i,
                                     row= row - self.loaded_indices[0],
                                     static = False,
-                                    speed= self.platforms[(row - self.loaded_indices[0])-1][1],
+                                    speed= self.rows[row][1],
                                     left=False))
 
         for log in log_cells:
@@ -879,7 +889,7 @@ class WorldEngine():
         '''
         new_row = arcade.SpriteList()
 
-        existing_row = self.platforms[row - self.loaded_indices[0]][0]
+        existing_row = self.platforms[row - self.loaded_indices[0]]
         tmp = existing_row[0]
         moving_left = tmp.is_moving_left
 
@@ -901,14 +911,14 @@ class WorldEngine():
         # ensures spawn is assigned a value
         spawn = random.choices([True, False], weights=[50, 50])
 
-        if self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_SLOW:
-            spawn = random.choices([True, False], weights=[65, 35])
+        if self.rows[row][1] == c.LOG_SPEED_SLOW:
+            spawn = random.choices([True, False], weights=[100, 0])
             # print("WE GOT SLOW!")
-        elif self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_MED:
-            spawn = random.choices([True, False], weights=[70, 30])
+        elif self.rows[row][1] == c.LOG_SPEED_MED:
+            spawn = random.choices([True, False], weights=[100, 0])
             # print("WE GOT MED!")
-        elif self.platforms[row - self.loaded_indices[0]][1] == c.LOG_SPEED_FAST:
-            spawn = random.choices([True, False], weights=[90, 10])
+        elif self.rows[row][1] == c.LOG_SPEED_FAST:
+            spawn = random.choices([True, False], weights=[100, 0])
             # print("WE GOT FAST!")
 
         if not spawn[0]:
@@ -924,17 +934,17 @@ class WorldEngine():
                 new_row.append(
                     Platform(log_textures[i], c.COLUMN_COUNT - 1 + i,
                                 row - self.loaded_indices[0],
-                                speed = self.platforms[(row - self.loaded_indices[0])-1][1],
+                                speed = self.rows[row][1],
                                 static=False, left=True))
             else:
                 log_textures = self.tex_eng.get_log(log_size)
                 log_textures = list(reversed(log_textures))
                 new_row.append(
                     Platform(log_textures[i], 0 - i, row - self.loaded_indices[0],
-                             speed = self.platforms[row - self.loaded_indices[0]][1],
+                             speed = self.rows[row][1],
                              static=False, left=False))
         # Replace currently loaded row with the updated one
-        self.platforms[row - self.loaded_indices[0]][0] = new_row
+        self.platforms[row - self.loaded_indices[0]] = new_row
         # print("SPEED:")
         # print(self.platforms[row - self.loaded_indices[0]][1])
 
@@ -999,7 +1009,7 @@ class WorldEngine():
 
             there_was_a_sprite = False
 
-            for sprite in self.platforms[row - self.loaded_indices[0]][0]:
+            for sprite in self.platforms[row - self.loaded_indices[0]]:
 
                 # For each sprite in the current row, check
                 # if it's x coord matches the current x
@@ -1032,7 +1042,7 @@ class WorldEngine():
 
         for i in self.loaded_indices:
 
-            if self.rows[i] == "Pack":
+            if self.rows[i][0] == "Pack":
 
                 wolves.append(i)
 
@@ -1052,7 +1062,7 @@ class WorldEngine():
 
         for i in self.loaded_indices:
 
-            if self.rows[i] == "River_Logs":
+            if self.rows[i][0] == "River_Logs":
 
                 logs.append(i)
 
