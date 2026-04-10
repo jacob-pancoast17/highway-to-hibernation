@@ -213,6 +213,14 @@ class StartScreen(arcade.View):
             self.window.show_view(game_view)
 
     def draw_infinity(self):
+        '''
+        draw_infinity is a helper function which draws the infinite levels button
+
+        param:
+            self
+        returns:
+            nothing
+        '''
 
         if (self.blinked and self.currently_selected == 'Infinite'):
 
@@ -248,7 +256,14 @@ class StartScreen(arcade.View):
         infinite.draw()\
 
     def draw_hundred(self):
+        '''
+        draw_hundred is a helper function which draws the hundred levels button
 
+        param:
+            self
+        returns:
+            nothing
+        '''
         if (self.blinked and self.currently_selected == 'Hundred'):
             hundred = arcade.Text(
                 "HUNDRED",
@@ -284,7 +299,14 @@ class StartScreen(arcade.View):
         hundred.draw()
 
     def draw_fifty(self):
+        '''
+        draw_fifty is a helper function which draws the fifty levels button
 
+        param:
+            self
+        returns:
+            nothing
+        '''
         if (self.blinked and self.currently_selected == 'Fifty'):
             fifty = arcade.Text(
                 "FIFTY",
@@ -318,7 +340,14 @@ class StartScreen(arcade.View):
         fifty.draw()
 
     def draw_thirty(self):
+        '''
+        draw_thirty is a helper function which draws the thirty levels button
 
+        param:
+            self
+        returns:
+            nothing
+        '''
         if (self.blinked and self.currently_selected == 'Thirty'):
             thirty = arcade.Text(
                 "THIRTY",
@@ -353,6 +382,15 @@ class StartScreen(arcade.View):
         thirty.draw()
 
     def blink(self):
+        '''
+        blink takes the variable blinked and changes it on or off depending on what the
+        current value is
+
+        param:
+            self
+        returns:
+            nothing
+        '''
 
         if self.blinked is False:
 
