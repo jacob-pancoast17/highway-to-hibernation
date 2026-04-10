@@ -48,10 +48,10 @@ class WorldEngine():
         self.sprites = None
         self.spawn = [None]
 
+        self.log_moving_left = random.choice([True, False])
         self.fast_log_rows = []
         self.med_log_rows = []
         self.slow_log_rows = []
-        self.log_moving_left = random.choice([True, False])
 
     def generate_array(self):
         '''
@@ -124,6 +124,7 @@ class WorldEngine():
 
             self.rows.append(['Victory'])
         #TODO create fast_log_rows, med_log_rows, and slow_log_rows here and update in update screen
+        
 
     def generate_screen(self):
         '''
@@ -154,8 +155,17 @@ class WorldEngine():
             top_row = self.generate_collectible(i)
             self.collectibles.append(top_row)
 
-        print("WHATEVER?")
-        print(self.rows)
+        # append indices for each log row to an array according to its speed for time_engine
+        curr_log_rows = self.get_log_rows()
+        for i in curr_log_rows:
+            if (self.rows[i][1] == c.LOG_SPEED_SLOW):
+                self.slow_log_rows.append(i)
+            elif (self.rows[i][1] == c.LOG_SPEED_MED):
+                self.med_log_rows.append(i)
+            elif (self.rows[i][1] == c.LOG_SPEED_FAST):
+                self.fast_log_rows.append(i)
+            else:
+                print("LOG SPEED APPENDING ERROR")
 
     def update_screen(self, new_row_index):
         '''
@@ -205,6 +215,24 @@ class WorldEngine():
                                 change_y = -c.TILE_HEIGHT)
         self.player.center_y -= c.VELOCITY_MULTIPLIER
         self.player.angle = 180
+
+
+        # get curr num of log rows and reset speed_log_rows to be empty
+        # in order to properly loop thru spawn checks
+        curr_log_rows = self.get_log_rows()
+        self.slow_log_rows = []
+        self.med_log_rows = []
+        self.fast_log_rows = []
+
+        for i in curr_log_rows:
+            if (self.rows[i][1] == c.LOG_SPEED_SLOW):
+                self.slow_log_rows.append(i)
+            elif (self.rows[i][1] == c.LOG_SPEED_MED):
+                self.med_log_rows.append(i)
+            elif (self.rows[i][1] == c.LOG_SPEED_FAST):
+                self.fast_log_rows.append(i)
+            else:
+                print("LOG SPEED APPENDING ERROR")
 
     def generate_background(self, row):
         '''
@@ -888,7 +916,7 @@ class WorldEngine():
             nothing
         '''
         new_row = arcade.SpriteList()
-
+        
         existing_row = self.platforms[row - self.loaded_indices[0]]
         tmp = existing_row[0]
         moving_left = tmp.is_moving_left

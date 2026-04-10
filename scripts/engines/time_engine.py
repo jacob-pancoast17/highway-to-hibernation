@@ -58,29 +58,14 @@ class TimeEngine():
         
         if self.world_time > self.next_fast_log_spawn_check:
             # Check to see if a fast log row exists and append to list to pass into function
-            fast_log_rows = []
-            curr_log_rows = self.world.get_log_rows()
-            for row in curr_log_rows:
-                if(self.world.rows[row][1] == c.LOG_SPEED_FAST):
-                    fast_log_rows.append(row)
-            if(len(fast_log_rows) > 0):
-                self.spawn_platforms("FAST", fast_log_rows)
+            if(len(self.world.fast_log_rows) > 0):
+                self.spawn_platforms("FAST", self.world.fast_log_rows)
         if self.world_time > self.next_med_log_spawn_check:
-            med_log_rows = []
-            curr_log_rows = self.world.get_log_rows()
-            for row in curr_log_rows:
-                if(self.world.rows[row][1] == c.LOG_SPEED_MED):
-                    med_log_rows.append(row)
-            if(len(med_log_rows) > 0):
-                self.spawn_platforms("MED", med_log_rows)
+            if(len(self.world.med_log_rows) > 0):
+                self.spawn_platforms("MED", self.world.med_log_rows)
         if self.world_time > self.next_slow_log_spawn_check:
-            slow_log_rows = []
-            curr_log_rows = self.world.get_log_rows()
-            for row in curr_log_rows:
-                if(self.world.rows[row][1] == c.LOG_SPEED_SLOW):
-                    slow_log_rows.append(row)
-            if(len(slow_log_rows) > 0):
-                self.spawn_platforms("SLOW", slow_log_rows)
+            if(len(self.world.slow_log_rows) > 0):
+                self.spawn_platforms("SLOW", self.world.slow_log_rows)
         
     
     def try_to_move_log(self, delta_time):
