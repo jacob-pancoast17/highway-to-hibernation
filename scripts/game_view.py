@@ -198,6 +198,10 @@ class GameView(arcade.View):
             # Pass in the current game state into Pause()
             self.window.show_view(Pause(self))
             c.MAIN_THEME.pause()
+        elif symbol == arcade.key.X:
+            self.player.dead = True
+            self.player.death = "Mauled"
+            self.death_sound = arcade.play_sound(c.DEATH_SFX)
 
     def move_screen_up(self):
         '''
