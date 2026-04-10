@@ -10,6 +10,7 @@ from scripts import constants as c
 from scripts.engines.world_subengines.drunkards_walk import drunkards_walk
 
 # Objects
+from scripts.objects.den_object import Den
 from scripts.objects.hostile_object import Hostile
 from scripts.objects.obstacle_object import Obstacle
 
@@ -35,12 +36,12 @@ def generate_obstacles(texture_engine, current_walk_coords, biome, row, curr_bot
 
     elif biome == "Forest":
 
-        return generate_forest(row)
+        return generate_forest(texture_engine, current_walk_coords, row, curr_bottom)
 
     elif (biome == "River_Lilypads" or
             biome =="River_Logs"):
 
-        return generate_river(row)
+        return generate_river(texture_engine, current_walk_coords, row, curr_bottom)
     
     elif (biome == "Bank"):
 
@@ -48,7 +49,7 @@ def generate_obstacles(texture_engine, current_walk_coords, biome, row, curr_bot
 
     elif biome == "Victory":
 
-        return generate_victory(row)
+        return generate_victory(texture_engine, current_walk_coords, row, curr_bottom)
 
     else:
 
@@ -65,7 +66,7 @@ def generate_wolves(texture_engine, curr_walk_coords, row, curr_bottom):
             curr_walk_coords - current coords of the walkable path
             row - the row index to be drawn at
             curr_bottom - the current bottom of the screen
-        returns:
+        returns:`
             a spritelist of obstacles and the new walkable_path
         '''
 
@@ -193,3 +194,117 @@ def generate_forest(texture_engine, curr_walk_coords, row, curr_bottom):
     current_walk_coords = walkable[-1]
 
     return [sprites, current_walk_coords]
+
+def generate_river(texture_engine, curr_walk_coords, row, curr_bottom):
+        '''
+        generate_river takes a row and generates it randomly based on
+        the "River" quality -- hostile water cells
+
+        param:
+            texture_engine - where to get textures from
+            curr_walk_coords - current coords of the walkable path
+            row - the row index to be drawn at
+            curr_bottom - the current bottom of the screen
+        returns:
+            a spritelist of obstacles and the new walkable path coords
+        '''
+
+        river = arcade.SpriteList()
+
+        # Generate the whole river as hostile objects
+        for i in range(c.COLUMN_COUNT):
+
+            river.append(
+                Hostile("sprites/water.png", i, row - curr_bottom, texture_engine))
+
+        return [river, curr_walk_coords]
+
+def generate_victory(texture_engine, curr_walk_coords, row, curr_bottom):
+        '''
+        generate_victory takes a row and generates it randomly based on
+        the "Victory" quality -- similar to Forest
+
+        param:
+            texture_engine - where to get textures from
+            curr_walk_coords - current coords of the walkable path
+            row - the row index to be drawn at
+            curr_bottom - the current bottom of the screen
+        returns:
+            a spritelist of obstacles and the new walkable path coords
+        '''
+
+
+        sprites = arcade.SpriteList()
+
+        # Generate a random number of trees
+        num_trees_left = random.randint(1,4)
+        num_trees_right = random.randint(1,4)
+
+
+        last_rock = None
+
+        # Append trees to the left
+        tree_textures_left = texture_engine.get_trees(num_trees_left, False)
+
+        for i in range(num_trees_left):
+
+            tree_texture = tree_textures_left[i]
+
+            sprites.append(
+                    Obstacle(tree_texture, i, row - curr_bottom))
+
+            sprites[-1].scale = 0.95
+            sprites[-1].center_y = (c.TILE_SIZE * (row - curr_bottom)
+                                    + c.TILE_SIZE * 0.95)
+
+        for i in range(c.COLUMN_COUNT - num_trees_left - num_trees_right):
+
+            x = i + num_trees_left
+
+            # The victory square should not be a rock
+            if row == c.ENDING_Y and x == c.ENDING_X:
+                den = Den('sprites/den.png', x, row - curr_bottom)
+                sprites.append(den)
+
+            # Always a clear path to end
+            elif x == c.ENDING_X:
+                pass
+
+            # Otherwise, make it a random chance to be a rock
+            else:
+                chance = random.random()
+                if chance < .1:
+
+                    if last_rock is None or last_rock.x != i-1:
+                        rock_texture = random.choices(
+                            ['sprites/rock1.png',
+                            'sprites/rock2.png',
+                            'sprites/rock3.png',
+                            'sprites/rock1_mossy.png',
+                            'sprites/rock2_mossy.png',
+                            'sprites/rock3_mossy.png',
+                            'sprites/log.png',
+                            'sprites/log_mossy.png',
+                            'sprites/log_mushrooms.png'],
+                            weights = [0.18, 0.18, 0.18, 0.08, 0.08, 0.08, 0.12, 0.06, 0.04])
+
+                        last_rock = Obstacle(rock_texture[0], x, row - curr_bottom)
+                        sprites.append(last_rock)
+
+        # Trees on the right
+        tree_textures_right = texture_engine.get_trees(num_trees_right, True)
+
+        for i in range(num_trees_right):
+
+            x = c.COLUMN_COUNT - num_trees_right + i
+
+            tree_texture = tree_textures_right[i]
+
+            sprites.append(
+                    Obstacle(tree_texture, x, row - curr_bottom))
+
+            sprites[-1].scale = 0.95
+            sprites[-1].center_y = (c.TILE_SIZE * (row - curr_bottom)
+                                    + c.TILE_SIZE * 0.95)
+
+        return [sprites, curr_walk_coords]

@@ -3,7 +3,7 @@ the possible path problem'''
 
 import random
 
-def drunkards_walk(self, x, y, left_bound, right_bound):
+def drunkards_walk(x, y, left_bound, right_bound):
     '''
     drunkards_walk returns the tiles in a given row which need to be empty
 

@@ -144,7 +144,11 @@ class WorldEngine():
                                              self.loaded_indices[0]) # Current bottom row 
             self.backgrounds.append(background)
 
-            obstacle_info = generate_obstacles(i)
+            obstacle_info = generate_obstacles(self.tex_eng, # Texture engine
+                                               self.current_walk_coords, # Current walk coords
+                                               self.rows[i], # Biome
+                                               i, # Current row
+                                               self.loaded_indices[0]) # Current bottom row
             self.obstacles.append(obstacle_info[0])
             self.current_walk_coords = obstacle_info[1]
 
@@ -183,9 +187,13 @@ class WorldEngine():
                                              self.loaded_indices[0]) # Bottom row
         self.backgrounds.append(new_background)
 
-        new_obstacle_info = generate_obstacles(new_row_index)
+        new_obstacle_info = generate_obstacles(self.tex_eng, # Texture engine
+                                               self.current_walk_coords, # Current walk coords
+                                               self.rows[new_row_index], # Biome
+                                               new_row_index, # New row index
+                                               self.loaded_indices[0]) # Bottom row
         self.obstacles.append(new_obstacle_info[0])
-        self.current_walk_coords = self.new_obstacle_info[1]
+        self.current_walk_coords = new_obstacle_info[1]
 
         # Randomly pick a velocity for each row in the updated screen
         rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST],
@@ -370,28 +378,6 @@ class WorldEngine():
 
             return arcade.SpriteList()
 
-    def generate_river(self, row):
-        '''
-        generate_river takes a row and generates it based on
-        the "river" quality -- a line of water that kills you
-
-        param:
-            self
-            row - a row index to be generated
-        returns:
-            a SpriteList object containing all of the object sprites for
-                that row
-        '''
-
-        river = arcade.SpriteList()
-
-        # Generate the whole river as hostile objects
-        for i in range(c.COLUMN_COUNT):
-
-            river.append(
-                Hostile("sprites/water.png", i, row - self.loaded_indices[0], self.tex_eng))
-
-        return river
 
     def generate_lilypads(self, row):
         """
@@ -493,99 +479,6 @@ class WorldEngine():
         self.current_walk_coords = walkable[-1]
 
         return log_cells
-
-    def generate_victory(self, row):
-        '''
-        generate_victory takes a row and generates it randomly based on
-        the "victory" quality -- surrounded by trees, with randomly placed
-        rocks (similar to Forest). If the row is the last one in the game,
-        place the victory cell, the "den"
-
-        param:
-            self
-            row - a row index to be generated
-        returns:
-            a SpriteList object containing all of the object sprites for
-                that row
-        '''
-
-        sprites = arcade.SpriteList()
-
-        # Generate a random number of trees
-        trees_left = random.randint(1,4)
-        trees_right = random.randint(1,4)
-
-
-        last_rock = None
-        # Append trees to the left
-        for i in range(trees_left):
-
-            tree_texture = random.choices(
-                    ['sprites/tree1_no_bush.png',
-                    'sprites/tree2_no_bush.png',
-                    'sprites/tree3_no_bush.png'],
-                    weights = [0.33, 0.34, 0.33])
-
-            sprites.append(
-                    Obstacle(tree_texture[0], i, row - self.loaded_indices[0]))
-
-            sprites[-1].scale = 0.95
-            sprites[-1].center_y = (c.TILE_SIZE * (row - self.loaded_indices[0])
-                                    + c.TILE_SIZE * 0.95)
-
-        for i in range(c.COLUMN_COUNT - trees_left - trees_right):
-
-            x = i + trees_left
-
-            # The victory square should not be a rock
-            if row == c.ENDING_Y and x == c.ENDING_X:
-                den = Den('sprites/den.png', x, row - self.loaded_indices[0])
-                sprites.append(den)
-
-            # Always a clear path to end
-            elif x == c.ENDING_X:
-                pass
-
-            # Otherwise, make it a random chance to be a rock
-            else:
-                chance = random.random()
-                if chance < .1:
-
-                    if last_rock is None or last_rock.x != i-1:
-                        rock_texture = random.choices(
-                            ['sprites/rock1.png',
-                            'sprites/rock2.png',
-                            'sprites/rock3.png',
-                            'sprites/rock1_mossy.png',
-                            'sprites/rock2_mossy.png',
-                            'sprites/rock3_mossy.png',
-                            'sprites/log.png',
-                            'sprites/log_mossy.png',
-                            'sprites/log_mushrooms.png'],
-                            weights = [0.18, 0.18, 0.18, 0.08, 0.08, 0.08, 0.12, 0.06, 0.04])
-
-                        last_rock = Obstacle(rock_texture[0], x, row - self.loaded_indices[0])
-                        sprites.append(last_rock)
-
-        # Trees on the right
-        for i in range(trees_right):
-
-            x = c.COLUMN_COUNT - trees_right + i
-
-            tree_texture = random.choices(
-                    ['sprites/tree1_no_bush.png',
-                    'sprites/tree2_no_bush.png',
-                    'sprites/tree3_no_bush.png'],
-                    weights = [0.33, 0.34, 0.33])
-
-            sprites.append(
-                    Obstacle(tree_texture[0], x, row - self.loaded_indices[0]))
-
-            sprites[-1].scale = 0.95
-            sprites[-1].center_y = (c.TILE_SIZE * (row - self.loaded_indices[0])
-                                    + c.TILE_SIZE * 0.95)
-
-        return sprites
 
     def update_logs(self, row):
         '''
