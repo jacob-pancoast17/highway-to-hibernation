@@ -26,3 +26,21 @@ class Den(arcade.Sprite):
         self.center_y = c.TILE_SIZE * row + c.TILE_SIZE // 2
         self.y = row
         self.angle = 0
+
+    def update_resolution(self, x_on_screen, y_on_screen):
+        '''
+        initialize updates all of a den object's sizes based on the current
+        resolution
+
+        param:
+            self
+        returns:
+            nothing
+        '''
+
+        # Update the current resolution
+        self.scale = c.RESOLUTION_RATIO
+
+        # Update the current position
+        self.center_x = c.TILE_SIZE * x_on_screen + c.TILE_SIZE // 2
+        self.center_y = c.TILE_SIZE * y_on_screen + c.TILE_SIZE // 2

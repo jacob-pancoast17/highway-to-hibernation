@@ -338,8 +338,10 @@ class WorldEngine():
             cell = arcade.Sprite(grass_texture)
             
             # Set the cell's center based on grid position
-            cell.center_x = c.TILE_SIZE * i + c.TILE_SIZE // 2
-            cell.center_y = c.TILE_SIZE * (row - self.loaded_indices[0]) + c.TILE_SIZE // 2
+            cell.center_x = (c.TILE_SIZE * i + c.TILE_SIZE // 2) * c.RESOLUTION_RATIO
+            cell.center_y = (c.TILE_SIZE * (row - self.loaded_indices[0]) + c.TILE_SIZE // 2) * c.RESOLUTION_RATIO
+
+            cell.scale = c.RESOLUTION_RATIO
 
             grass.append(cell)
         
@@ -375,6 +377,8 @@ class WorldEngine():
             # Set the cell's center based on grid position
             cell.center_x = c.TILE_SIZE * i + c.TILE_SIZE // 2
             cell.center_y = c.TILE_SIZE * (row - self.loaded_indices[0]) + c.TILE_SIZE // 2
+
+            cell.scale = c.RESOLUTION_RATIO
 
             bank.append(cell)
         
@@ -1083,3 +1087,19 @@ class WorldEngine():
                 if (x, y)not in path:
 
                     path.append((x, y))
+
+    def update_resolution(self):
+
+        ## FOR BACKGROUNDS
+        for row in self.backgrounds:
+
+            for cell in row:
+                
+                # Set the cell's center based on grid position
+                cell.center_x = (c.TILE_SIZE * row.index(cell) + c.TILE_SIZE // 2)
+                cell.center_y = (c.TILE_SIZE * 
+                                 (self.backgrounds.index(row) - self.loaded_indices[0]) 
+                                 + c.TILE_SIZE // 2)
+                
+                cell.scale = c.RESOLUTION_RATIO
+    

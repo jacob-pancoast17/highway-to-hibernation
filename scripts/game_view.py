@@ -91,13 +91,25 @@ class GameView(arcade.View):
         # Farthest y value that the player reaches (used for score)
         self.farthest_y = 0
 
-        # Initialize our arcade.Text object for score
+        self.current_bottom_of_screen = 0
+        self.current_top_of_screen = c.ROW_COUNT - 1
+
+        # Music
+        c.MAIN_THEME = arcade.play_sound(c.ADVENTURE_MUSIC, volume = c.VOLUME / 10)
+        c.MAIN_THEME.loop = True
+        c.MAIN_THEME.volume = 0.4
+
+        self.update_resolution()
+
+    def update_resolution(self):
+
+         # Initialize our arcade.Text object for score
         self.score_text = arcade.Text(
             f"Score: {self.score}",
             x=5,
             y=5,
             font_name="Edit Undo BRK",
-            font_size=25,
+            font_size=25 * c.RESOLUTION_RATIO,
             bold= True)
         
         # Initialize our arcade.Text object for debug
@@ -109,18 +121,10 @@ class GameView(arcade.View):
                 anchor_x = 'left',
                 anchor_y = 'top',
                 font_name="Edit Undo BRK",
-                font_size=25,
+                font_size=25 * c.RESOLUTION_RATIO,
                 multiline=True,
-                width = 300,
+                width = 300 * c.RESOLUTION_RATIO,
                 bold= True)
-
-        self.current_bottom_of_screen = 0
-        self.current_top_of_screen = c.ROW_COUNT - 1
-
-        # Music
-        c.MAIN_THEME = arcade.play_sound(c.ADVENTURE_MUSIC, volume = c.VOLUME / 10)
-        c.MAIN_THEME.loop = True
-        c.MAIN_THEME.volume = 0.4
 
     def on_draw(self):
         """
@@ -261,4 +265,7 @@ class GameView(arcade.View):
     def initialize(self):
         print("initializing . . .")
 
+        self.update_resolution()
+
         self.player.update_resolution(self.player.x, self.player.y - self.current_bottom_of_screen)
+        self.world.update_resolution()
