@@ -1,86 +1,107 @@
+''' Module representing the stats screen. '''
 import arcade
 from scripts import constants as c
 from scripts.stats_manager import load_stats
 
 
 class StatsScreen(arcade.View):
-    def __init__(self, previous_view):
+    ''' StatsScreen represents the stats view '''
+
+    def __init__(self):
+        '''
+        Constructor calls arcade 'View' superclass constructor
+        
+        param:
+            self
+        returns:
+            nothing
+        '''
         super().__init__()
-        self.previous_view = previous_view
+
         self.stats = load_stats()
 
-    def on_show_view(self):
-        self.window.default_camera.use()
-
-    def on_draw(self):
-        self.clear()
-
-        arcade.draw_text(
-            "STATS",
+        self.title_text = arcade.Text(
+            "PERSONAL STATS",
             x=c.WINDOW_WIDTH / 2,
-            y=c.WINDOW_HEIGHT * 0.82,
-            font_name="Edit Undo BRK",
+            y=c.WINDOW_HEIGHT * 0.78,
             font_size=40,
-            anchor_x="center"
-        )
-
-        arcade.draw_text(
-            f"High Score: {self.stats['high_score']}",
-            x=c.WINDOW_WIDTH / 2,
-            y=c.WINDOW_HEIGHT * 0.66,
             font_name="Edit Undo BRK",
-            font_size=24,
-            anchor_x="center"
+            anchor_x='center',
+            anchor_y='center'
         )
 
-        arcade.draw_text(
-            f"Last Score: {self.stats['last_score']}",
-            x=c.WINDOW_WIDTH / 2,
-            y=c.WINDOW_HEIGHT * 0.58,
-            font_name="Edit Undo BRK",
-            font_size=24,
-            anchor_x="center"
-        )
-
-        arcade.draw_text(
-            f"Games Played: {self.stats['games_played']}",
-            x=c.WINDOW_WIDTH / 2,
-            y=c.WINDOW_HEIGHT * 0.50,
-            font_name="Edit Undo BRK",
-            font_size=24,
-            anchor_x="center"
-        )
-
-        arcade.draw_text(
-            "Top 5 Scores",
-            x=c.WINDOW_WIDTH / 2,
-            y=c.WINDOW_HEIGHT * 0.38,
-            font_name="Edit Undo BRK",
-            font_size=28,
-            anchor_x="center"
-        )
-
-        y_pos = c.WINDOW_HEIGHT * 0.30
-        for i, score in enumerate(self.stats["top_scores"], start=1):
-            arcade.draw_text(
-                f"{i}. {score}",
-                x=c.WINDOW_WIDTH / 2,
-                y=y_pos,
-                font_name="Edit Undo BRK",
-                font_size=20,
-                anchor_x="center"
-            )
-            y_pos -= 30
-
-        arcade.draw_text(
+   
+        self.back_text = arcade.Text(
             "Press ESC to go back",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT * 0.08,
-            font_name="Edit Undo BRK",
             font_size=16,
-            anchor_x="center"
+            font_name="Edit Undo BRK",
+            anchor_x='center',
+            anchor_y='center'
         )
 
-    def on_key_press(self, key):
-        if key == arcade.key.ESCAPE:
-            self.window.show_view(self.previous_view)
+    def on_show_view(self):
+        '''
+        on_show_view defines events that happen when switching to the stats screen
+        
+        param:
+            self
+        returns:
+            nothing
+        '''
+        self.window.default_camera.use()
+
+    def on_draw(self):
+        '''
+        on_draw redraws the stats screen
+
+        param:
+            self
+        returns:
+            nothing
+        '''
+        self.clear()
+
+        self.title_text.draw()
+
+        arcade.draw_text(
+            f"HIGH SCORE: {self.stats['high_score']}",
+            x=c.WINDOW_WIDTH / 2,
+            y=c.WINDOW_HEIGHT * 0.58,
+            font_size=24,
+            font_name="Edit Undo BRK",
+            anchor_x='center'
+        )
+
+        arcade.draw_text(
+            f"LAST SCORE: {self.stats['last_score']}",
+            x=c.WINDOW_WIDTH / 2,
+            y=c.WINDOW_HEIGHT * 0.46,
+            font_size=24,
+            font_name="Edit Undo BRK",
+            anchor_x='center'
+        )
+
+        arcade.draw_text(
+            f"GAMES PLAYED: {self.stats['games_played']}",
+            x=c.WINDOW_WIDTH / 2,
+            y=c.WINDOW_HEIGHT * 0.34,
+            font_size=24,
+            font_name="Edit Undo BRK",
+            anchor_x='center'
+        )
+
+        self.back_text.draw()
+
+    def on_key_press(self, symbol, modifiers):
+        '''
+        on_key_press detects when a key is pressed
+
+        param: self
+        symbol - key pressed
+        modifiers - e.g. capslock or numlock
+        '''
+        if symbol == arcade.key.ESCAPE:
+            from scripts.screens.start_screen import StartScreen
+            self.window.show_view(StartScreen())

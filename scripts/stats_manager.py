@@ -1,5 +1,6 @@
 import json
 import os
+from scripts.firebase_leaderboard import add_score
 
 STATS_FILE = "stats.json"
 
@@ -21,7 +22,7 @@ def save_stats(stats):
     with open(STATS_FILE, "w", encoding="utf-8") as file:
         json.dump(stats, file, indent=4)
 
-def record_score(score):
+def record_score(name, score):
     stats = load_stats()
     stats["last_score"] = score
     stats["games_played"] += 1
@@ -33,3 +34,11 @@ def record_score(score):
     stats["top_scores"] = sorted(stats["top_scores"], reverse=True)[:5]
 
     save_stats(stats)
+
+    try:
+        add_score(name, score)
+        print("Score uploaded to Firebase")
+        return True
+    except Exception as e:
+        print("Could not upload score to Firebase:", e)
+        return False

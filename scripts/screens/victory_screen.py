@@ -1,7 +1,7 @@
 ''' Module representing the victory screen. '''
 import arcade
 from scripts import constants as c
-from scripts.screens.stats_screen import StatsScreen
+from scripts.screens.leaderboard_screen import LeaderboardScreen
 
 
 class Victory(arcade.View):
@@ -99,11 +99,59 @@ class Victory(arcade.View):
 
         arcade.stop_sound(c.MAIN_THEME)
 
-        self.victory_text.draw()
-        self.score_text.draw()
-        self.play_again_text.draw()
-        self.quit_text.draw()
-        self.stats_text.draw()
+        #TODO: Change to text objects, same in start_screen
+        arcade.draw_text(
+            "VICTORY!",
+            font_name="Edit Undo BRK",
+            color= c.victory,
+            x = c.WINDOW_WIDTH / 2,
+            y = c.WINDOW_HEIGHT * 3 / 4,
+            font_size = 50,
+            anchor_x = 'center',
+            anchor_y = 'center'
+        )
+
+        arcade.draw_text(
+            f"SCORE: {self.score}",
+            font_name="Edit Undo BRK",
+            x = c.WINDOW_WIDTH / 2,
+            y = c.WINDOW_HEIGHT * 5 / 8,
+            font_size = 30,
+            anchor_x = 'center',
+            anchor_y = 'center'
+        )
+
+        #TODO: Change to text objects, same in start_screen
+        arcade.draw_text(
+            "Click to play again",
+            font_name="Edit Undo BRK",
+            x = c.WINDOW_WIDTH / 2,
+            y = c.WINDOW_HEIGHT / 2,
+            font_size = 20,
+            anchor_x = 'center',
+            anchor_y = 'center'
+        )
+
+        #TODO: Change to text objects, same in start_screen
+        arcade.draw_text(
+            "Press 'M' to return to main menu",
+            font_name="Edit Undo BRK",
+            x = c.WINDOW_WIDTH / 2,
+            y = (c.WINDOW_HEIGHT / 2)-30,
+            font_size = 20,
+            anchor_x = 'center',
+            anchor_y = 'center'
+        )
+
+        arcade.draw_text(
+            "Press 'S' for stats",
+            font_name="Edit Undo BRK",
+            x=c.WINDOW_WIDTH / 2,
+            y=(c.WINDOW_HEIGHT / 2) - 60,
+            font_size=20,
+            anchor_x='center',
+            anchor_y='center'
+        )
 
 
     # on_mouse_press detects when the mouse is pressed and
@@ -126,7 +174,8 @@ class Victory(arcade.View):
      #      modifiers - e.g. capslock or numlock
 
     def on_key_press(self, symbol, modifiers):
-        if symbol == arcade.key.Q:
-            self.window.close()
+        if symbol == arcade.key.M:
+            from scripts.screens.start_screen import StartScreen
+            self.window.show_view(StartScreen())
         if symbol == arcade.key.S:
-            self.window.show_view(StatsScreen(self))
+            self.window.show_view(LeaderboardScreen(self))

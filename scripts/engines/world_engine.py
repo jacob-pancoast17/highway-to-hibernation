@@ -463,6 +463,8 @@ class WorldEngine():
 
         self.current_walk_coords = walkable[-1]
 
+        self.current_walk_coords = walkable[-1]
+
         return hostiles
 
     def update_wolves(self, row):
@@ -736,7 +738,7 @@ class WorldEngine():
 
                 lilypad_texture = random.choices(
                     ['sprites/lilypad.png',
-                    'sprites/lilypad-with-frog.png'],
+                    'sprites/pink frog.png'],
                     weights = [0.9, 0.1])
 
                 for lilypad in lilypads:
@@ -807,6 +809,7 @@ class WorldEngine():
 
         # Change log direction for next row
         self.log_moving_left = not moving_left
+
 
         return log_cells
 
