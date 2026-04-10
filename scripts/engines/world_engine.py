@@ -1,8 +1,17 @@
 '''This module represents world generation'''
+# Python Modules
 import random
 import arcade
 from noise import pnoise1
+
+# Constants
 from scripts import constants as c
+
+# Subengines
+from scripts.engines.world_subengines.background_subengine import generate_background
+from scripts.engines.world_subengines.obstacle_subengine import generate_obstacles
+
+# Objects
 from scripts.objects.den_object import Den
 from scripts.objects.hostile_object import Hostile
 from scripts.objects.obstacle_object import Obstacle
@@ -36,7 +45,7 @@ class WorldEngine():
 
         self.loaded_indices = []
         self.backgrounds = []
-        self.loaded = []
+        self.obstacles = []
         self.platforms = []
         self.collectibles = []
         self.current_walk_coords = (c.STARTING_X, c.STARTING_Y)
@@ -82,32 +91,32 @@ class WorldEngine():
                 self.rows.append("Bank")
 
             # River (lilypads)
-            elif (noise > -1 and noise < -0.5):
+            elif (noise >= -1 and noise <= -0.5):
 
                 # River with lilypads
                 self.rows.append("River_Lilypads")
 
             # River (with logs)
-            elif(noise> -0.5 and noise < -0.1):
+            elif(noise > -0.5 and noise <= -0.1):
 
                 # River with logs
                 self.rows.append("River_Logs")
 
             # Forest
-            elif (noise > -0.1 and noise < 0.1):
+            elif (noise > -0.1 and noise <= 0.1):
 
                 # Forest
                 self.rows.append("Forest")
 
             # Wolfs
-            elif (noise > 0.1 and
-                noise < 1):
+            elif (noise > 0.1 and noise <= 1):
 
                 # Pack
                 self.rows.append("Pack")
 
             else:
-                print("ERROR GENERATING ARRAY IN WORLD_GEN.PY")
+                print(f"ERROR GENERATING ARRAY IN WORLD_GEN.PY DUE TO A" +
+                       f"NOISE LEVEL OF {noise} NOT MATCHING ANY BIOME")
 
         # Make sure the first last rows are always grass at the
         # beginning of the game
@@ -129,11 +138,15 @@ class WorldEngine():
         for i in range(c.ROW_COUNT):
             self.loaded_indices.append(i)
 
-            background = self.generate_background(i)
+            background = generate_background(self.tex_eng, # Texture engine
+                                             self.rows[i], # Biome
+                                             i, # Current row
+                                             self.loaded_indices[0]) # Current bottom row 
             self.backgrounds.append(background)
 
-            bottom_row = self.generate_row(i)
-            self.loaded.append(bottom_row)
+            obstacle_info = generate_obstacles(i)
+            self.obstacles.append(obstacle_info[0])
+            self.current_walk_coords = obstacle_info[1]
 
             # Randomly pick a velocity to add to list for initial screen generation
             rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST],
@@ -158,17 +171,21 @@ class WorldEngine():
         '''
         # Delete the first row
         self.backgrounds.pop(0)
-        self.loaded.pop(0)
+        self.obstacles.pop(0)
         self.platforms.pop(0)
         self.collectibles.pop(0)
         self.loaded_indices.pop(0)
 
         # Generate a new row
-        new_background = self.generate_background(new_row_index)
+        new_background = generate_background(self.tex_eng, # Texture engine
+                                             self.rows[new_row_index], # Biome of new row index
+                                             new_row_index, # New row index
+                                             self.loaded_indices[0]) # Bottom row
         self.backgrounds.append(new_background)
 
-        new_row = self.generate_row(new_row_index)
-        self.loaded.append(new_row)
+        new_obstacle_info = generate_obstacles(new_row_index)
+        self.obstacles.append(new_obstacle_info[0])
+        self.current_walk_coords = self.new_obstacle_info[1]
 
         # Randomly pick a velocity for each row in the updated screen
         rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST],
@@ -187,7 +204,7 @@ class WorldEngine():
         for i in range(c.ROW_COUNT - 1):
             self.backgrounds[i].move(change_x = 0,
                                      change_y = -c.TILE_SIZE)
-            self.loaded[i].move(change_x = 0,
+            self.obstacles[i].move(change_x = 0,
                                 change_y = -c.TILE_SIZE)
             self.platforms[i][0].move(change_x = 0,
                                 change_y = -c.TILE_SIZE)
@@ -195,88 +212,6 @@ class WorldEngine():
                                 change_y = -c.TILE_SIZE)
         self.player.center_y -= c.VELOCITY_MULTIPLIER
         self.player.angle = 180
-
-    def generate_background(self, row):
-        '''
-        generate_background is a helper function that takes a row index 
-        and generates that row of backgrounds by calling a child generate 
-        function based on what type of row it should be, assigned by the
-        WorldGen's "rows" varaiable
-
-        param: 
-            self
-            row - the current row to be generated
-        returns:
-            a SpriteList object from child function
-        '''
-
-        if self.rows[row] == "Pack":
-
-            return self.generate_grass(row)
-
-        elif self.rows[row] == "Forest":
-
-            return self.generate_grass(row)
-
-        # Rivers don't need a background
-        elif (self.rows[row] == "River_Lilypads" or
-              self.rows[row] =="River_Logs"):
-
-            return arcade.SpriteList()
-        
-        elif (self.rows[row] == "Bank"):
-
-            return self.generate_bank(row)
-
-        elif self.rows[row] == "Victory":
-
-            return self.generate_grass(row)
-
-        else:
-
-            print("PROBLEM IN GENERATION.")
-            exit()
-
-
-
-    def generate_row(self, row):
-        '''
-        generate_row is a helper function that takes a row index 
-        and generates that row by calling a child generate function
-        based on what type of row it should be, assigned by the
-        WorldGen's "rows" varaiable
-
-        param: 
-            self
-            row - the current row to be generated
-        returns:
-            a SpriteList object from child function
-        '''
-        if self.rows[row] == "Pack":
-
-            return self.generate_wolves(row)
-
-        elif self.rows[row] == "Forest":
-
-            return self.generate_forest(row)
-
-        elif (self.rows[row] == "River_Lilypads" or
-              self.rows[row] =="River_Logs"):
-
-            return self.generate_river(row)
-        
-        elif (self.rows[row] == "Bank"):
-
-            return arcade.SpriteList()
-
-        elif self.rows[row] == "Victory":
-
-            return self.generate_victory(row)
-
-        else:
-
-            print("PROBLEM IN GENERATION.")
-            exit()
 
     def generate_platforms(self, row):
         '''
@@ -316,112 +251,7 @@ class WorldEngine():
         else:
 
             return arcade.SpriteList()
-        
-    def generate_grass(self, row):
-        '''
-        generate_grass takes a row and generates the grass background
-        for it
 
-        param:
-            self
-            row - the row index to be drawn at
-        returns:
-            a spritelist of grass objects
-        '''
-
-        grass = arcade.SpriteList()
-
-        for i in range(c.COLUMN_COUNT):
-
-            grass_texture = self.tex_eng.get_grass()
-            
-            cell = arcade.Sprite(grass_texture)
-            
-            # Set the cell's center based on grid position
-            cell.center_x = (c.TILE_SIZE * i + c.TILE_SIZE // 2) * c.RESOLUTION_RATIO
-            cell.center_y = (c.TILE_SIZE * (row - self.loaded_indices[0]) + c.TILE_SIZE // 2) * c.RESOLUTION_RATIO
-
-            cell.scale = c.RESOLUTION_RATIO
-
-            grass.append(cell)
-        
-        return grass
-    
-    def generate_bank(self, row):
-        '''
-        generate_bank takes a row and generates the bank background
-        for it
-
-        param:
-            self
-            row - the row index to be drawn at
-        returns:
-            a spritelist of gravel objects
-        '''
-
-        bank = arcade.SpriteList()
-
-        for i in range(c.COLUMN_COUNT):            
-                
-            bank_texture = random.choices(["sprites/bank_1.png",
-                                           "sprites/bank_2.png",
-                                           "sprites/bank_3.png"],
-                                           weights = [
-                                               1/3,
-                                               1/3,
-                                               1/3
-                                           ])[0]
-
-            cell = arcade.Sprite(bank_texture)
-
-            # Set the cell's center based on grid position
-            cell.center_x = c.TILE_SIZE * i + c.TILE_SIZE // 2
-            cell.center_y = c.TILE_SIZE * (row - self.loaded_indices[0]) + c.TILE_SIZE // 2
-
-            cell.scale = c.RESOLUTION_RATIO
-
-            bank.append(cell)
-        
-        return bank
-
-
-    def generate_wolves(self, row):
-        '''
-        generate_wolves takes a row and generates it randomly based on
-        the "wolves" quality -- moving objects across the screen
-
-        param:
-            self
-            row - a row index to be generated
-        returns:
-            a SpriteList object containing all of the object sprites for
-                that row
-        '''
-
-        walkable = self.drunkards_walk(self.current_walk_coords[0],
-                                       self.current_walk_coords[1],
-                                       4, c.COLUMN_COUNT - 4)
-        walkable = sorted(walkable, key=lambda x: x[1])
-
-        hostiles = arcade.SpriteList()
-
-        # For each tile, just generate a hostile object that kills you
-
-        moving_left = random.choice([True, False])
-        # Pick a random speed
-        self.speed = random.uniform(c.LOWER_OBSTACLE_SPEED, c.UPPER_OBSTACLE_SPEED)
-
-        if not moving_left:
-            hostiles.append(Hostile(self.tex_eng.wolf[0], 0, row - self.loaded_indices[0],
-                                    self.tex_eng, self.speed, static=False, left=False))
-        else:
-            hostiles.append(Hostile(self.tex_eng.wolf[0], 14, row - self.loaded_indices[0],
-                                    self.tex_eng, self.speed, static=False, left=True))
-            
-
-        self.current_walk_coords = walkable[-1]
-
-        return hostiles
 
     def update_wolves(self, row):
         '''
@@ -439,7 +269,7 @@ class WorldEngine():
         hostiles = arcade.SpriteList()
 
         # For each Wolf in the row
-        for wolf in self.loaded[row - self.loaded_indices[0]]:
+        for wolf in self.obstacles[row - self.loaded_indices[0]]:
 
             # If it's still on screen, keep it
             if not wolf.is_off_screen():
@@ -448,7 +278,7 @@ class WorldEngine():
         index = 0
         while len(hostiles) == 0:
 
-            wolf = self.loaded[row - self.loaded_indices[0]][index]
+            wolf = self.obstacles[row - self.loaded_indices[0]][index]
             if wolf.is_off_screen():
                 hostiles.append(wolf)
             else:
@@ -497,106 +327,7 @@ class WorldEngine():
                          self.tex_eng, speed = new_speed, static=False, left=False))
 
         # Replace currently loaded row with the updated one
-        self.loaded[row - self.loaded_indices[0]] = hostiles
-
-
-    def generate_forest(self, row):
-        '''
-        generate_forest takes a row and generates it randomly based on
-        the "Forest" quality -- surrounded by trees, with randomly placed
-        rocks
-
-        param:
-            self
-            row - a row index to be generated
-        returns:
-            a SpriteList object containing all of the object sprites for
-                that row
-        '''
-
-        sprites = arcade.SpriteList()
-
-        # Generate a random number of trees
-        num_trees_left = random.randint(1,4)
-        num_trees_right = random.randint(1,4)
-
-        walkable = self.drunkards_walk(self.current_walk_coords[0],
-                                       self.current_walk_coords[1],
-                                       num_trees_left,
-                                       c.COLUMN_COUNT - num_trees_right)
-        walkable = sorted(walkable, key=lambda x: x[1])
-
-        last_rock = None
-
-        # Append trees to the left
-        tree_textures_left = self.tex_eng.get_trees(num_trees_left, False)
-
-        for i in range(num_trees_left):
-
-            tree_texture = tree_textures_left[i]
-
-            tree = Obstacle(tree_texture, i, row=row - self.loaded_indices[0])
-
-            tree.center_y = (c.TILE_SIZE * (row - self.loaded_indices[0])
-                                    + c.TILE_SIZE)
-            
-            sprites.append(tree)
-
-        # Append rocks
-        for i in range(c.COLUMN_COUNT - (num_trees_left + num_trees_right)):
-
-            x = i + num_trees_left
-
-            # We should not spawn in a rock
-            if row == c.STARTING_Y and x == c.STARTING_X:
-                pass
-
-            # Rocks should not spawn on the walk
-            elif (x, row) in walkable:
-                pass
-
-            # Otherwise, make it a random chance to be a rock
-            else:
-                chance = random.random()
-                if chance < .3:
-
-                    if last_rock is None or last_rock.x != i-1:
-                        rock_texture = random.choices(
-                            ['sprites/rock1.png',
-                            'sprites/rock2.png',
-                            'sprites/rock3.png',
-                            'sprites/rock1_mossy.png',
-                            'sprites/rock2_mossy.png',
-                            'sprites/rock3_mossy.png',
-                            'sprites/log.png',
-                            'sprites/log_mossy.png',
-                            'sprites/log_mushrooms.png'],
-                            weights = [0.18, 0.18, 0.18, 0.08, 0.08, 0.08, 0.12, 0.06, 0.04])
-
-                        last_rock = Obstacle(rock_texture[0], x, row - self.loaded_indices[0])
-                        sprites.append(last_rock)
-
-        # Trees on the right
-        tree_textures_right = self.tex_eng.get_trees(num_trees_right, True)
-
-        for i in range(num_trees_right):
-            
-            x = c.COLUMN_COUNT - num_trees_right + i
-
-            tree_texture = tree_textures_right[i]
-
-            tree = Obstacle(tree_texture, x, row=row - self.loaded_indices[0])
-
-            tree.center_y = (c.TILE_SIZE * (row - self.loaded_indices[0])
-                                    + c.TILE_SIZE)
-            
-            sprites.append(tree)
-
-
-        # Update walk
-        self.current_walk_coords = walkable[-1]
-
-        return sprites
+        self.obstacles[row - self.loaded_indices[0]] = hostiles
 
     def generate_honey(self, row):
         """
@@ -617,7 +348,7 @@ class WorldEngine():
         if random.random() < .25:
 
             spawnable_spots = list(range(15))
-            cells = self.loaded[row - self.loaded_indices[0]]
+            cells = self.obstacles[row - self.loaded_indices[0]]
 
             # Remove not spawnable spots
             for cell in cells:
@@ -950,7 +681,7 @@ class WorldEngine():
 
             there_was_a_sprite = False
 
-            for sprite in self.loaded[row - self.loaded_indices[0]]:
+            for sprite in self.obstacles[row - self.loaded_indices[0]]:
 
                 # For each sprite in the current row, check
                 # if it's x coord matches the current x
@@ -1102,4 +833,19 @@ class WorldEngine():
                                  + c.TILE_SIZE // 2)
                 
                 cell.scale = c.RESOLUTION_RATIO
+
+        ## FOR ROW
+        for row in self.rows:
+
+            for cell in row:
+
+                # Set the cell's center based on grid position
+                cell.center_x = (c.TILE_SIZE * row.index(cell) + c.TILE_SIZE // 2)
+                cell.center_y = (c.TILE_SIZE * 
+                                 (self.backgrounds.index(row) - self.loaded_indices[0]) 
+                                 + c.TILE_SIZE // 2)
+                
+                cell.scale = c.RESOLUTION_RATIO
+
+
     

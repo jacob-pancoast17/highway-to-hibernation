@@ -46,6 +46,12 @@ class TextureEngine():
         self.flowers2 = 'sprites/flowers_2.png'
         self.flowers3 = 'sprites/flowers_3.png'
 
+        # Bank
+
+        self.bank1 = 'sprites/bank_1.png'
+        self.bank2 = 'sprites/bank_2.png'
+        self.bank3 = 'sprites/bank_3.png'
+
         ## OBSTACLES
         # Trees
         self.tree1 = "sprites/tree1.png"
@@ -144,6 +150,25 @@ class TextureEngine():
                                0.11, 0.11, 0.11])[0]
         
         return grass_texture
+    
+    def get_bank(self):
+        '''
+        get_bank returns a random banks texture
+
+        param:
+            self
+        returns:
+            a random banks texture
+        '''
+
+        bank_texture = random.choices(
+            [self.bank1,
+             self.bank2,
+             self.bank3],
+             weights = [1/3, 1/3, 1/3])[0]
+        
+        return bank_texture
+
     
     def get_trees(self, num_trees, right):
 
@@ -266,7 +291,7 @@ class TextureEngine():
                 self.world.rows[index] == 'Victory' or
                 self.world.rows[index] == 'Pack'):
 
-                self.world.loaded[index - self.world.loaded_indices[0]].draw()
+                self.world.obstacles[index - self.world.loaded_indices[0]].draw()
 
     def draw_all_rivers(self):
         '''
@@ -283,7 +308,7 @@ class TextureEngine():
             if (self.world.rows[index] == 'River_Lilypads' or
                 self.world.rows[index] == 'River_Logs'):
 
-                self.world.loaded[index - self.world.loaded_indices[0]].draw()
+                self.world.obstacles[index - self.world.loaded_indices[0]].draw()
 
     def draw_all_platforms(self):
         '''
