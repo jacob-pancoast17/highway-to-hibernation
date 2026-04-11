@@ -4,6 +4,9 @@ import arcade.gui
 from scripts import constants as c
 from scripts.game_view import GameView
 from scripts.screens.leaderboard_screen import LeaderboardScreen
+from scripts.screens.stats_screen import StatsScreen
+from scripts.screens.settings_screen import Settings
+
 
 class StartScreen(arcade.View):
     '''
@@ -25,13 +28,26 @@ class StartScreen(arcade.View):
         self.uimanager = arcade.gui.UIManager()
         self.uimanager.enable()
 
+        self.initialize()
+
+    def initialize(self):
+        '''
+        initialize is part of the start screen's constructor, but has a special property.
+        initialize only sets logic that is dependent on the size of the screen, which must
+        be updated every time the user changes the resolution in settings.
+
+        param:
+            self
+        returns:
+            nothing
+        '''
+
         # Load title
         self.sprites = arcade.SpriteList()
-        #title_texture = arcade.load_texture()
         title = arcade.Sprite("sprites/title.png")
         title.center_x = c.WINDOW_WIDTH / 2
         title.center_y = c.WINDOW_HEIGHT * .8
-        title.scale = 0.85
+        title.scale = 0.85 * c.RESOLUTION_RATIO
         self.sprites.append(title)
 
         self.time_elapsed = 0
@@ -45,16 +61,18 @@ class StartScreen(arcade.View):
         self.currently_selected = self.options[0]
         self.options_coords = [(c.WINDOW_WIDTH / 2, c.WINDOW_HEIGHT * 0.57)]
         self.options_coords = self.generate_coords(self.num_options, self.options_coords[0])
-
+     
         self.stats_text = arcade.Text(
             "Press 'S' for stats",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT / 8,
-            font_size = 17,
+            font_size = 17 * c.RESOLUTION_RATIO,
             font_name="Edit Undo BRK",
             anchor_x = 'center',
             anchor_y = 'center'
         )
+
+
     def on_show_view(self):
         '''
         on_show_view defines events that happen when switching to the start screen view
@@ -100,6 +118,16 @@ class StartScreen(arcade.View):
         self.sprites.draw()
         self.uimanager.draw()
 
+        # draw stats window
+        arcade.draw_text(
+            "SELECT MODE:",
+            x=c.WINDOW_WIDTH / 2,
+            y=c.WINDOW_HEIGHT * .57,
+            font_name="Edit Undo BRK",
+            font_size=40 * c.RESOLUTION_RATIO,
+            anchor_x="center"
+        )
+
 
         # draw stats window
         arcade.draw_text(
@@ -107,7 +135,7 @@ class StartScreen(arcade.View):
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT / 3.4,
             font_name="Edit Undo BRK",
-            font_size=18,
+            font_size=18 * c.RESOLUTION_RATIO,
             anchor_x="center"
         )
 
@@ -116,7 +144,7 @@ class StartScreen(arcade.View):
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT / 4.5,
             font_name="Edit Undo BRK",
-            font_size=18,
+            font_size=18 * c.RESOLUTION_RATIO,
             anchor_x="center"
         )
 
@@ -125,7 +153,7 @@ class StartScreen(arcade.View):
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT / 6.5,
             font_name="Edit Undo BRK",
-            font_size=18,
+            font_size=18 * c.RESOLUTION_RATIO,
             anchor_x="center"
         )
 
@@ -199,6 +227,8 @@ class StartScreen(arcade.View):
             self.window.show_view(StatsScreen())
         elif symbol == arcade.key.Q:
             self.window.close()
+        elif symbol == arcade.key.F:
+            self.window.show_view(Settings(self))
 
         elif symbol == arcade.key.ENTER:
             if self.currently_selected == "Hundred":
@@ -229,7 +259,7 @@ class StartScreen(arcade.View):
                 x=self.options_coords[0][0],
                 y=self.options_coords[0][1],
                 font_name="Edit Undo BRK",
-                font_size=30,
+                font_size=30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
                 anchor_y="center",
                 color = arcade.csscolor.BLACK)
@@ -248,7 +278,7 @@ class StartScreen(arcade.View):
                 x=self.options_coords[0][0],
                 y=self.options_coords[0][1],
                 font_name="Edit Undo BRK",
-                font_size=30,
+                font_size=30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
                 anchor_y="center",
                 color = arcade.csscolor.WHITE)
@@ -271,7 +301,7 @@ class StartScreen(arcade.View):
                 x=self.options_coords[1][0],
                 y=self.options_coords[1][1],
                 font_name="Edit Undo BRK",
-                font_size=30,
+                font_size=30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
                 anchor_y="center",
                 color=arcade.csscolor.BLACK)
@@ -291,7 +321,7 @@ class StartScreen(arcade.View):
                 x=self.options_coords[1][0],
                 y=self.options_coords[1][1],
                 font_name="Edit Undo BRK",
-                font_size=30,
+                font_size=30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
                 anchor_y="center",
                 color = arcade.csscolor.WHITE)
@@ -314,7 +344,7 @@ class StartScreen(arcade.View):
                 x=self.options_coords[2][0],
                 y=self.options_coords[2][1],
                 font_name="Edit Undo BRK",
-                font_size=30,
+                font_size=30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
                 anchor_y="center",
                 color=arcade.csscolor.BLACK)
@@ -332,7 +362,7 @@ class StartScreen(arcade.View):
                 x=self.options_coords[2][0],
                 y=self.options_coords[2][1],
                 font_name="Edit Undo BRK",
-                font_size=30,
+                font_size=30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
                 anchor_y="center",
                 color = arcade.csscolor.WHITE)
@@ -355,7 +385,7 @@ class StartScreen(arcade.View):
                 x=self.options_coords[3][0],
                 y=self.options_coords[3][1],
                 font_name="Edit Undo BRK",
-                font_size=30,
+                font_size=30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
                 anchor_y="center",
                 color=arcade.csscolor.BLACK)
@@ -374,7 +404,7 @@ class StartScreen(arcade.View):
                 x=self.options_coords[3][0],
                 y=self.options_coords[3][1],
                 font_name="Edit Undo BRK",
-                font_size=30,
+                font_size=30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
                 anchor_y="center",
                 color=arcade.csscolor.WHITE)
@@ -398,3 +428,5 @@ class StartScreen(arcade.View):
 
         else:
             self.blinked = False
+
+

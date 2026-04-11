@@ -20,12 +20,27 @@ class Victory(arcade.View):
         self.score = score
         self.previous_view = previous_view
 
+        self.initialize()
+
+
+    def initialize(self):
+        '''
+        initialize is part of the victory screen's constructor, but has a special property.
+        initialize only sets logic that is dependent on the size of the screen, which must
+        be updated every time the user changes the resolution in settings.
+
+        param:
+            self
+        returns:
+            nothing
+        '''
+
         self.victory_text = arcade.Text(
             "VICTORY!",
             x = c.WINDOW_WIDTH / 2,
             y = c.WINDOW_HEIGHT * 3 / 4,
             color = c.victory,
-            font_size = 50,
+            font_size = 50 * c.RESOLUTION_RATIO,
             font_name="Edit Undo BRK",
             anchor_x = 'center',
             anchor_y = 'center'
@@ -35,7 +50,7 @@ class Victory(arcade.View):
             f"SCORE: {self.score}",
             x = c.WINDOW_WIDTH / 2,
             y = c.WINDOW_HEIGHT * 5 / 8,
-            font_size = 30,
+            font_size = 30 * c.RESOLUTION_RATIO,
             font_name="Edit Undo BRK",
             anchor_x = 'center',
             anchor_y = 'center'
@@ -45,7 +60,7 @@ class Victory(arcade.View):
             "Click to play again",
             x = c.WINDOW_WIDTH / 2,
             y = c.WINDOW_HEIGHT / 2,
-            font_size = 18,
+            font_size = 18 * c.RESOLUTION_RATIO,
             font_name="Edit Undo BRK",
             anchor_x = 'center',
             anchor_y = 'center'
@@ -53,8 +68,8 @@ class Victory(arcade.View):
         self.quit_text = arcade.Text(
             "Press 'Q' to quit",
             x = c.WINDOW_WIDTH / 2,
-            y = (c.WINDOW_HEIGHT / 2)-30,
-            font_size = 18,
+            y = (c.WINDOW_HEIGHT / 2)-(30 * c.RESOLUTION_RATIO),
+            font_size = 18 * c.RESOLUTION_RATIO,
             font_name="Edit Undo BRK",
             anchor_x = 'center',
             anchor_y = 'center'
@@ -62,13 +77,12 @@ class Victory(arcade.View):
         self.stats_text = arcade.Text(
             "Press 'S' for stats",
             x=c.WINDOW_WIDTH / 2,
-            y=(c.WINDOW_HEIGHT / 2) - 60,
-            font_size = 18,
+            y=(c.WINDOW_HEIGHT / 2) - (60 * c.RESOLUTION_RATIO),
+            font_size = 18 * c.RESOLUTION_RATIO,
             font_name="Edit Undo BRK",
             anchor_x = 'center',
             anchor_y = 'center'
         )
-
 
     def on_show_view(self):
         '''

@@ -22,9 +22,9 @@ class Platform(arcade.Sprite):
         '''
         super().__init__(path_or_texture=texture)
 
-        self.center_x = c.TILE_WIDTH * column + c.TILE_WIDTH // 2
+        self.center_x = c.TILE_SIZE * column + c.TILE_SIZE // 2
         self.x = column
-        self.center_y = c.TILE_HEIGHT * row + c.TILE_HEIGHT // 2
+        self.center_y = c.TILE_SIZE * row + c.TILE_SIZE // 2
         self.y = row
         self.angle = 0
 
@@ -39,6 +39,8 @@ class Platform(arcade.Sprite):
 
             # Set the first time to move based on the speed
             self.next_move = self.speed
+
+        self.update_resolution(self.x, self.y)
 
     def try_move(self, delta_time, player):
         '''
@@ -62,7 +64,6 @@ class Platform(arcade.Sprite):
         self.timer += delta_time
 
         # If the current timer exceeds the time to next move, then move
-
         if self.timer >= self.next_move:
 
             # Set the next move
@@ -73,11 +74,11 @@ class Platform(arcade.Sprite):
                                                   player)
             # If moving right, increase x
             if not self.is_moving_left:
-                self.center_x += c.VELOCITY_MULTIPLIER
+                self.center_x += c.VELOCITY_MULTIPLIER * c.RESOLUTION_RATIO
                 self.x += 1
                 # if the player is colliding with log, and they aren't offscreen
                 if hit_list:
-                    player.center_x += c.VELOCITY_MULTIPLIER
+                    player.center_x += c.VELOCITY_MULTIPLIER * c.RESOLUTION_RATIO
                     player.x += 1
                     if player.x > c.COLUMN_COUNT - 1:
                         player.dead = True
@@ -88,7 +89,7 @@ class Platform(arcade.Sprite):
                 self.center_x -= c.VELOCITY_MULTIPLIER
                 self.x -= 1
                 if hit_list and player.x >= 0:
-                    player.center_x -= c.VELOCITY_MULTIPLIER
+                    player.center_x -= c.VELOCITY_MULTIPLIER * c.RESOLUTION_RATIO
                     player.x -= 1
                     if player.x < 0:
                         player.dead = True
@@ -105,9 +106,28 @@ class Platform(arcade.Sprite):
 
         '''
 
-        if (self.center_x < c.TILE_WIDTH or
+        if (self.center_x < c.TILE_SIZE or
             self.center_x > c.WINDOW_WIDTH):
             self.speed = 0
             return True
         else:
             return False
+        
+    def update_resolution(self, curr_x_on_screen, curr_y_on_screen):
+        '''
+        Updates the current resolution
+        
+        param:
+            self
+            curr_x_on_screen
+            curr_y_on_screen
+        return:
+            nothing
+        '''
+
+        # Update resolution
+        self.scale = c.RESOLUTION_RATIO
+
+        # Update the current position
+        self.center_x = c.TILE_SIZE * curr_x_on_screen + c.TILE_SIZE // 2
+        self.center_y = c.TILE_SIZE * curr_y_on_screen + c.TILE_SIZE // 2

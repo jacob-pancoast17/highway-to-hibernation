@@ -19,9 +19,10 @@ class TextureEngine():
         returns:
             nothing
         '''
+        
+        ### SPRITES
 
-        ## SPRITES
-        # Bear
+        ## BEAR
         self.bear = "sprites/bear_rev2.png"
         # player
         self.player = None
@@ -39,6 +40,26 @@ class TextureEngine():
         wolf_sheet = arcade.load_spritesheet("sprites/wolf_sheet.png")
         self.wolf = drowning_sheet.get_texture_grid(size = (30, 30), columns=9, count=9)
 
+        ## HUNNY
+        self.hunny = 'sprites/hunny.png'
+
+        ## BACKGROUNDS
+
+        # Grass
+        self.grass1 = 'sprites/grass_1.png'
+        self.grass2 = 'sprites/grass_2.png'
+        self.grass3 = 'sprites/grass_3.png'
+        self.flowers1 = 'sprites/flowers_1.png'
+        self.flowers2 = 'sprites/flowers_2.png'
+        self.flowers3 = 'sprites/flowers_3.png'
+
+        # Bank
+
+        self.bank1 = 'sprites/bank_1.png'
+        self.bank2 = 'sprites/bank_2.png'
+        self.bank3 = 'sprites/bank_3.png'
+
+        ## OBSTACLES
         # Trees
         self.tree1 = "sprites/tree1.png"
         self.tree2 = "sprites/tree2.png"
@@ -125,14 +146,55 @@ class TextureEngine():
                 cell = arcade.Sprite(grass_texture[0])
 
                 # Set the cell's center based on grid position
-                cell.center_x = c.TILE_WIDTH * column + c.TILE_WIDTH // 2
-                cell.center_y = c.TILE_HEIGHT * row + c.TILE_HEIGHT // 2
+                cell.center_x = c.TILE_SIZE * column + c.TILE_SIZE // 2
+                cell.center_y = c.TILE_SIZE * row + c.TILE_SIZE // 2
 
                 # Append to list of all grid sprites to draw
                 grid.append(cell)
 
         return grid
+    
+    def get_grass(self):
+        '''
+        get_grass returns a random grass texture
 
+        param:
+            self
+        returns:
+            a random grass texture
+        '''
+
+        grass_texture = random.choices(
+                    [self.grass1,
+                     self.grass2,
+                     self.grass3,
+                     self.flowers1,
+                     self.flowers2,
+                     self.flowers3],
+                    weights = [0.22, 0.22, 0.22,
+                               0.11, 0.11, 0.11])[0]
+        
+        return grass_texture
+    
+    def get_bank(self):
+        '''
+        get_bank returns a random banks texture
+
+        param:
+            self
+        returns:
+            a random banks texture
+        '''
+
+        bank_texture = random.choices(
+            [self.bank1,
+             self.bank2,
+             self.bank3],
+             weights = [1/3, 1/3, 1/3])[0]
+        
+        return bank_texture
+
+    
     def get_trees(self, num_trees, right):
         '''
         get_trees is a helper function which takes a number of trees and randomly picks
@@ -274,7 +336,7 @@ class TextureEngine():
                 self.world.rows[index][0] == 'Victory' or
                 self.world.rows[index][0] == 'Pack'):
 
-                self.world.loaded[index - self.world.loaded_indices[0]].draw()
+                self.world.obstacles[index - self.world.loaded_indices[0]].draw()
 
     def draw_all_rivers(self):
         '''
@@ -291,7 +353,7 @@ class TextureEngine():
             if (self.world.rows[index][0] == 'River_Lilypads' or
                 self.world.rows[index][0] == 'River_Logs'):
 
-                self.world.loaded[index - self.world.loaded_indices[0]].draw()
+                self.world.obstacles[index - self.world.loaded_indices[0]].draw()
 
     def draw_all_platforms(self):
         '''

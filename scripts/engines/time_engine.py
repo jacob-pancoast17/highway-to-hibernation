@@ -108,7 +108,7 @@ class TimeEngine():
         # Try to move each wolf in each row
         for row in curr_wolf_rows:
 
-            for wolf in self.world.loaded[row - self.world.loaded_indices[0]]:
+            for wolf in self.world.obstacles[row - self.world.loaded_indices[0]]:
 
                 wolf.run(delta_time)
 

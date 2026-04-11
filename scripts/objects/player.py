@@ -25,14 +25,17 @@ class Player(arcade.Sprite):
         # Access the bear sprite
         super().__init__(path_or_texture=tex_eng.bear)
 
+        # Set scale
+        self.scale = c.RESOLUTION_RATIO
+
         # Access the death textures
         self.drowning_textures = tex_eng.drowning
         self.mauled_texture = tex_eng.mauled
 
         # Define all coordinates
-        self.center_x = c.TILE_WIDTH * column + c.TILE_WIDTH // 2
+        self.center_x = c.TILE_SIZE * column + c.TILE_SIZE // 2
         self.x = column
-        self.center_y = c.TILE_HEIGHT * row + c.TILE_HEIGHT // 2
+        self.center_y = c.TILE_SIZE * row + c.TILE_SIZE // 2
         self.y = row
         self.angle = 180.0
         self.cur_texture_index = 0
@@ -42,6 +45,26 @@ class Player(arcade.Sprite):
         self.next_death_anim = c.DEATH_ANIMATION_UPDATE_INTERVAL
         self.dead = False
         self.score = 0
+        self.hunny_collected = 0
+
+    def update_resolution(self, curr_x_on_screen, curr_y_on_screen):
+        '''
+        initialize updates all of a player object's sizes based on the current
+        resolution
+
+        param:
+            self
+        returns:
+            nothing
+        '''
+
+        # Update the current resolution
+        self.scale = c.RESOLUTION_RATIO
+
+        # Update the current position
+        self.center_x = c.TILE_SIZE * curr_x_on_screen + c.TILE_SIZE // 2
+        self.center_y = c.TILE_SIZE * curr_y_on_screen + c.TILE_SIZE // 2
+
 
     def try_move(self, key, world, window):
         '''
@@ -128,25 +151,25 @@ class Player(arcade.Sprite):
 
         if key == arcade.key.UP:
             #print("UP")
-            self.center_y += c.VELOCITY_MULTIPLIER
+            self.center_y += c.VELOCITY_MULTIPLIER * c.RESOLUTION_RATIO
             self.y += 1
             self.angle = 180
 
         elif key == arcade.key.DOWN:
             #print("DOWN")
-            self.center_y -= c.VELOCITY_MULTIPLIER
+            self.center_y -= c.VELOCITY_MULTIPLIER * c.RESOLUTION_RATIO
             self.y -= 1
             self.angle = 0
 
         elif key == arcade.key.LEFT:
             #print("LEFT")
-            self.center_x -= c.VELOCITY_MULTIPLIER
+            self.center_x -= c.VELOCITY_MULTIPLIER * c.RESOLUTION_RATIO
             self.x -= 1
             self.angle = 90
 
         elif key == arcade.key.RIGHT:
             #print("RIGHT")
-            self.center_x += c.VELOCITY_MULTIPLIER
+            self.center_x += c.VELOCITY_MULTIPLIER * c.RESOLUTION_RATIO
             self.x += 1
             self.angle = -90
 
@@ -160,28 +183,28 @@ class Player(arcade.Sprite):
         # If up, move back down
         if key == arcade.key.UP:
 
-            self.center_y -= c.VELOCITY_MULTIPLIER
+            self.center_y -= c.VELOCITY_MULTIPLIER * c.RESOLUTION_RATIO
             self.y -= 1
             self.angle = 180
 
         # If down, move back up
         elif key == arcade.key.DOWN:
 
-            self.center_y += c.VELOCITY_MULTIPLIER
+            self.center_y += c.VELOCITY_MULTIPLIER * c.RESOLUTION_RATIO
             self.y += 1
             self.angle = 0
 
         # If left, move back right
         elif key == arcade.key.LEFT:
 
-            self.center_x += c.VELOCITY_MULTIPLIER
+            self.center_x += c.VELOCITY_MULTIPLIER * c.RESOLUTION_RATIO
             self.x += 1
             self.angle = 90
 
         # If right, move back left
         elif key == arcade.key.RIGHT:
 
-            self.center_x -= c.VELOCITY_MULTIPLIER
+            self.center_x -= c.VELOCITY_MULTIPLIER * c.RESOLUTION_RATIO
             self.x -= 1
             self.angle = -90
 

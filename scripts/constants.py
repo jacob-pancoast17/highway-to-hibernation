@@ -5,11 +5,9 @@ import arcade
 ROW_COUNT = 15
 COLUMN_COUNT = 15
 
-TILE_WIDTH = 30
-TILE_HEIGHT = 30
 TILE_SIZE = 30
-WINDOW_WIDTH = TILE_WIDTH * COLUMN_COUNT
-WINDOW_HEIGHT = TILE_HEIGHT * ROW_COUNT
+WINDOW_WIDTH = TILE_SIZE * COLUMN_COUNT
+WINDOW_HEIGHT = TILE_SIZE * ROW_COUNT
 TITLE = "SEEKER"
 
 # Generation details
@@ -35,7 +33,7 @@ LOWER_OBSTACLE_SPEED = 0.2 # Tiles per second
 
 # Player info
 DIST_UNTIL_STAY_PUT = 3
-VELOCITY_MULTIPLIER = TILE_HEIGHT
+VELOCITY_MULTIPLIER = TILE_SIZE
 STARTING_X = 7
 STARTING_Y = 0
 ENDING_X = 7
@@ -61,6 +59,11 @@ victory = arcade.csscolor.GOLD
 # Fonts
 arcade.load_font("fonts/edit-undo.brk.ttf")
 
+# Sounds
+VOLUME = 5
+MIN_VOLUME = 0
+MAX_VOLUME = 10
+
 # Sound Effects
 ADVENTURE_MUSIC = arcade.load_sound("sfx/bear_adventure.mp3")
 WALK_SFX = arcade.load_sound("sfx/footstep.mp3")
@@ -73,5 +76,12 @@ GAME_OVER_JINGLE = arcade.load_sound("sfx/game_over.wav")
 # Music 
 MAIN_THEME = arcade.play_sound(ADVENTURE_MUSIC)
 MAIN_THEME.pause()
+
+# Settings
+BLINK_RATE = 0.5
+DEBUG = False
+WINDOW = 'Windowed'
+RESOLUTION = 450
+RESOLUTION_RATIO = RESOLUTION / 450
 
 BLINK_RATE = 0.5

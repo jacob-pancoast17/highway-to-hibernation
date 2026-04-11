@@ -26,12 +26,25 @@ class GameOver(arcade.View):
         self.submit_message_timer = 0
 
 
+        self.initialize()
+
+    def initialize(self):
+        '''
+        initialize is part of the game over screen's constructor, but has a special property.
+        initialize only sets logic that is dependent on the size of the screen, which must
+        be updated every time the user changes the resolution in settings.
+
+        param:
+            self
+        returns:
+            nothing
+        '''
         self.game_over_text = arcade.Text(
             "YOU ARE DEAD",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT * 0.72,
             color=c.blood_mwahaha,
-            font_size=50,
+            font_size=50 * c.RESOLUTION_RATIO,
             font_name="Edit Undo BRK",
             anchor_x='center',
             anchor_y='center'
@@ -41,7 +54,7 @@ class GameOver(arcade.View):
             f"SCORE: {self.score}",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT * 0.58,
-            font_size=30,
+            font_size=30 * c.RESOLUTION_RATIO,
             font_name="Edit Undo BRK",
             anchor_x='center',
             anchor_y='center'
@@ -51,7 +64,7 @@ class GameOver(arcade.View):
             "Click to play again",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT * 0.38,
-            font_size=20,
+            font_size=20 * c.RESOLUTION_RATIO,
             font_name="Edit Undo BRK",
             anchor_x='center',
             anchor_y='center'
@@ -61,7 +74,7 @@ class GameOver(arcade.View):
             "Press 'L' for leaderboard",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT * 0.28,
-            font_size=20,
+            font_size=20 * c.RESOLUTION_RATIO,
             font_name="Edit Undo BRK",
             anchor_x='center',
             anchor_y='center'
@@ -71,7 +84,7 @@ class GameOver(arcade.View):
             "ENTER YOUR INITIALS",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT * 0.46,
-            font_size=22,
+            font_size=22 * c.RESOLUTION_RATIO,
             font_name="Edit Undo BRK",
             anchor_x='center',
             anchor_y='center'
@@ -81,7 +94,7 @@ class GameOver(arcade.View):
             "_ _ _",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT * 0.38,
-            font_size=28,
+            font_size=28 * c.RESOLUTION_RATIO,
             font_name="Edit Undo BRK",
             anchor_x='center',
             anchor_y='center'
@@ -91,7 +104,7 @@ class GameOver(arcade.View):
             "Press ENTER to submit",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT * 0.30,
-            font_size=18,
+            font_size=18 * c.RESOLUTION_RATIO,
             font_name="Edit Undo BRK",
             anchor_x='center',
             anchor_y='center'
@@ -101,7 +114,7 @@ class GameOver(arcade.View):
             "Press 'M' to go to main menu",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT * 0.18,
-            font_size=20,
+            font_size=20 * c.RESOLUTION_RATIO,
             font_name="Edit Undo BRK",
             anchor_x='center',
             anchor_y='center'
@@ -110,11 +123,11 @@ class GameOver(arcade.View):
         self.submit_message_text = arcade.Text(
             "",
             x=c.WINDOW_WIDTH / 2,
-            y=c.WINDOW_HEIGHT * 0.05,
-            font_size=16,
-            font_name="Edit Undo BRK",
-            anchor_x='center',
-            anchor_y='center'
+            y = c.WINDOW_HEIGHT * 0.05,
+            font_size = 16 * c.RESOLUTION_RATIO,
+            font_name = "Edit Undo BRK",
+            anchor_x = 'center',
+            anchor_y = 'center'
         )
 
 

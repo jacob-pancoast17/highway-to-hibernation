@@ -8,7 +8,7 @@ class Obstacle(arcade.Sprite):
     but does not kill them when they touch it
     '''
 
-    def __init__ (self, texture, column, row):
+    def __init__ (self, texture, column, row, not_tree):
         '''
         Constructor creates a obstacle object which "is-an" object
 
@@ -19,8 +19,40 @@ class Obstacle(arcade.Sprite):
         '''
         super().__init__(path_or_texture=texture)
 
-        self.center_x = c.TILE_WIDTH * column + c.TILE_WIDTH // 2
+        self.center_x = c.TILE_SIZE * column + c.TILE_SIZE // 2
         self.x = column
-        self.center_y = c.TILE_HEIGHT * row + c.TILE_HEIGHT // 2
+        self.center_y = c.TILE_SIZE * row + c.TILE_SIZE // 2
         self.y = row
         self.angle = 0
+
+        self.update_resolution(self.x, self.y, not_tree)
+    
+    def update_resolution(self, curr_x_on_screen, curr_y_on_screen, not_tree):
+        '''
+        Updates the current resolution
+        
+        param:
+            self
+            curr_x_on_screen
+            curr_y_on_screen
+        return:
+            nothing
+        '''
+
+        if not_tree:
+            # Update resolution
+            self.scale = c.RESOLUTION_RATIO
+
+            # Update the current position
+            self.center_x = c.TILE_SIZE * curr_x_on_screen + c.TILE_SIZE // 2
+            self.center_y = c.TILE_SIZE * curr_y_on_screen + c.TILE_SIZE // 2
+
+        else:
+            # Update resolution
+            self.scale = c.RESOLUTION_RATIO
+
+            # Update the current position
+            self.center_x = c.TILE_SIZE * curr_x_on_screen + c.TILE_SIZE // 2
+            self.center_y = c.TILE_SIZE * curr_y_on_screen + c.TILE_SIZE
+
+

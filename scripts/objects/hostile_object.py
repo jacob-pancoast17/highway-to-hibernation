@@ -27,9 +27,9 @@ class Hostile(arcade.Sprite):
              
             self.running_textures = tex_eng.wolf
 
-        self.center_x = c.TILE_WIDTH * column + c.TILE_WIDTH // 2
+        self.center_x = c.TILE_SIZE * column + c.TILE_SIZE // 2
         self.x = column
-        self.center_y = c.TILE_HEIGHT * row + c.TILE_HEIGHT // 2
+        self.center_y = c.TILE_SIZE * row + c.TILE_SIZE // 2
         self.y = row
         self.angle = 0
 
@@ -49,6 +49,8 @@ class Hostile(arcade.Sprite):
             self.timer = 0
             self.is_moving_left = left
             self.next_move = self.speed
+
+        self.update_resolution(self.x, self.y)
 
     def try_move(self, delta_time, player):
         '''
@@ -113,7 +115,7 @@ class Hostile(arcade.Sprite):
         should be deleted
         '''
 
-        if (self.center_x < c.TILE_WIDTH or
+        if (self.center_x < c.TILE_SIZE or
             self.center_x > c.WINDOW_WIDTH):
             self.speed = 0
             return True
@@ -147,3 +149,27 @@ class Hostile(arcade.Sprite):
                             self.cur_texture_index = 0
             
             self.next_run_frame += self.run_speed
+
+    def update_resolution(self, curr_x_on_screen, curr_y_on_screen):
+        '''
+        Updates the current resolution
+        
+        param:
+            self
+            curr_x_on_screen
+            curr_y_on_screen
+        return:
+            nothing
+        '''
+
+        # Update resolution
+        if not self.static and self.is_moving_left is False:
+            self.scale = c.RESOLUTION_RATIO
+        elif not self.static and self.is_moving_left is True:
+            self.scale = c.RESOLUTION_RATIO
+        else:
+            self.scale = c.RESOLUTION_RATIO
+
+        # Update the current position
+        self.center_x = c.TILE_SIZE * curr_x_on_screen + c.TILE_SIZE // 2
+        self.center_y = c.TILE_SIZE * curr_y_on_screen + c.TILE_SIZE // 2

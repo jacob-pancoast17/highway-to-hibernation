@@ -1,6 +1,7 @@
 ''' Module representing the pause screen. '''
 import arcade
 from scripts import constants as c
+from scripts.screens.settings_screen import Settings
 from scripts.screens.leaderboard_screen import LeaderboardScreen
 
 class Pause(arcade.View):
@@ -15,9 +16,22 @@ class Pause(arcade.View):
     def __init__(self, game_view):
         super().__init__()
         self.game_view = game_view
+        self.initialize()
+
+    def initialize(self):
+        '''
+        initialize is part of the pause screen's constructor, but has a special property.
+        initialize only sets logic that is dependent on the size of the screen, which must
+        be updated every time the user changes the resolution in settings.
+
+        param:
+            self
+        returns:
+            nothing
+        '''
         self.pause_spr = arcade.Sprite(
             path_or_texture= "sprites/pause_graphic.png",
-            scale = 1.25,
+            scale = 1.25 * c.RESOLUTION_RATIO,
             center_x = c.WINDOW_WIDTH / 2,
             center_y = c.WINDOW_HEIGHT / 2,
             angle = 180.0
@@ -29,7 +43,7 @@ class Pause(arcade.View):
             "PAUSE",
             x = c.WINDOW_WIDTH / 2,
             y = c.WINDOW_HEIGHT * 3 / 5,
-            font_size = 50,
+            font_size = 50 * c.RESOLUTION_RATIO,
             font_name="Edit Undo BRK",
             anchor_x = 'center',
             anchor_y = 'center'
@@ -39,7 +53,7 @@ class Pause(arcade.View):
             "Press 'ESC' to continue",
             x = c.WINDOW_WIDTH / 2,
             y = c.WINDOW_HEIGHT / 2.1,
-            font_size = 18,
+            font_size = 18 * c.RESOLUTION_RATIO,
             font_name="Edit Undo BRK",
             anchor_x = 'center',
             anchor_y = 'center'
@@ -48,7 +62,7 @@ class Pause(arcade.View):
             "Press 'Q' to quit",
             x = c.WINDOW_WIDTH / 2,
             y = c.WINDOW_HEIGHT / 2.4,
-            font_size = 18,
+            font_size = 18 * c.RESOLUTION_RATIO,
             font_name="Edit Undo BRK",
             anchor_x = 'center',
             anchor_y = 'center'
@@ -57,7 +71,7 @@ class Pause(arcade.View):
             "Press 'ENTER' to reset",
             x = c.WINDOW_WIDTH / 2,
             y = c.WINDOW_HEIGHT / 2.8,
-            font_size = 18,
+            font_size = 18 * c.RESOLUTION_RATIO,
             font_name="Edit Undo BRK",
             anchor_x = 'center',
             anchor_y = 'center'
@@ -66,7 +80,7 @@ class Pause(arcade.View):
             "Press 'S' for stats",
             x = c.WINDOW_WIDTH / 2,
             y = c.WINDOW_HEIGHT / 3.4,
-            font_size = 18,
+            font_size = 18 * c.RESOLUTION_RATIO,
             font_name="Edit Undo BRK",
             anchor_x = 'center',
             anchor_y = 'center'
@@ -157,6 +171,7 @@ class Pause(arcade.View):
     def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.ESCAPE:
             self.window.show_view(self.game_view)
+            self.game_view.initialize()
         if symbol == arcade.key.ENTER:
             self.window.show_view(self.game_view.__class__())
         if symbol == arcade.key.M:
@@ -164,3 +179,6 @@ class Pause(arcade.View):
             self.window.show_view(StartScreen())
         if symbol == arcade.key.L:
             self.window.show_view(LeaderboardScreen(self))
+        
+        elif symbol == arcade.key.F:
+            self.window.show_view(Settings(self, True))
