@@ -14,6 +14,8 @@ class Settings(arcade.View):
         else:
             self.came_from_game = False
 
+        self.camera = arcade.Camera2D()
+
         self.time_elapsed = 0
         self.next_blink = c.BLINK_RATE
         self.blinked = False
@@ -33,7 +35,7 @@ class Settings(arcade.View):
                                'Fullscreen']
         
         self.resolution_options = [450,
-                                   900]
+                                   675]
         
         self.size_dependent_constructor()
 
@@ -74,13 +76,15 @@ class Settings(arcade.View):
     def on_draw(self):
         self.clear()
 
-        self.draw_settings()
-        self.draw_volume()
-        self.draw_window()
-        self.draw_resolution()
-        self.draw_debug_mode()
-        
-        self.draw_escape()      
+        with self.camera.activate():
+
+            self.draw_settings()
+            self.draw_volume()
+            self.draw_window()
+            self.draw_resolution()
+            self.draw_debug_mode()
+            
+            self.draw_escape()      
 
     def on_key_press(self, symbol, modifiers):
 
@@ -435,9 +439,9 @@ class Settings(arcade.View):
                     anchor_y="center",
                     color = arcade.csscolor.WHITE)
             
-        elif c.RESOLUTION == 900:
+        elif c.RESOLUTION == 675:
             resolution_status = arcade.Text(
-                    "900 x 900",
+                    "675 x 675",
 
                     # Would need to be changed to change order
                     x=self.options_coords[2][0] + resolution_title.content_width,
@@ -573,19 +577,10 @@ class Settings(arcade.View):
         if c.WINDOW == 'Windowed':
 
             self.window.set_fullscreen(False)
-            self.window.style = arcade.Window.WINDOW_STYLE_DEFAULT
-
-        elif c.WINDOW == 'Borderless Window':
-
-            self.window.set_fullscreen(False)
-            self.window.style = arcade.Window.WINDOW_STYLE_BORDERLESS
 
         else:
 
             self.window.set_fullscreen(True)
-            self.window.style = arcade.Window.WINDOW_STYLE_DEFAULT
-
-        #self.window.update()
     
     def change_resolution(self):
 
@@ -598,7 +593,7 @@ class Settings(arcade.View):
             c.WINDOW_HEIGHT = c.TILE_SIZE * c.ROW_COUNT
             c.WINDOW_WIDTH = c.TILE_SIZE * c.COLUMN_COUNT
 
-        elif c.RESOLUTION == 900:
+        elif c.RESOLUTION == 675:
             # Change tile sizes
             c.TILE_SIZE = 1.5 * 30
 
@@ -611,3 +606,11 @@ class Settings(arcade.View):
         self.window.set_size(c.WINDOW_WIDTH, c.WINDOW_HEIGHT)
         #self.window.update()
         self.size_dependent_constructor()
+
+    def on_resize(self, width, height):
+
+        super().on_resize(width, height)
+
+        print(f"{height}, {width}")
+
+        #self.camera.position = (-225, -225)
