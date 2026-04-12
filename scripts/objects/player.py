@@ -98,7 +98,6 @@ class Player(arcade.Sprite):
 
             return False
 
-        # return True
         return True
 
     def hit(self, next_cell, window):

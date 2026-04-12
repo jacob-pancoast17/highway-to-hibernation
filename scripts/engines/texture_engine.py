@@ -246,7 +246,7 @@ class TextureEngine():
         draw_all_backgrounds is a helper function that draws all
         currently background rows of the world engine
 
-        param: 
+        param:
             self
         returns:
             nothing
@@ -261,7 +261,7 @@ class TextureEngine():
         draw_all_rows is a helper function that draws all
         currently loaded rows of the world engine
 
-        param: 
+        param:
             self
         returns:
             nothing
@@ -281,7 +281,7 @@ class TextureEngine():
         draw_all_rows is a helper function that draws all
         currently loaded rows of the world engine
 
-        param: 
+        param:
             self
         returns:
             nothing
@@ -299,7 +299,7 @@ class TextureEngine():
         draws all currently loaded rows of platforms 
         in the world engine
 
-        param: 
+        param:
             self
         returns:
             nothing
@@ -323,7 +323,7 @@ class TextureEngine():
         draws all currently loaded rows of collectibles 
         in the world engine
 
-        param: 
+        param:
             self
         returns:
             nothing
@@ -337,7 +337,7 @@ class TextureEngine():
         draw_all_sprites draws the currently loaded
         world
 
-        param: 
+        param:
             self
         returns:
             nothing
