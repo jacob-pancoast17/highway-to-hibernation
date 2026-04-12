@@ -104,8 +104,15 @@ class GameView(arcade.View):
         self.update_resolution()
 
     def update_resolution(self):
-
-         # Initialize our arcade.Text object for score
+        '''
+        Updates the current resolution
+        
+        param:
+            self
+        return:
+            nothing
+        '''
+        # Initialize our arcade.Text object for score
         self.score_text = arcade.Text(
             f"Score: {self.score}",
             x=5,
@@ -113,11 +120,12 @@ class GameView(arcade.View):
             font_name="Edit Undo BRK",
             font_size=25 * c.RESOLUTION_RATIO,
             bold= True)
-        
+
         # Initialize our arcade.Text object for debug
         if c.DEBUG:
             self.debug_text = arcade.Text(
-                f"Debug Menu\nSEED: {self.world.seed}\nHUNNY: {self.player.hunny_collected}\nX: {self.player.x}\nY {self.player.y}\n",
+                f"Debug Menu\nSEED: {self.world.seed}\nHUNNY: {self.player.hunny_collected}\n" +
+                "X: {self.player.x}\nY {self.player.y}\n",
                 x=5,
                 y=c.WINDOW_HEIGHT - 5,
                 anchor_x = 'left',
@@ -175,7 +183,8 @@ class GameView(arcade.View):
             if self.death_timer > c.DEATH_ANIMATION_LENGTH:
 
                 self.window.show_view(GameOver(self.player.score, self))
-                self.achieve_game_over = arcade.play_sound(c.GAME_OVER_JINGLE, volume = c.VOLUME / 10)
+                self.achieve_game_over = arcade.play_sound(c.GAME_OVER_JINGLE,
+                                                           volume = c.VOLUME / 10)
 
         # checks for collision between player and collectibles
 
@@ -192,11 +201,14 @@ class GameView(arcade.View):
                 self.hunny_pickup = arcade.play_sound(c.HUNNY_SFX, volume = c.VOLUME / 10)
 
             self.score_text.text = f"Score: {self.player.score}"
-            if c.DEBUG and self.debug_text != None:
-                self.debug_text.text = f"Debug Menu\nSEED: {self.world.seed}\nHUNNY: {self.player.hunny_collected}\nX: {self.player.x}\nY {self.player.y}\n"
+            if c.DEBUG and self.debug_text is not None:
+                self.debug_text.text = (f"Debug Menu\nSEED: {self.world.seed}\n" +
+                                        "HUNNY: {self.player.hunny_collected}\nX:" +
+                                        "{self.player.x}\nY {self.player.y}\n")
             elif c.DEBUG:
                 self.debug_text = arcade.Text(
-                    f"Debug Menu\nSEED: {self.world.seed}\nHUNNY: {self.player.hunny_collected}\nX: {self.player.x}\nY {self.player.y}\n",
+                    f"Debug Menu\nSEED: {self.world.seed}\nHUNNY: {self.player.hunny_collected}" +
+                    "\nX: {self.player.x}\nY {self.player.y}\n",
                     x=5,
                     y=c.WINDOW_HEIGHT - 5,
                     anchor_x = 'left',
@@ -218,7 +230,6 @@ class GameView(arcade.View):
         returns:
             nothing
         '''
-
         # If the player presses a key, update the speed if able to move
         if ((symbol == arcade.key.UP or
             symbol == arcade.key.DOWN or
@@ -268,7 +279,6 @@ class GameView(arcade.View):
         returns:
             nothing
         '''
-
         self.world.update_screen(self.current_top_of_screen + 1)
 
         self.current_bottom_of_screen += 1
@@ -284,11 +294,21 @@ class GameView(arcade.View):
         returns:
             nothing
         '''
-
         arcade.stop_sound(c.MAIN_THEME)
         self.player.die(delta_time)
 
     def initialize(self):
+        '''
+        initialize is part of the game view's constructor, but has a special property.
+        initialize only sets logic that is dependent on the size of the screen, which must
+        be updated every time the user changes the resolution in settings.
+
+        param:
+            self
+        returns:
+            nothing
+        '''
+
         print("initializing . . .")
 
         self.update_resolution()

@@ -114,7 +114,7 @@ class Platform(arcade.Sprite):
             return True
         else:
             return False
-        
+
     def update_resolution(self, curr_x_on_screen, curr_y_on_screen):
         '''
         Updates the current resolution

@@ -18,7 +18,7 @@ class TextureEngine():
         returns:
             nothing
         '''
-        
+
         ### SPRITES
 
         ## BEAR
@@ -53,7 +53,6 @@ class TextureEngine():
         self.flowers3 = 'sprites/flowers_3.png'
 
         # Bank
-
         self.bank1 = 'sprites/bank_1.png'
         self.bank2 = 'sprites/bank_2.png'
         self.bank3 = 'sprites/bank_3.png'
@@ -81,9 +80,6 @@ class TextureEngine():
                      "sprites/water_log_connector.png",
                      "sprites/water_log_right_end.png"]
 
-        # Create the grid
-        #self.grid = self.create_grid()
-
         # Wolf
         wolf_sheet = arcade.load_spritesheet("sprites/wolf_sheet.png")
         self.wolf = wolf_sheet.get_texture_grid(size = (30, 30), columns=11, count=11)
@@ -99,7 +95,6 @@ class TextureEngine():
         returns:
             nothing
         '''
-
         self.player = arcade.SpriteList()
         self.player.append(player)
 
@@ -124,7 +119,6 @@ class TextureEngine():
         returns:
             a list of sprites corresponding to the grid cells
         '''
-
         grid = arcade.SpriteList()
 
         for row in range(c.ROW_COUNT):
@@ -152,7 +146,7 @@ class TextureEngine():
                 grid.append(cell)
 
         return grid
-    
+
     def get_grass(self):
         '''
         get_grass returns a random grass texture
@@ -162,7 +156,6 @@ class TextureEngine():
         returns:
             a random grass texture
         '''
-
         grass_texture = random.choices(
                     [self.grass1,
                      self.grass2,
@@ -172,9 +165,9 @@ class TextureEngine():
                      self.flowers3],
                     weights = [0.22, 0.22, 0.22,
                                0.11, 0.11, 0.11])[0]
-        
+
         return grass_texture
-    
+
     def get_bank(self):
         '''
         get_bank returns a random banks texture
@@ -184,16 +177,14 @@ class TextureEngine():
         returns:
             a random banks texture
         '''
-
         bank_texture = random.choices(
             [self.bank1,
              self.bank2,
              self.bank3],
              weights = [1/3, 1/3, 1/3])[0]
-        
+
         return bank_texture
 
-    
     def get_trees(self, num_trees, right):
         '''
         get_trees is a helper function which takes a number of trees and randomly picks
@@ -207,7 +198,6 @@ class TextureEngine():
         returns:
             trees - list of the textures
         '''
-
         trees = []
 
         bush_start_chance = 0.5
@@ -313,7 +303,6 @@ class TextureEngine():
         returns:
             nothing
         '''
-
         for index in reversed(self.world.loaded_indices):
 
             self.world.backgrounds[index - self.world.loaded_indices[0]].draw()
@@ -366,7 +355,6 @@ class TextureEngine():
         returns:
             nothing
         '''
-
         for row in reversed(self.world.platforms):
 
             # For logs

@@ -28,6 +28,11 @@ class StartScreen(arcade.View):
         self.uimanager = arcade.gui.UIManager()
         self.uimanager.enable()
 
+        self.currently_selected_option = None
+        self.currently_selected_mode = None
+
+        self.blinked = None
+
         self.initialize()
 
     def initialize(self):
@@ -54,7 +59,7 @@ class StartScreen(arcade.View):
         self.next_blink = c.BLINK_RATE
         self.blinked = False
 
-        self.options = ['Mode', 
+        self.options = ['Mode',
                         'Play',
                         'Stats',
                         'Settings',
@@ -66,7 +71,7 @@ class StartScreen(arcade.View):
         self.currently_selected_option = self.options[0]
         self.currently_selected_mode = c.CURRENT_MODE
         self.options_coords = [c.WINDOW_WIDTH / 2, c.WINDOW_HEIGHT * 0.50]
-     
+
         self.stats_text = arcade.Text(
             "Press 'S' for stats",
             x=c.WINDOW_WIDTH / 2,
@@ -76,7 +81,6 @@ class StartScreen(arcade.View):
             anchor_x = 'center',
             anchor_y = 'center'
         )
-
 
     def on_show_view(self):
         '''
@@ -105,7 +109,6 @@ class StartScreen(arcade.View):
             nothing
         '''
         self.uimanager.disable()
-
 
     def on_draw(self):
         '''
@@ -183,19 +186,19 @@ class StartScreen(arcade.View):
                 curr_index = self.modes.index(self.currently_selected_mode)
 
                 if curr_index - 1 == -1:
-                    
+
                     curr_index = len(self.modes)
                     self.currently_selected_mode = self.modes[curr_index - 1]
 
                 else:
 
                     self.currently_selected_mode = self.modes[curr_index - 1]
-        
-            elif (self.currently_selected_option == 'Settings'):
+
+            elif self.currently_selected_option == 'Settings':
 
                 self.currently_selected_option = 'Stats'
-            
-            elif (self.currently_selected_option == 'Quit'):
+
+            elif self.currently_selected_option == 'Quit':
 
                 self.currently_selected_option = 'Leaderboard'
 
@@ -216,15 +219,15 @@ class StartScreen(arcade.View):
 
                     self.currently_selected_mode = self.modes[curr_index + 1]
 
-            elif (self.currently_selected_option == 'Stats'):
+            elif self.currently_selected_option == 'Stats':
 
                 self.currently_selected_option = 'Settings'
-            
-            elif (self.currently_selected_option == 'Leaderboard'):
+
+            elif self.currently_selected_option == 'Leaderboard':
 
                 self.currently_selected_option = 'Quit'
-        
-        elif (symbol == arcade.key.DOWN or symbol == arcade.key.S):
+
+        elif symbol == arcade.key.DOWN or symbol == arcade.key.S:
 
             if self.currently_selected_option == 'Mode':
 
@@ -237,7 +240,7 @@ class StartScreen(arcade.View):
             elif self.currently_selected_option == 'Stats':
 
                 self.currently_selected_option = 'Leaderboard'
-            
+
             elif self.currently_selected_option == 'Settings':
 
                 self.currently_selected_option = 'Quit'
@@ -265,11 +268,11 @@ class StartScreen(arcade.View):
                 self.currently_selected_option = 'Settings'
 
         elif symbol == arcade.key.ENTER:
-            
+
             if self.currently_selected_option == 'Play':
 
                 c.CURRENT_OPTION = 'Play'
-                
+
                 if self.currently_selected_mode == "Hundred":
                     c.LEVEL_SIZE = 100
                     c.ENDING_X = 7
@@ -329,7 +332,7 @@ class StartScreen(arcade.View):
 
         if (self.blinked and self.currently_selected_option == 'Mode'):
 
-            if (self.currently_selected_mode == 'Infinite'):
+            if self.currently_selected_mode == 'Infinite':
 
                 mode_blink = arcade.Text(
                     "INFINITE",
@@ -389,7 +392,7 @@ class StartScreen(arcade.View):
                     mode_blink.content_width + (6 * c.RESOLUTION_RATIO),
                     mode_blink.content_height),
                     arcade.csscolor.WHITE)
-            
+
             else:
 
                 mode_blink = arcade.Text(
@@ -426,7 +429,7 @@ class StartScreen(arcade.View):
                     anchor_x="center",
                     anchor_y="center",
                     color = arcade.csscolor.WHITE)
-            
+
             elif self.currently_selected_mode == 'Hundred':
 
                 mode = arcade.Text(
@@ -451,7 +454,7 @@ class StartScreen(arcade.View):
                 anchor_x="center",
                 anchor_y="center",
                 color = arcade.csscolor.WHITE)
-            
+
             else:
 
                 mode = arcade.Text(
@@ -508,7 +511,7 @@ class StartScreen(arcade.View):
                     anchor_x="center",
                     anchor_y="center",
                     color=arcade.csscolor.WHITE)
-        
+
         play.draw()
 
     def draw_stats(self):
@@ -647,7 +650,7 @@ class StartScreen(arcade.View):
         '''
         if self.blinked and self.currently_selected_option == 'Quit':
 
-            quit = arcade.Text(
+            quit_text = arcade.Text(
                 "Quit",
                 x=c.WINDOW_WIDTH * 3 / 4,
                 y=self.options_coords[1] - (180 * c.RESOLUTION_RATIO),
@@ -658,15 +661,15 @@ class StartScreen(arcade.View):
                 color = arcade.csscolor.BLACK
             )
             arcade.draw_rect_filled(
-                arcade.XYWH(quit.x,
-                quit.y,
-                quit.content_width + (6 * c.RESOLUTION_RATIO),
-                quit.content_height),
+                arcade.XYWH(quit_text.x,
+                quit_text.y,
+                quit_text.content_width + (6 * c.RESOLUTION_RATIO),
+                quit_text.content_height),
                 arcade.csscolor.WHITE
             )
 
         else:
-            quit = arcade.Text(
+            quit_text = arcade.Text(
                 "Quit",
                 x=c.WINDOW_WIDTH * 3 / 4,
                 y=self.options_coords[1] - (180 * c.RESOLUTION_RATIO),
@@ -676,7 +679,7 @@ class StartScreen(arcade.View):
                 anchor_y="center"
             )
 
-        quit.draw()
+        quit_text.draw()
 
     def blink(self):
         '''
@@ -695,5 +698,3 @@ class StartScreen(arcade.View):
 
         else:
             self.blinked = False
-
-

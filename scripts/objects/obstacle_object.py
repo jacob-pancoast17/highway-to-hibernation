@@ -26,7 +26,7 @@ class Obstacle(arcade.Sprite):
         self.angle = 0
 
         self.update_resolution(self.x, self.y, not_tree)
-    
+
     def update_resolution(self, curr_x_on_screen, curr_y_on_screen, not_tree):
         '''
         Updates the current resolution
@@ -54,5 +54,3 @@ class Obstacle(arcade.Sprite):
             # Update the current position
             self.center_x = c.TILE_SIZE * curr_x_on_screen + c.TILE_SIZE // 2
             self.center_y = c.TILE_SIZE * curr_y_on_screen + c.TILE_SIZE
-
-

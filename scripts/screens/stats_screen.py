@@ -22,6 +22,8 @@ class StatsScreen(arcade.View):
         self.next_blink = c.BLINK_RATE
         self.blinked = False
 
+        self.back_text = None
+
         self.stats = load_stats()
 
         self.title_text = arcade.Text(
@@ -142,7 +144,15 @@ class StatsScreen(arcade.View):
         self.draw_back()
 
     def draw_back(self):
+        '''
+        draw_back is a helper function used to draw the back button from the stats
+        screen
 
+        param:
+            self
+        returns:
+            nothing
+        '''
         if self.blinked:
 
             back_text = arcade.Text(
@@ -162,7 +172,7 @@ class StatsScreen(arcade.View):
                 back_text.content_width + (6 * c.RESOLUTION_RATIO),
                 back_text.content_height),
                 arcade.csscolor.WHITE)
-        
+
         else:
 
             back_text = arcade.Text(
@@ -174,8 +184,6 @@ class StatsScreen(arcade.View):
                 anchor_x='center',
                 anchor_y='center'
             )
-
-            
 
         back_text.draw()
 

@@ -39,7 +39,6 @@ class Den(arcade.Sprite):
         returns:
             nothing
         '''
-
         # Update the current resolution
         self.scale = c.RESOLUTION_RATIO
 
