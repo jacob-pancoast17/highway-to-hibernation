@@ -105,50 +105,14 @@ class Pause(arcade.View):
             anchor_y = 'center'
         )
 
-        #TODO: Change to text objects, same in start_screen
-        arcade.draw_text(
-            "Press 'ESC' to continue",
-            font_name="Edit Undo BRK",
-            x = c.WINDOW_WIDTH / 2,
-            y = c.WINDOW_HEIGHT / 2.1,
-            font_size = 17,
-            anchor_x = 'center',
-            anchor_y = 'center'
-        )
+        pause.draw()
 
-        # TODO: Change to text objects, same in start_screen
+        self.draw_reset()
+        self.draw_leaderboard()
+        self.draw_main_menu()
+        self.draw_settings()
 
-        arcade.draw_text(
-            "Press 'ENTER' to restart",
-            font_name="Edit Undo BRK",
-            x = c.WINDOW_WIDTH / 2,
-            y = c.WINDOW_HEIGHT / 2.4,
-            font_size = 17,
-            anchor_x = 'center',
-            anchor_y = 'center'
-        )
-
-
-
-        arcade.draw_text(
-            "Press 'M' to return to main menu",
-            font_name="Edit Undo BRK",
-            x=c.WINDOW_WIDTH / 2,
-            y=c.WINDOW_HEIGHT / 2.8,
-            font_size=17,
-            anchor_x='center',
-            anchor_y='center'
-        )
-
-        arcade.draw_text(
-            "Press 'S' for stats",
-            font_name="Edit Undo BRK",
-            x=c.WINDOW_WIDTH / 2,
-            y=c.WINDOW_HEIGHT / 3.4,
-            font_size=17,
-            anchor_x='center',
-            anchor_y='center'
-        )
+        self.continue_text.draw()
 
     def on_key_press(self, symbol, modifiers):
 

@@ -135,16 +135,6 @@ class StartScreen(arcade.View):
 
         select.draw()
 
-        arcade.draw_text(
-            "Press 'S' for personal stats",
-            x=c.WINDOW_WIDTH / 2,
-            y=c.WINDOW_HEIGHT / 4.5,
-            font_name="Edit Undo BRK",
-            font_size=30 * c.RESOLUTION_RATIO,
-            anchor_x="center",
-            anchor_y="center"
-        )
-
         # draw "buttons"
         self.draw_mode()
         self.draw_play()
