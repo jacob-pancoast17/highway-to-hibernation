@@ -247,7 +247,7 @@ class GameView(arcade.View):
                     self.current_top_of_screen != c.LEVEL_SIZE - 1 and symbol == arcade.key.UP):
                     self.move_screen_up()
 
-            print(f"[{self.player.x}, {self.player.y}]")
+            #print(f"[{self.player.x}, {self.player.y}]")
 
         elif symbol == arcade.key.ESCAPE:
             # Pass in the current game state into Pause()

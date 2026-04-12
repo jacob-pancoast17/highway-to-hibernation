@@ -38,6 +38,7 @@ class WorldEngine():
         '''
         # Set a random seed for the perlin noise function
         self.seed = round(random.random() * 10000000)
+        self.noise_seed = self.seed / 1000000
         random.seed(self.seed)
 
         self.rows = []
@@ -85,7 +86,7 @@ class WorldEngine():
 
             # Offset the seed a bit depending on the iteration and
             # find the value on the perlin noise wave
-            x = self.seed + i * .2
+            x = self.noise_seed + i * .2
             noise = pnoise1(x)
 
             # Depending on the noise function's value, set the
@@ -240,7 +241,7 @@ class WorldEngine():
 
         new_collectible = generate_collectible(self.tex_eng, # Texture engine
                                                 self.obstacles, # Current platforms
-                                                self.rows[new_row_index][0], # Biome
+                                                self.rows[new_row_index], # Biome
                                                 new_row_index, # New row index
                                                 self.loaded_indices[0]) # Bottom row
         self.collectibles.append(new_collectible)
