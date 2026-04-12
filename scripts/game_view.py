@@ -125,7 +125,7 @@ class GameView(arcade.View):
         if c.DEBUG:
             self.debug_text = arcade.Text(
                 f"Debug Menu\nSEED: {self.world.seed}\nHUNNY: {self.player.hunny_collected}\n" +
-                "X: {self.player.x}\nY {self.player.y}\n",
+                f"X: {self.player.x}\nY {self.player.y}\n",
                 x=5,
                 y=c.WINDOW_HEIGHT - 5,
                 anchor_x = 'left',
@@ -203,12 +203,12 @@ class GameView(arcade.View):
             self.score_text.text = f"Score: {self.player.score}"
             if c.DEBUG and self.debug_text is not None:
                 self.debug_text.text = (f"Debug Menu\nSEED: {self.world.seed}\n" +
-                                        "HUNNY: {self.player.hunny_collected}\nX:" +
-                                        "{self.player.x}\nY {self.player.y}\n")
+                                        f"HUNNY: {self.player.hunny_collected}\nX:" +
+                                        f"{self.player.x}\nY {self.player.y}\n")
             elif c.DEBUG:
                 self.debug_text = arcade.Text(
                     f"Debug Menu\nSEED: {self.world.seed}\nHUNNY: {self.player.hunny_collected}" +
-                    "\nX: {self.player.x}\nY {self.player.y}\n",
+                    f"\nX: {self.player.x}\nY {self.player.y}\n",
                     x=5,
                     y=c.WINDOW_HEIGHT - 5,
                     anchor_x = 'left',
