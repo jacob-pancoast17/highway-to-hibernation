@@ -18,6 +18,10 @@ class StatsScreen(arcade.View):
         '''
         super().__init__()
 
+        self.time_elapsed = 0
+        self.next_blink = c.BLINK_RATE
+        self.blinked = False
+
         self.stats = load_stats()
 
         self.title_text = arcade.Text(
@@ -30,16 +34,23 @@ class StatsScreen(arcade.View):
             anchor_y='center'
         )
 
-   
-        self.back_text = arcade.Text(
-            "Press ESC to go back",
-            x=c.WINDOW_WIDTH / 2,
-            y=c.WINDOW_HEIGHT * 0.08,
-            font_size=16,
-            font_name="Edit Undo BRK",
-            anchor_x='center',
-            anchor_y='center'
-        )
+    def on_key_press(self, symbol, modifiers):
+        '''
+        defines key presses
+
+        param:
+            self
+            symbol - the key
+            modifiers - any modifiers (e.g. capslock)
+        return:
+            nothing
+        '''
+
+        if symbol == arcade.key.ENTER or symbol == arcade.key.ESCAPE:
+
+            from scripts.screens.start_screen import StartScreen
+            self.window.show_view(StartScreen())
+
 
     def on_show_view(self):
         '''
@@ -51,6 +62,25 @@ class StatsScreen(arcade.View):
             nothing
         '''
         self.window.default_camera.use()
+
+    def on_update(self, delta_time):
+        '''
+        Happens every frame
+
+        param:
+            self
+            delta_time - time passed since last on_update
+        return:
+            nothing
+        '''
+
+        self.time_elapsed += delta_time
+
+        if self.time_elapsed > self.next_blink:
+
+            self.next_blink += c.BLINK_RATE
+
+            self.blink()
 
     def on_draw(self):
         '''
@@ -69,7 +99,7 @@ class StatsScreen(arcade.View):
             f"HIGH SCORE: {self.stats['high_score']}",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT * 0.58,
-            font_size=24,
+            font_size=24 * c.RESOLUTION_RATIO,
             font_name="Edit Undo BRK",
             anchor_x='center'
         )
@@ -78,7 +108,7 @@ class StatsScreen(arcade.View):
             f"LAST SCORE: {self.stats['last_score']}",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT * 0.46,
-            font_size=24,
+            font_size=24 * c.RESOLUTION_RATIO,
             font_name="Edit Undo BRK",
             anchor_x='center'
         )
@@ -87,21 +117,65 @@ class StatsScreen(arcade.View):
             f"GAMES PLAYED: {self.stats['games_played']}",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT * 0.34,
-            font_size=24,
+            font_size=24 * c.RESOLUTION_RATIO,
             font_name="Edit Undo BRK",
             anchor_x='center'
         )
 
-        self.back_text.draw()
+        self.draw_back()
 
-    def on_key_press(self, symbol, modifiers):
-        '''
-        on_key_press detects when a key is pressed
+    def draw_back(self):
 
-        param: self
-        symbol - key pressed
-        modifiers - e.g. capslock or numlock
+        if self.blinked:
+
+            back_text = arcade.Text(
+                "BACK",
+                x=c.WINDOW_WIDTH / 2,
+                y=c.WINDOW_HEIGHT * 0.08,
+                font_size=30 * c.RESOLUTION_RATIO,
+                font_name="Edit Undo BRK",
+                anchor_x='center',
+                anchor_y='center',
+                color = arcade.csscolor.BLACK
+            )
+
+            arcade.draw_rect_filled(
+                arcade.XYWH(back_text.x,
+                back_text.y,
+                back_text.content_width + (6 * c.RESOLUTION_RATIO),
+                back_text.content_height),
+                arcade.csscolor.WHITE)
+        
+        else:
+
+            back_text = arcade.Text(
+                "BACK",
+                x=c.WINDOW_WIDTH / 2,
+                y=c.WINDOW_HEIGHT * 0.08,
+                font_size=30 * c.RESOLUTION_RATIO,
+                font_name="Edit Undo BRK",
+                anchor_x='center',
+                anchor_y='center'
+            )
+
+            
+
+        back_text.draw()
+
+    def blink(self):
         '''
-        if symbol == arcade.key.ESCAPE:
-            from scripts.screens.start_screen import StartScreen
-            self.window.show_view(StartScreen())
+        blink takes the variable blinked and changes it on or off depending on what the
+        current value is
+
+        param:
+            self
+        returns:
+            nothing
+        '''
+
+        if self.blinked is False:
+
+            self.blinked = True
+
+        else:
+            self.blinked = False

@@ -24,7 +24,8 @@ class Settings(arcade.View):
         self.options = ['Volume',
                         'Window',
                         'Resolution',
-                        'Debug Mode']
+                        'Debug Mode',
+                        'Back']
         self.num_options = len(self.options)
         self.currently_selected = self.options[0]
 
@@ -71,15 +72,13 @@ class Settings(arcade.View):
     def on_draw(self):
         self.clear()
 
-
         self.draw_settings()
         self.draw_volume()
         self.draw_window()
         self.draw_resolution()
         self.draw_debug_mode()
-        
-        self.draw_escape()      
-
+        self.draw_back()
+  
     def on_key_press(self, symbol, modifiers):
 
         # Move up
@@ -89,7 +88,7 @@ class Settings(arcade.View):
             # Get curr index
             curr_index = self.options.index(self.currently_selected)
             
-            if not self.came_from_game:
+            if not self.came_from_game or self.currently_selected == 'Back':
                 self.currently_selected = self.options[curr_index - 1]
             else:
                 self.currently_selected = self.options[curr_index - 3]
@@ -101,9 +100,9 @@ class Settings(arcade.View):
             # Get curr index
             curr_index = self.options.index(self.currently_selected)
 
-            if not self.came_from_game:
+            if not self.came_from_game or not self.currently_selected == 'Volume':
                 self.currently_selected = self.options[curr_index + 1]
-            else:
+            elif self.currently_selected:
                 self.currently_selected = self.options[curr_index + 3]
         
         # Move left or right
@@ -189,6 +188,13 @@ class Settings(arcade.View):
             #self.previous_view.initialize()
             # Commented out so the game doesn't break
             # This is what would allow you to change the resolution mid game
+        
+        elif symbol == arcade.key.ENTER:
+
+            # For back
+            if self.currently_selected == 'Back':
+
+                self.window.show_view(self.previous_view)
 
     def draw_settings(self):
 
@@ -268,6 +274,36 @@ class Settings(arcade.View):
                     30 * c.RESOLUTION_RATIO),
                     arcade.csscolor.DIM_GRAY
                 )
+            
+        volume_arrow_left = arcade.Text(
+                "<",
+                
+                # Would need to be changed to change order
+                x=self.options_coords[0][0] + (volume_title.content_width / 2) + 40 + (self.space_between_volume_bars * 0) - (20 * c.RESOLUTION_RATIO),
+                y=self.options_coords[0][1],
+
+                align='right',
+                font_name="Edit Undo BRK",
+                font_size=30 * c.RESOLUTION_RATIO / 1.5,
+                anchor_x="center",
+                anchor_y="center")
+
+        volume_arrow_right = arcade.Text(
+                ">",
+                
+                # Would need to be changed to change order
+                x=self.options_coords[0][0] + (volume_title.content_width / 2) + 40 + (self.space_between_volume_bars * 9) + (20 * c.RESOLUTION_RATIO),
+                y=self.options_coords[0][1],
+
+                align='right',
+                font_name="Edit Undo BRK",
+                font_size=30 * c.RESOLUTION_RATIO / 1.5,
+                anchor_x="center",
+                anchor_y="center")
+        
+        volume_arrow_left.draw()
+        volume_arrow_right.draw()
+
             
     def draw_window(self):
 
@@ -363,12 +399,43 @@ class Settings(arcade.View):
                     anchor_x="center",
                     anchor_y="center",
                     color = arcade.csscolor.WHITE)
+        
+        window_arrow_left = arcade.Text(
+                "<",
+                
+                # Would need to be changed to change order
+                x=self.options_coords[1][0] + (window_title.content_width * 3 / 2) - (110 * c.RESOLUTION_RATIO),
+                y=self.options_coords[1][1],
+
+                align='right',
+                font_name="Edit Undo BRK",
+                font_size=30 * c.RESOLUTION_RATIO / 1.5,
+                anchor_x="center",
+                anchor_y="center")
+
+        window_arrow_right = arcade.Text(
+                ">",
+                
+                # Would need to be changed to change order
+                x=self.options_coords[1][0] + (window_title.content_width * 3 / 2) + (110 * c.RESOLUTION_RATIO),
+                y=self.options_coords[1][1],
+
+                align='right',
+                font_name="Edit Undo BRK",
+                font_size=30 * c.RESOLUTION_RATIO / 1.5,
+                anchor_x="center",
+                anchor_y="center")
             
         if self.came_from_game:
 
             window_status.color = arcade.csscolor.DIM_GRAY
+            window_arrow_left.color = arcade.csscolor.DIM_GRAY
+            window_arrow_right.color = arcade.csscolor.DIM_GRAY
 
         window_status.draw()
+        
+        window_arrow_left.draw()
+        window_arrow_right.draw()
             
     def draw_resolution(self):
 
@@ -466,11 +533,41 @@ class Settings(arcade.View):
         #             anchor_y="center",
         #             color = arcade.csscolor.WHITE)
 
+        resolution_arrow_left = arcade.Text(
+                "<",
+                
+                # Would need to be changed to change order
+                x=self.options_coords[2][0] + (resolution_title.content_width) - (90 * c.RESOLUTION_RATIO),
+                y=self.options_coords[2][1],
+
+                align='right',
+                font_name="Edit Undo BRK",
+                font_size=30 * c.RESOLUTION_RATIO / 1.5,
+                anchor_x="center",
+                anchor_y="center")
+
+        resolution_arrow_right = arcade.Text(
+                ">",
+                
+                # Would need to be changed to change order
+                x=self.options_coords[2][0] + (resolution_title.content_width) + (90 * c.RESOLUTION_RATIO),
+                y=self.options_coords[2][1],
+
+                align='right',
+                font_name="Edit Undo BRK",
+                font_size=30 * c.RESOLUTION_RATIO / 1.5,
+                anchor_x="center",
+                anchor_y="center")
+
         if self.came_from_game:
 
             resolution_status.color = arcade.csscolor.DIM_GRAY
+            resolution_arrow_left.color = arcade.csscolor.DIM_GRAY
+            resolution_arrow_right.color = arcade.csscolor.DIM_GRAY
 
         resolution_status.draw()
+        resolution_arrow_left.draw()
+        resolution_arrow_right.draw()
     
     def draw_debug_mode(self):
 
@@ -545,21 +642,83 @@ class Settings(arcade.View):
                     anchor_x="center",
                     anchor_y="center",
                     color = arcade.csscolor.WHITE)
+            
+        debug_arrow_left = arcade.Text(
+                "<",
+                
+                # Would need to be changed to change order
+                x=self.options_coords[3][0] + (debug_title.content_width * 7 / 8) - (50 * c.RESOLUTION_RATIO),
+                y=self.options_coords[3][1],
+
+                align='right',
+                font_name="Edit Undo BRK",
+                font_size=30 * c.RESOLUTION_RATIO / 1.5,
+                anchor_x="center",
+                anchor_y="center")
+
+        debug_arrow_right = arcade.Text(
+                ">",
+                
+                # Would need to be changed to change order
+                x=self.options_coords[3][0] + (debug_title.content_width * 7 / 8) + (50 * c.RESOLUTION_RATIO),
+                y=self.options_coords[3][1],
+
+                align='right',
+                font_name="Edit Undo BRK",
+                font_size=30 * c.RESOLUTION_RATIO / 1.5,
+                anchor_x="center",
+                anchor_y="center")
 
         debug_status.draw()
+        debug_arrow_left.draw()
+        debug_arrow_right.draw()
 
-    def draw_escape(self):
+    def draw_back(self):
 
-        arcade.draw_text(
-            "Press ESC to go back",
-            x=c.WINDOW_WIDTH / 2,
-            y=c.WINDOW_HEIGHT * 0.08,
-            font_name="Edit Undo BRK",
-            font_size=16 * c.RESOLUTION_RATIO,
-            anchor_x="center"
-        )
+        if self.blinked and self.currently_selected == 'Back':
+
+            back_text = arcade.Text(
+                "BACK",
+                x=c.WINDOW_WIDTH / 2,
+                y=c.WINDOW_HEIGHT * 0.08,
+                font_size=30 * c.RESOLUTION_RATIO,
+                font_name="Edit Undo BRK",
+                anchor_x='center',
+                anchor_y='center',
+                color = arcade.csscolor.BLACK
+            )
+
+            arcade.draw_rect_filled(
+                arcade.XYWH(back_text.x,
+                back_text.y,
+                back_text.content_width + (6 * c.RESOLUTION_RATIO),
+                back_text.content_height),
+                arcade.csscolor.WHITE)
+        
+        else:
+
+            back_text = arcade.Text(
+                "BACK",
+                x=c.WINDOW_WIDTH / 2,
+                y=c.WINDOW_HEIGHT * 0.08,
+                font_size=30 * c.RESOLUTION_RATIO,
+                font_name="Edit Undo BRK",
+                anchor_x='center',
+                anchor_y='center'
+            )
+
+        back_text.draw()
 
     def blink(self):
+        '''
+        blink takes the variable blinked and changes it on or off depending on what the
+        current value is
+
+        param:
+            self
+        returns:
+            nothing
+        '''
 
         if self.blinked == False:
 

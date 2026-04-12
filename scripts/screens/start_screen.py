@@ -155,6 +155,12 @@ class StartScreen(arcade.View):
     def on_update(self, delta_time):
         '''
         Happens every frame
+
+        param:
+            self
+            delta_time - time passed since last on_update
+        return:
+            nothing
         '''
 
         self.time_elapsed += delta_time
@@ -166,6 +172,16 @@ class StartScreen(arcade.View):
             self.blink()
 
     def on_key_press(self, symbol, modifiers):
+        '''
+        defines key presses
+
+        param:
+            self
+            symbol - the key
+            modifiers - any modifiers (e.g. capslock)
+        return:
+            nothing
+        '''
 
         # Move up
         if (symbol == arcade.key.LEFT or symbol == arcade.key.A):
