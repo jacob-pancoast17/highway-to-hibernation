@@ -61,6 +61,9 @@ def generate_lilypads(texture_engine, curr_walk_coords, row, curr_bottom):
 
     lilypads = arcade.SpriteList()
 
+    # variable to track if there is a lilypad at an x value
+    exists = False
+
     walkable = drunkards_walk(curr_walk_coords[0], row - curr_bottom,
                                     4, c.COLUMN_COUNT - 4)
     walkable = sorted(walkable, key=lambda x: x[1])
@@ -82,11 +85,12 @@ def generate_lilypads(texture_engine, curr_walk_coords, row, curr_bottom):
                 weights = [0.9, 0.1])
 
             for lilypad in lilypads:
+                if i is lilypad.x:
+                    exists = True
 
-                if lilypad.x is not i:
-
-                    lilypads.append(Platform(lilypad_texture[0], i,
-                                            row - curr_bottom))
+            if exists is False:
+                lilypads.append(Platform(lilypad_texture[0], i,
+                                    row - curr_bottom))
 
     # Update walk
     current_walk_coords = walkable[-1]
