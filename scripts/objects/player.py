@@ -4,7 +4,6 @@ from scripts import constants as c
 from scripts.objects.den_object import Den
 from scripts.objects.hostile_object import Hostile
 from scripts.objects.obstacle_object import Obstacle
-import time
 from scripts.screens.victory_screen import Victory
 
 class Player(arcade.Sprite):
@@ -39,9 +38,12 @@ class Player(arcade.Sprite):
 
         # Define some starting properties of the player
         self.death_timer = 0
+        self.death_sound = None
+        self.death = None
         self.next_death_anim = c.DEATH_ANIMATION_UPDATE_INTERVAL
         self.dead = False
         self.score = 0
+        self.achieve_victory = None
 
     def try_move(self, key, world, window):
         '''
@@ -78,13 +80,13 @@ class Player(arcade.Sprite):
 
             # Define the type of hit
             river_collided = self.hit(next_cell, window)
-                
+
             # If this line is reached, the hit type was obstacle
             if not river_collided:
                 self.move_back(key)
 
             return False
-        
+
         # return True
         return True
 
@@ -104,7 +106,7 @@ class Player(arcade.Sprite):
 
             self.death_sound = arcade.play_sound(c.DEATH_SFX)
 
-            if next_cell.static == True:
+            if next_cell.static is True:
 
                 self.death = 'Drown'
                 return True
@@ -155,6 +157,12 @@ class Player(arcade.Sprite):
         move_back takes a key and moves the player back in the opposite direction of the key,
         without checking if the move is valid. This is used when the player tries to move into
         an invalid space, and we want to move them back to where they were.
+
+        param:
+            self
+            key - keyboard key used
+        returns:
+            nothing
         '''
 
         # If up, move back down
@@ -186,21 +194,32 @@ class Player(arcade.Sprite):
             self.angle = -90
 
     def die(self, delta_time):
+        '''
+        die is a helper function which is used when a player dies to determine which death
+        animation is used based on how they die.
+
+        param:
+            self
+            delta_time
+        returns:
+            nothing
+        '''
 
         self.death_timer += delta_time
 
         if self.death == 'Drown':
-            
+
             if self.death_timer > self.next_death_anim:
-                    
-                    self.next_death_anim += c.DEATH_ANIMATION_UPDATE_INTERVAL
 
-                    self.texture = self.drowning_textures[self.cur_texture_index]
-                    
-                    self.cur_texture_index += 1
-                    if (self.cur_texture_index > 8):
+                self.next_death_anim += c.DEATH_ANIMATION_UPDATE_INTERVAL
 
-                        self.cur_texture_index = 0
+                self.texture = self.drowning_textures[self.cur_texture_index]
+
+                self.cur_texture_index += 1
+
+                if self.cur_texture_index > 8:
+
+                    self.cur_texture_index = 0
 
         elif self.death == 'Mauled':
 

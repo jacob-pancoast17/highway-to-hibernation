@@ -1,10 +1,22 @@
+'''This module is used to create the screen used to display the leaderboard'''
 import arcade
 from scripts import constants as c
 from scripts.firebase_leaderboard import get_top_scores
 
 
 class LeaderboardScreen(arcade.View):
+    '''LeaderboardScreen represents the leaderboard view'''
+
     def __init__(self, previous_view):
+        '''
+        Constructor calls arcade 'View' superclass constructor
+        
+        param:
+            self
+        returns:
+            nothing
+        '''
+
         super().__init__()
         self.previous_view = previous_view
         self.scores = get_top_scores(10)
@@ -57,6 +69,6 @@ class LeaderboardScreen(arcade.View):
             anchor_y='center'
         )
 
-    def on_key_press(self, key, modifiers):
-        if key == arcade.key.ESCAPE:
+    def on_key_press(self, symbol, modifiers):
+        if symbol == arcade.key.ESCAPE:
             self.window.show_view(self.previous_view)

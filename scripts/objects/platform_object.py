@@ -31,6 +31,8 @@ class Platform(arcade.Sprite):
         self.static = static
         self.speed = speed
 
+        self.death_sound = None
+
         # If this platform item is a dynamic one...
         if self.static is False:
             # Start global timer

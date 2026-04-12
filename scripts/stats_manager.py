@@ -1,3 +1,4 @@
+'''This module manages the statistics saved to our games firebase used to display scores'''
 import json
 import os
 from scripts.firebase_leaderboard import add_score

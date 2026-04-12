@@ -7,7 +7,6 @@ from scripts.screens.game_over_screen import GameOver
 from scripts.engines.texture_engine import TextureEngine
 from scripts.engines.time_engine import TimeEngine
 from scripts.engines.world_engine import WorldEngine
-from scripts.stats_manager import record_score
 
 #from pause_screen import Pause
 
@@ -31,6 +30,7 @@ class GameView(arcade.View):
         self.next_move = 0
         self.time_stopped = False
         self.death_timer = 0
+        self.death_sound = None
 
         self.player_sprite = None
 

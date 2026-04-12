@@ -222,11 +222,13 @@ class GameOver(arcade.View):
         param: self
             symbol - key pressed
             modifiers - e.g. capslock or numlock
+        returns:
+            nothing
         '''
         if not self.submitted:
-        
+
             if symbol == arcade.key.ENTER:
-                    self.submit_score()
+                self.submit_score()
             elif symbol == arcade.key.BACKSPACE:
                 self.player_name = self.player_name[:-1]
                 self.name_text.text = self.player_name if self.player_name else "_ _ _"
