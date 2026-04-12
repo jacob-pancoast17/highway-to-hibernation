@@ -1,5 +1,4 @@
 ''' Module providing constants for the game. '''
-import arcade
 
 # Set window and grid information
 ROW_COUNT = 15
@@ -55,9 +54,6 @@ game_over_background = arcade.csscolor.BLACK
 brennas_favorite_color = arcade.csscolor.DARK_GREEN
 blood_mwahaha = arcade.csscolor.RED
 victory = arcade.csscolor.GOLD
-
-# Fonts
-arcade.load_font("fonts/edit-undo.brk.ttf")
 
 # Sounds
 VOLUME = 5
