@@ -17,11 +17,14 @@ class Settings(arcade.View):
         super().__init__()
 
         self.previous_view = previous_view
+        
+        # if from_pause:
+        #     self.came_from_game = True
+        # else:
+        #     self.came_from_game = False
 
-        if from_pause:
-            self.came_from_game = True
-        else:
-            self.came_from_game = False
+        # Change this to the one above to be able to edit screen size ^
+        self.came_from_game = True
 
         self.time_elapsed = 0
         self.next_blink = c.BLINK_RATE
