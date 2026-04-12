@@ -29,11 +29,12 @@ def generate_platforms(texture_engine, platforms, current_walk_coords, biome_inf
 
     biome = biome_info[0]
 
+
     if biome == 'River_Lilypads':
 
         return generate_lilypads(texture_engine, current_walk_coords, row, curr_bottom)
 
-    elif biome and len(biome_info) > 1 == 'River_Logs':
+    elif biome == 'River_Logs':
 
         return generate_logs(texture_engine, platforms, current_walk_coords, row, curr_bottom, biome_info[1])
 
