@@ -130,7 +130,7 @@ class Pause(arcade.View):
                 self.window.show_view(LeaderboardScreen(self))
 
             elif self.currently_selected == 'Settings':
-                self.window.show_view(Settings(self, True))
+                self.window.show_view(Settings(self))
 
         elif symbol == arcade.key.UP and index != 0:
 

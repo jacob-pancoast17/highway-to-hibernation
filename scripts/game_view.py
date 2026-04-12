@@ -309,10 +309,10 @@ class GameView(arcade.View):
             nothing
         '''
 
-        print("initializing . . .")
+        #print("initializing . . .")
 
         self.update_resolution()
-        print(c.RESOLUTION_RATIO)
+        #print(c.RESOLUTION_RATIO)
 
         self.player.update_resolution(self.player.x, self.player.y - self.current_bottom_of_screen)
         self.world.update_resolution()
