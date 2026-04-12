@@ -134,7 +134,6 @@ class WorldEngine():
         for i in range(c.NUM_ENDING_FOREST_ROWS):
 
             self.rows.append(['Victory'])
-        #TODO create fast_log_rows, med_log_rows, and slow_log_rows here and update in update screen
         
 
     def generate_screen(self):
@@ -194,7 +193,6 @@ class WorldEngine():
                 self.fast_log_rows.append(i)
             else:
                 print("LOG SPEED APPENDING ERROR")
-
     def update_screen(self, new_row_index):
         '''
         update_screen is called whenever a new row needs to be generated, it pushes
@@ -279,7 +277,6 @@ class WorldEngine():
                 self.fast_log_rows.append(i)
             else:
                 print("LOG SPEED APPENDING ERROR")
-
     def update_wolves(self, row):
         '''
         update_wolves takes a row and updates the wolves in that row by trying

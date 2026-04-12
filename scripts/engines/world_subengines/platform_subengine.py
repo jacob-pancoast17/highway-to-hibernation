@@ -76,7 +76,7 @@ def generate_lilypads(texture_engine, curr_walk_coords, row, curr_bottom):
 
             lilypad_texture = random.choices(
                 ['sprites/lilypad.png',
-                'sprites/lilypad-with-frog.png'],
+                'sprites/pink_frog.png'],
                 weights = [0.9, 0.1])
 
             for lilypad in lilypads:
