@@ -54,7 +54,12 @@ class StartScreen(arcade.View):
         self.next_blink = c.BLINK_RATE
         self.blinked = False
 
-        self.options = ['Mode', 'Play']
+        self.options = ['Mode', 
+                        'Play',
+                        'Stats',
+                        'Settings',
+                        'Leaderboard', 
+                        'Quit']
         self.modes = ['Thirty', 'Fifty', 'Hundred', 'Infinite']
 
         self.num_options = len(self.modes)
@@ -139,38 +144,13 @@ class StartScreen(arcade.View):
             anchor_y="center"
         )
 
-
-        # draw stats window
-        arcade.draw_text(
-            "Press L for leaderboard",
-            x=c.WINDOW_WIDTH / 2,
-            y=c.WINDOW_HEIGHT / 3.4,
-            font_name="Edit Undo BRK",
-            font_size=18 * c.RESOLUTION_RATIO,
-            anchor_x="center"
-        )
-
-        arcade.draw_text(
-            "Press 'S' for personal stats",
-            x=c.WINDOW_WIDTH / 2,
-            y=c.WINDOW_HEIGHT / 4.5,
-            font_name="Edit Undo BRK",
-            font_size=18 * c.RESOLUTION_RATIO,
-            anchor_x="center"
-        )
-
-        arcade.draw_text(
-            "Press 'Q' to Quit",
-            x=c.WINDOW_WIDTH / 2,
-            y=c.WINDOW_HEIGHT / 6.5,
-            font_name="Edit Undo BRK",
-            font_size=18 * c.RESOLUTION_RATIO,
-            anchor_x="center"
-        )
-
         # draw "buttons"
         self.draw_mode()
         self.draw_play()
+        self.draw_stats()
+        self.draw_leaderboard()
+        self.draw_settings()
+        self.draw_quit()
 
     def on_update(self, delta_time):
         '''
@@ -203,6 +183,14 @@ class StartScreen(arcade.View):
                 else:
 
                     self.currently_selected_mode = self.modes[curr_index - 1]
+        
+            elif (self.currently_selected_option == 'Settings'):
+
+                self.currently_selected_option = 'Stats'
+            
+            elif (self.currently_selected_option == 'Quit'):
+
+                self.currently_selected_option = 'Leaderboard'
 
         # Move down
         elif (symbol == arcade.key.RIGHT):
@@ -220,53 +208,103 @@ class StartScreen(arcade.View):
                 else:
 
                     self.currently_selected_mode = self.modes[curr_index + 1]
+
+            elif (self.currently_selected_option == 'Stats'):
+
+                self.currently_selected_option = 'Settings'
+            
+            elif (self.currently_selected_option == 'Leaderboard'):
+
+                self.currently_selected_option = 'Quit'
         
         elif (symbol == arcade.key.DOWN):
 
-            index = self.options.index(self.currently_selected_option)
+            if self.currently_selected_option == 'Mode':
 
-            if index != len(self.options) - 1:
+                self.currently_selected_option = 'Play'
 
-                self.currently_selected_option = self.options[index + 1]
+            elif self.currently_selected_option == 'Play':
+
+                self.currently_selected_option = 'Stats'
+
+            elif self.currently_selected_option == 'Stats':
+
+                self.currently_selected_option = 'Leaderboard'
+            
+            elif self.currently_selected_option == 'Settings':
+
+                self.currently_selected_option = 'Quit'
 
         elif (symbol == arcade.key.UP):
 
-            index = self.options.index(self.currently_selected_option)
+            if self.currently_selected_option == 'Play':
 
-            if index != 0:
+                self.currently_selected_option = 'Mode'
 
-                self.currently_selected_option = self.options[index - 1]
+            elif self.currently_selected_option  == 'Stats':
 
-        # Open stats page
-        elif symbol == arcade.key.L:
-            self.window.show_view(LeaderboardScreen(self))
-        elif symbol == arcade.key.S:
-            from scripts.screens.stats_screen import StatsScreen
-            self.window.show_view(StatsScreen())
-        elif symbol == arcade.key.Q:
-            self.window.close()
-        elif symbol == arcade.key.F:
-            self.window.show_view(Settings(self))
+                self.currently_selected_option = 'Play'
 
-        elif symbol == arcade.key.ENTER and self.currently_selected_option == 'Play':
-            if self.currently_selected_mode == "Hundred":
-                c.LEVEL_SIZE = 100
-                c.CURRENT_MODE = 'Hundred'
-            elif self.currently_selected_mode == "Fifty":
-                c.LEVEL_SIZE = 50
-                c.CURRENT_MODE = 'Fifty'
-            elif self.currently_selected_mode == "Thirty":
-                c.LEVEL_SIZE = 30
-                c.CURRENT_MODE = 'Thirty'
-            else:
-                c.LEVEL_SIZE = 10000
-                c.CURRENT_MODE = 'Infinite'
-            game_view = GameView()
-            self.window.show_view(game_view)
+            elif self.currently_selected_option  == 'Settings':
+
+                self.currently_selected_option = 'Play'
+
+            elif self.currently_selected_option == 'Leaderboard':
+
+                self.currently_selected_option = 'Stats'
+
+            elif self.currently_selected_option == 'Quit':
+
+                self.currently_selected_option = 'Settings'
+
+        elif symbol == arcade.key.ENTER:
+            
+            if self.currently_selected_option == 'Play':
+
+                c.CURRENT_OPTION = 'Play'
+                
+                if self.currently_selected_mode == "Hundred":
+                    c.LEVEL_SIZE = 100
+                    c.CURRENT_MODE = 'Hundred'
+
+                elif self.currently_selected_mode == "Fifty":
+                    c.LEVEL_SIZE = 50
+                    c.CURRENT_MODE = 'Fifty'
+
+                elif self.currently_selected_mode == "Thirty":
+                    c.LEVEL_SIZE = 30
+                    c.CURRENT_MODE = 'Thirty'
+
+                else:
+                    c.LEVEL_SIZE = 10000
+                    c.CURRENT_MODE = 'Infinite'
+
+                game_view = GameView()
+                self.window.show_view(game_view)
+
+            elif self.currently_selected_option == 'Stats':
+
+                c.CURRENT_OPTION = 'Stats'
+                from scripts.screens.stats_screen import StatsScreen
+                self.window.show_view(StatsScreen())
+
+            elif self.currently_selected_option == 'Leaderboard':
+
+                c.CURRENT_OPTION = 'Leaderboard'
+                self.window.show_view(LeaderboardScreen(self))
+
+            elif self.currently_selected_option == 'Settings':
+
+                c.CURRENT_OPTION = 'Settings'
+                self.window.show_view(Settings(self))
+
+            elif self.currently_selected_option == 'Quit':
+
+                self.window.close()
 
     def draw_mode(self):
         '''
-        draw_infinity is a helper function which draws the infinite levels button
+        draw_mode draws the mode slider
 
         param:
             self
@@ -414,6 +452,14 @@ class StartScreen(arcade.View):
             mode.draw()
 
     def draw_play(self):
+        '''
+        draw_play draws the play button
+
+        param:
+            self
+        returns:
+            nothing
+        '''
 
         if self.blinked and self.currently_selected_option == 'Play':
 
@@ -439,7 +485,7 @@ class StartScreen(arcade.View):
         else:
 
             play = arcade.Text(
-                    "PLAY! ➜]",
+                    "PLAY!",
                     x=self.options_coords[0],
                     y=self.options_coords[1] - (60 * c.RESOLUTION_RATIO),
                     font_name="Edit Undo BRK",
@@ -449,6 +495,173 @@ class StartScreen(arcade.View):
                     color=arcade.csscolor.WHITE)
         
         play.draw()
+
+    def draw_stats(self):
+        '''
+        draw_stats draws the stats button
+
+        param:
+            self
+        returns:
+            nothing
+        '''
+        if self.blinked and self.currently_selected_option == 'Stats':
+            stats = arcade.Text(
+                "Stats",
+                x=c.WINDOW_WIDTH / 4,
+                y=self.options_coords[1] - (135 * c.RESOLUTION_RATIO),
+                font_name="Edit Undo BRK",
+                font_size= 24 * c.RESOLUTION_RATIO,
+                anchor_x="center",
+                anchor_y="center",
+                color = arcade.csscolor.BLACK
+            )
+            arcade.draw_rect_filled(
+                arcade.XYWH(stats.x,
+                stats.y,
+                stats.content_width + (6 * c.RESOLUTION_RATIO),
+                stats.content_height),
+                arcade.csscolor.WHITE
+            )
+
+        else:
+            stats = arcade.Text(
+                "Stats",
+                x=c.WINDOW_WIDTH / 4,
+                y=self.options_coords[1] - (135 * c.RESOLUTION_RATIO),
+                font_name="Edit Undo BRK",
+                font_size= 24 * c.RESOLUTION_RATIO,
+                anchor_x="center",
+                anchor_y="center"
+            )
+
+        stats.draw()
+
+    def draw_leaderboard(self):
+        '''
+        draw_leaderboard draws the leaderboard button
+
+        param:
+            self
+        returns:
+            nothing
+        '''
+        if self.blinked and self.currently_selected_option == 'Leaderboard':
+
+            leaderboard = arcade.Text(
+                "Leaderboard",
+                x=c.WINDOW_WIDTH / 4,
+                y=self.options_coords[1] - (180 * c.RESOLUTION_RATIO),
+                font_name="Edit Undo BRK",
+                font_size= 24 * c.RESOLUTION_RATIO,
+                anchor_x="center",
+                anchor_y="center",
+                color = arcade.csscolor.BLACK
+            )
+            arcade.draw_rect_filled(
+                arcade.XYWH(leaderboard.x,
+                leaderboard.y,
+                leaderboard.content_width + (6 * c.RESOLUTION_RATIO),
+                leaderboard.content_height),
+                arcade.csscolor.WHITE
+            )
+
+        else:
+            leaderboard = arcade.Text(
+                "Leaderboard",
+                x=c.WINDOW_WIDTH / 4,
+                y=self.options_coords[1] - (180 * c.RESOLUTION_RATIO),
+                font_name="Edit Undo BRK",
+                font_size= 24 * c.RESOLUTION_RATIO,
+                anchor_x="center",
+                anchor_y="center"
+            )
+
+        leaderboard.draw()
+
+    def draw_settings(self):
+        '''
+        draw_settings draws the settings button
+
+        param:
+            self
+        returns:
+            nothing
+        '''
+        if self.blinked and self.currently_selected_option == 'Settings':
+
+            settings = arcade.Text(
+                "Settings",
+                x=c.WINDOW_WIDTH * 3 / 4,
+                y=self.options_coords[1] - (135 * c.RESOLUTION_RATIO),
+                font_name="Edit Undo BRK",
+                font_size= 24 * c.RESOLUTION_RATIO,
+                anchor_x="center",
+                anchor_y="center",
+                color = arcade.csscolor.BLACK
+            )
+            arcade.draw_rect_filled(
+                arcade.XYWH(settings.x,
+                settings.y,
+                settings.content_width + (6 * c.RESOLUTION_RATIO),
+                settings.content_height),
+                arcade.csscolor.WHITE
+            )
+
+        else:
+            settings = arcade.Text(
+                "Settings",
+                x=c.WINDOW_WIDTH * 3 / 4,
+                y=self.options_coords[1] - (135 * c.RESOLUTION_RATIO),
+                font_name="Edit Undo BRK",
+                font_size= 24 * c.RESOLUTION_RATIO,
+                anchor_x="center",
+                anchor_y="center"
+            )
+
+        settings.draw()
+
+    def draw_quit(self):
+        '''
+        draw_quit draws the quit button
+
+        param:
+            self
+        returns:
+            nothing
+        '''
+        if self.blinked and self.currently_selected_option == 'Quit':
+
+            quit = arcade.Text(
+                "Quit",
+                x=c.WINDOW_WIDTH * 3 / 4,
+                y=self.options_coords[1] - (180 * c.RESOLUTION_RATIO),
+                font_name="Edit Undo BRK",
+                font_size= 24 * c.RESOLUTION_RATIO,
+                anchor_x="center",
+                anchor_y="center",
+                color = arcade.csscolor.BLACK
+            )
+            arcade.draw_rect_filled(
+                arcade.XYWH(quit.x,
+                quit.y,
+                quit.content_width + (6 * c.RESOLUTION_RATIO),
+                quit.content_height),
+                arcade.csscolor.WHITE
+            )
+
+        else:
+            quit = arcade.Text(
+                "Quit",
+                x=c.WINDOW_WIDTH * 3 / 4,
+                y=self.options_coords[1] - (180 * c.RESOLUTION_RATIO),
+                font_name="Edit Undo BRK",
+                font_size= 24 * c.RESOLUTION_RATIO,
+                anchor_x="center",
+                anchor_y="center"
+            )
+
+        quit.draw()
 
     def blink(self):
         '''
