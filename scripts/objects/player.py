@@ -7,7 +7,10 @@ from scripts.objects.obstacle_object import Obstacle
 from scripts.screens.victory_screen import Victory
 
 class Player(arcade.Sprite):
-    '''Player class: holds all information about the player, including position and sprite'''
+    '''
+    Player class: holds all information about the player, including position and sprite
+    '''
+
     def __init__(self, row, column, tex_eng):
         '''
         Constructor creates a player
@@ -50,6 +53,14 @@ class Player(arcade.Sprite):
         try_move takes a key, the world, and the window, and tries to move the player
         in the direction of the key. If the player can move, move them. If they can't,
         do not move them. If they hit a hostile object, move to the game over screen.
+
+        param:
+            self
+            key - keyboard key
+            world
+            window
+        returns:
+            boolean - if they move or not
         '''
 
         # Try to move
@@ -94,6 +105,13 @@ class Player(arcade.Sprite):
         '''
         hit takes the next cell and the window, and determines what type of cell it is.
         If it's an obstacle, do not move. If it's a hostile object, move to the game over screen
+
+        param:
+            self
+            next_cell - cell you are trying to move into
+            window - current view
+        returns:
+            boolean - check is player touched something that can kill them
         '''
 
         if isinstance(next_cell, Obstacle):
@@ -126,6 +144,12 @@ class Player(arcade.Sprite):
         '''
         move takes a key and moves the player in the direction of the key, 
         without checking if the move is valid
+
+        param:
+            self
+            key - keyboard key
+        returns:
+            nothing
         '''
 
         if key == arcade.key.UP:

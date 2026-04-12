@@ -95,6 +95,11 @@ class Hostile(arcade.Sprite):
     def move_back(self):
         '''
         move_back takes a key and moves the hostile back
+
+        param:
+            self
+        returns:
+            nothing
         '''
 
         if self.is_moving_left is True:
@@ -111,6 +116,11 @@ class Hostile(arcade.Sprite):
         '''
         is_off_screen checks if the hostile object has moved off the screen, and
         should be deleted
+
+        param:
+            self
+        returns:
+            nothing
         '''
 
         if (self.center_x < c.TILE_WIDTH or
@@ -126,6 +136,7 @@ class Hostile(arcade.Sprite):
 
         param:
             self
+            delta_time
         returns:
             none
         '''

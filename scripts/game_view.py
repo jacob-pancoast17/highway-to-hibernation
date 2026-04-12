@@ -11,7 +11,9 @@ from scripts.engines.world_engine import WorldEngine
 #from pause_screen import Pause
 
 class GameView(arcade.View):
-    '''GameView represents a window object'''
+    '''
+    GameView represents a window object
+    '''
 
     def __init__(self):
         '''
@@ -109,6 +111,11 @@ class GameView(arcade.View):
     def on_draw(self):
         '''
         Render the screen every frame
+
+        param:
+            self
+        returns:
+            nothing
         '''
         self.clear()
 
@@ -120,6 +127,12 @@ class GameView(arcade.View):
     def on_update(self, delta_time):
         '''
         Happens every frame
+
+        param:
+            self
+            delta_time
+        returns:
+            nothing
         '''
 
         c.MAIN_THEME.play()
@@ -141,8 +154,6 @@ class GameView(arcade.View):
                 self.window.show_view(GameOver(self.player.score, self))
                 self.achieve_game_over = arcade.play_sound(c.GAME_OVER_JINGLE)
 
-            return
-
         # checks for collision between player and collectibles
 
         for hunny in self.world.collectibles:
@@ -162,9 +173,12 @@ class GameView(arcade.View):
         '''
         on_key_press detects when a key is pressed
 
-        param: self
-           symbol - key pressed
-           modifiers - e.g. capslock or numlock
+        param:
+            self
+            symbol - key pressed
+            modifiers - e.g. capslock or numlock
+        returns:
+            nothing
         '''
 
         # If the player presses a key, update the speed if able to move
@@ -205,7 +219,13 @@ class GameView(arcade.View):
 
     def move_screen_up(self):
         '''
-        move_screen_up 
+        move_screen_up updates the screen and moves all rows down one to show the player
+        progressing forward
+        
+        param:
+            self
+        returns:
+            nothing
         '''
 
         self.world.update_screen(self.current_top_of_screen + 1)

@@ -6,8 +6,7 @@ from scripts import constants as c
 
 class TextureEngine():
     '''
-    The TextureEngine manages textures, loads them, and
-    draws every frame
+    The TextureEngine manages textures, loads them, and draws every frame
     '''
 
     def __init__(self):
@@ -137,6 +136,7 @@ class TextureEngine():
         '''
         get_trees is a helper function which takes a number of trees and randomly picks
         their textures and ensures that bushes don't get cut off
+        
         param:
             self
             num_trees - number of trees on the edges of a row

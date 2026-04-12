@@ -155,6 +155,18 @@ class Pause(arcade.View):
         )
 
     def on_key_press(self, symbol, modifiers):
+        '''
+        on_key_press detects when the E key is pressed
+        and closes the game window
+
+        param:
+            self
+            symbol - key pressed
+            modifiers - e.g. capslock or numlock
+        returns:
+            nothing
+        '''
+
         if symbol == arcade.key.ESCAPE:
             self.window.show_view(self.game_view)
         if symbol == arcade.key.ENTER:

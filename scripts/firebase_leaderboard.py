@@ -1,4 +1,4 @@
-"This module holds the firebase information for our leaderboard"
+'''This module holds the firebase information for our leaderboard'''
 from datetime import datetime
 import firebase_admin
 from firebase_admin import credentials, firestore

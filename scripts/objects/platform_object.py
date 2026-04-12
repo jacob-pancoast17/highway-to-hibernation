@@ -104,7 +104,7 @@ class Platform(arcade.Sprite):
         param:
             self
         returns:
-
+            nothing
         '''
 
         if (self.center_x < c.TILE_WIDTH or

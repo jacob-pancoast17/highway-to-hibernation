@@ -5,7 +5,9 @@ from scripts.firebase_leaderboard import get_top_scores
 
 
 class LeaderboardScreen(arcade.View):
-    '''LeaderboardScreen represents the leaderboard view'''
+    '''
+    LeaderboardScreen represents the leaderboard view
+    '''
 
     def __init__(self, previous_view):
         '''
@@ -22,9 +24,26 @@ class LeaderboardScreen(arcade.View):
         self.scores = get_top_scores(10)
 
     def on_show_view(self):
+        '''
+        on_show_view defines events that happen when switching to the game over screen
+        
+        param:
+            self
+        returns:
+            nothing
+        '''
         self.window.default_camera.use()
 
     def on_draw(self):
+        '''
+        Render the screen every frame
+
+        param:
+            self
+        returns:
+            nothing
+        '''
+        
         self.clear()
 
         arcade.draw_text(
@@ -70,5 +89,16 @@ class LeaderboardScreen(arcade.View):
         )
 
     def on_key_press(self, symbol, modifiers):
+        '''
+        on_key_press detects when the E key is pressed
+        and closes the game window
+
+        param:
+            self
+            symbol - key pressed
+            modifiers - e.g. capslock or numlock
+        returns:
+            nothing
+        '''
         if symbol == arcade.key.ESCAPE:
             self.window.show_view(self.previous_view)
