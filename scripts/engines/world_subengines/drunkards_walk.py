@@ -10,6 +10,8 @@ def drunkards_walk(x, y, left_bound, right_bound):
     param:
         x - x to start the walk on
         y - y to start the walk on
+        left_bound
+        right_bound
     returns:
         a list of coordinates in a row that must be empty
     '''
@@ -26,7 +28,7 @@ def drunkards_walk(x, y, left_bound, right_bound):
             path.append((x, y))
             return path
 
-        elif a[0] == 'right' and x < right_bound:
+        elif a[0] == 'right' and x < right_bound - 1:
 
             x += 1
 
@@ -34,7 +36,7 @@ def drunkards_walk(x, y, left_bound, right_bound):
 
                 path.append((x, y))
 
-        elif a[0] == 'left' and x > left_bound:
+        elif a[0] == 'left' and x > left_bound - 1:
 
             x += -1
 
