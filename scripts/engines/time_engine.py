@@ -151,7 +151,7 @@ class TimeEngine():
         elif row_speed == "SLOW":
             self.next_slow_log_spawn_check += c.TIME_BETWEEN_SLOW_LOG_SPAWNS
         else:
-            print("UNKNOWN SPEED ERROR")
+            print("UNKNOWN SPEED ERROR IN time_engine.py")
             return
         # print(self.next_log_spawn_check)
 

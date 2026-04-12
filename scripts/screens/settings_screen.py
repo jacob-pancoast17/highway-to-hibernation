@@ -882,6 +882,6 @@ class Settings(arcade.View):
 
         super().on_resize(width, height)
 
-        print(f"{height}, {width}")
+        #print(f"{height}, {width}")
 
         #self.camera.position = (-225, -225)
