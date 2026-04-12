@@ -7,7 +7,7 @@ from scripts.stats_manager import load_stats
 class StatsScreen(arcade.View):
     ''' StatsScreen represents the stats view '''
 
-    def __init__(self):
+    def __init__(self, previous_view):
         '''
         Constructor calls arcade 'View' superclass constructor
         
@@ -18,6 +18,7 @@ class StatsScreen(arcade.View):
         '''
         super().__init__()
 
+        self.previous_view = previous_view
         self.time_elapsed = 0
         self.next_blink = c.BLINK_RATE
         self.blinked = False
@@ -49,9 +50,7 @@ class StatsScreen(arcade.View):
         '''
 
         if symbol == arcade.key.ENTER or symbol == arcade.key.ESCAPE:
-
-            from scripts.screens.start_screen import StartScreen
-            self.window.show_view(StartScreen())
+            self.window.show_view(self.previous_view)
 
         self.back_text = arcade.Text(
             "Press ESC to go back",

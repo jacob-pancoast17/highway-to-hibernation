@@ -4,7 +4,7 @@ from scripts import constants as c
 
 class Settings(arcade.View):
     ''' Settings represents the settings view '''
-    def __init__(self, previous_view, from_pause=False):
+    def __init__(self, previous_view):
         '''
         Constructor calls arcade 'View' superclass constructor
         
@@ -97,7 +97,7 @@ class Settings(arcade.View):
 
         return_list = [previous_coord]
 
-        for i in range(num_options - 1):
+        for _ in range(num_options - 1):
 
             return_list.append((return_list[-1][0], return_list[-1][1] -
                                 self.space_between_options))
@@ -249,13 +249,16 @@ class Settings(arcade.View):
         returns:
             nothing
         '''
-        arcade.draw_text(
+        settings_text = arcade.Text(
             "SETTINGS",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT * 0.82,
             font_name="Edit Undo BRK",
             font_size=40 * c.RESOLUTION_RATIO,
-            anchor_x="center")
+            anchor_x="center"
+        )
+
+        settings_text.draw()
 
     def draw_volume(self):
         '''

@@ -303,8 +303,7 @@ class StartScreen(arcade.View):
             elif self.currently_selected_option == 'Stats':
 
                 c.CURRENT_OPTION = 'Stats'
-                from scripts.screens.stats_screen import StatsScreen
-                self.window.show_view(StatsScreen())
+                self.window.show_view(StatsScreen(self))
 
             elif self.currently_selected_option == 'Leaderboard':
 
