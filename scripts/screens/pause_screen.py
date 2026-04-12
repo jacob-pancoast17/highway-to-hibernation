@@ -121,7 +121,8 @@ class Pause(arcade.View):
         if symbol == arcade.key.ESCAPE:
 
             self.window.show_view(self.game_view)
-            self.game_view.initialize()
+            # Should be uncommented if working on making resolution changeable from the pause screen
+            #self.game_view.initialize()
 
         if symbol == arcade.key.ENTER:
 
