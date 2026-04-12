@@ -5,7 +5,9 @@ from scripts.screens.leaderboard_screen import LeaderboardScreen
 
 
 class Victory(arcade.View):
-    ''' Victory represents the game over view '''
+    '''
+    Victory represents the game over view
+    '''
 
     def __init__(self, score, previous_view):
         '''
@@ -113,8 +115,7 @@ class Victory(arcade.View):
 
         arcade.stop_sound(c.MAIN_THEME)
 
-        #TODO: Change to text objects, same in start_screen
-        arcade.draw_text(
+        victory = arcade.Text(
             "VICTORY!",
             font_name="Edit Undo BRK",
             color= c.victory,
@@ -125,7 +126,9 @@ class Victory(arcade.View):
             anchor_y = 'center'
         )
 
-        arcade.draw_text(
+        victory.draw()
+
+        score = arcade.Text(
             f"SCORE: {self.score}",
             font_name="Edit Undo BRK",
             x = c.WINDOW_WIDTH / 2,
@@ -135,8 +138,9 @@ class Victory(arcade.View):
             anchor_y = 'center'
         )
 
-        #TODO: Change to text objects, same in start_screen
-        arcade.draw_text(
+        score.draw()
+
+        play_again = arcade.Text(
             "Click to play again",
             font_name="Edit Undo BRK",
             x = c.WINDOW_WIDTH / 2,
@@ -146,8 +150,9 @@ class Victory(arcade.View):
             anchor_y = 'center'
         )
 
-        #TODO: Change to text objects, same in start_screen
-        arcade.draw_text(
+        play_again.draw()
+
+        main = arcade.Text(
             "Press 'M' to return to main menu",
             font_name="Edit Undo BRK",
             x = c.WINDOW_WIDTH / 2,
@@ -157,7 +162,9 @@ class Victory(arcade.View):
             anchor_y = 'center'
         )
 
-        arcade.draw_text(
+        main.draw()
+
+        stats = arcade.Text(
             "Press 'S' for stats",
             font_name="Edit Undo BRK",
             x=c.WINDOW_WIDTH / 2,
@@ -167,27 +174,36 @@ class Victory(arcade.View):
             anchor_y='center'
         )
 
+        stats.draw()
 
-    # on_mouse_press detects when the mouse is pressed and
-    # changes the view to the game view again to restart
-
-    # param: self
-     #      _x - cursor x pos
-     #      _y - cursor y pos
-     #     _button - button on mouse pressed
-     #     _modifiers - shift, ctrl, numlock, etc.
     def on_mouse_press(self, _x, _y, _button, _modifiers):
+        '''
+        on_mouse_press detects when the mouse is pressed and
+        changes the view to the game view again to restart
+
+        param:
+            self
+            _x - cursor x pos
+            _y - cursor y pos
+            _button - button on mouse pressed
+            _modifiers - shift, ctrl, numlock, etc.
+        returns:
+            nothing
+        '''
         self.window.show_view(self.previous_view.__class__())
 
-
-    # on_key_press detects when the E key is pressed
-    # and closes the game window
-
-    # param: self
-     #      symbol - key pressed
-     #      modifiers - e.g. capslock or numlock
-
     def on_key_press(self, symbol, modifiers):
+        '''
+        on_key_press detects when the E key is pressed
+        and closes the game window
+
+        param:
+            self
+            symbol - key pressed
+            modifiers - e.g. capslock or numlock
+        returns:
+            nothing
+        '''
         if symbol == arcade.key.M:
             from scripts.screens.start_screen import StartScreen
             self.window.show_view(StartScreen())

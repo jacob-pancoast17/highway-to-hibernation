@@ -73,7 +73,7 @@ VICTORY_JINGLE = arcade.load_sound("sfx/victory.wav")
 GAME_OVER_JINGLE = arcade.load_sound("sfx/game_over.wav")
 
 
-# Music 
+# Music
 MAIN_THEME = arcade.play_sound(ADVENTURE_MUSIC)
 MAIN_THEME.pause()
 

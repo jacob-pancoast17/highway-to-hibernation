@@ -210,19 +210,35 @@ class GameOver(arcade.View):
         on_mouse_press detects when the mouse is pressed and
         changes the view to the game view again to restart
 
-        param: self
+        param:
+            self
             _x - cursor x pos
             _y - cursor y pos
             _button - button on mouse pressed
             _modifiers - shift, ctrl, numlock, etc.
+        returns:
+            nothing
         '''
+
         self.window.show_view(self.previous_view.__class__())
 
 
     def on_update(self, delta_time):
+        '''
+        Happens every frame
+
+        param:
+            self
+            delta_time
+        returns:
+            nothing
+        '''
         if self.submit_message_timer > 0:
+
             self.submit_message_timer -= delta_time
+
             if self.submit_message_timer <= 0:
+
                 self.submit_message = ""
                 self.submit_message_text.text = ""
                 self.submit_message_timer = 0
@@ -235,11 +251,14 @@ class GameOver(arcade.View):
         param: self
             symbol - key pressed
             modifiers - e.g. capslock or numlock
+        returns:
+            nothing
         '''
+
         if not self.submitted:
-        
+
             if symbol == arcade.key.ENTER:
-                    self.submit_score()
+                self.submit_score()
             elif symbol == arcade.key.BACKSPACE:
                 self.player_name = self.player_name[:-1]
                 self.name_text.text = self.player_name if self.player_name else "_ _ _"

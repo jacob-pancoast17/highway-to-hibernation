@@ -124,7 +124,7 @@ class StartScreen(arcade.View):
         self.uimanager.draw()
 
         # draw stats window
-        arcade.draw_text(
+        select = arcade.Text(
             "SELECT MODE:",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT * .57,
@@ -133,11 +133,12 @@ class StartScreen(arcade.View):
             anchor_x="center"
         )
 
-         # draw stats window
+        select.draw()
+
         arcade.draw_text(
-            "<          >",
-            x=self.options_coords[0],
-            y=self.options_coords[1],
+            "Press 'S' for personal stats",
+            x=c.WINDOW_WIDTH / 2,
+            y=c.WINDOW_HEIGHT / 4.5,
             font_name="Edit Undo BRK",
             font_size=30 * c.RESOLUTION_RATIO,
             anchor_x="center",

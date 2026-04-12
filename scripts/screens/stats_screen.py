@@ -51,6 +51,15 @@ class StatsScreen(arcade.View):
             from scripts.screens.start_screen import StartScreen
             self.window.show_view(StartScreen())
 
+        self.back_text = arcade.Text(
+            "Press ESC to go back",
+            x=c.WINDOW_WIDTH / 2,
+            y=c.WINDOW_HEIGHT * 0.08,
+            font_size=16,
+            font_name="Edit Undo BRK",
+            anchor_x='center',
+            anchor_y='center'
+        )
 
     def on_show_view(self):
         '''
@@ -95,7 +104,7 @@ class StatsScreen(arcade.View):
 
         self.title_text.draw()
 
-        arcade.draw_text(
+        high_score = arcade.Text(
             f"HIGH SCORE: {self.stats['high_score']}",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT * 0.58,
@@ -104,7 +113,9 @@ class StatsScreen(arcade.View):
             anchor_x='center'
         )
 
-        arcade.draw_text(
+        high_score.draw()
+
+        prev_score = arcade.Text(
             f"LAST SCORE: {self.stats['last_score']}",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT * 0.46,
@@ -113,7 +124,9 @@ class StatsScreen(arcade.View):
             anchor_x='center'
         )
 
-        arcade.draw_text(
+        prev_score.draw()
+
+        games_played = arcade.Text(
             f"GAMES PLAYED: {self.stats['games_played']}",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT * 0.34,
@@ -121,6 +134,10 @@ class StatsScreen(arcade.View):
             font_name="Edit Undo BRK",
             anchor_x='center'
         )
+
+        games_played.draw()
+
+        games_played.draw()
 
         self.draw_back()
 

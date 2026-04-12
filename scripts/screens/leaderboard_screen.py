@@ -1,10 +1,24 @@
+'''This module is used to create the screen used to display the leaderboard'''
 import arcade
 from scripts import constants as c
 from scripts.firebase_leaderboard import get_top_scores
 
 
 class LeaderboardScreen(arcade.View):
+    '''
+    LeaderboardScreen represents the leaderboard view
+    '''
+
     def __init__(self, previous_view):
+        '''
+        Constructor calls arcade 'View' superclass constructor
+        
+        param:
+            self
+        returns:
+            nothing
+        '''
+
         super().__init__()
 
         self.time_elapsed = 0
@@ -15,12 +29,29 @@ class LeaderboardScreen(arcade.View):
         self.scores = get_top_scores(10)
 
     def on_show_view(self):
+        '''
+        on_show_view defines events that happen when switching to the game over screen
+        
+        param:
+            self
+        returns:
+            nothing
+        '''
         self.window.default_camera.use()
 
     def on_draw(self):
+        '''
+        Render the screen every frame
+
+        param:
+            self
+        returns:
+            nothing
+        '''
+
         self.clear()
 
-        arcade.draw_text(
+        leaderboard = arcade.Text(
             "LEADERBOARD",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT * 0.86,
@@ -29,8 +60,10 @@ class LeaderboardScreen(arcade.View):
             anchor_x="center"
         )
 
+        leaderboard.draw()
+
         if not self.scores:
-            arcade.draw_text(
+            no_score = arcade.Text(
                 "No scores found",
                 x=c.WINDOW_WIDTH / 2,
                 y=c.WINDOW_HEIGHT * 0.55,
@@ -38,10 +71,13 @@ class LeaderboardScreen(arcade.View):
                 font_size=22,
                 anchor_x="center"
             )
+
+            no_score.draw()
+
         else:
             y_pos = c.WINDOW_HEIGHT * 0.76
             for i, entry in enumerate(self.scores, start=1):
-                arcade.draw_text(
+                score = arcade.Text(
                     f"{i}. {entry['name']} - {entry['score']}",
                     x=c.WINDOW_WIDTH / 2,
                     y=y_pos,
@@ -49,6 +85,7 @@ class LeaderboardScreen(arcade.View):
                     font_size=18,
                     anchor_x="center"
                 )
+                score.draw()
                 y_pos -= 26
 
         self.draw_back()

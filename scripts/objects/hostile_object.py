@@ -24,7 +24,7 @@ class Hostile(arcade.Sprite):
         super().__init__(path_or_texture=texture)
 
         if texture in tex_eng.wolf:
-             
+
             self.running_textures = tex_eng.wolf
 
         self.center_x = c.TILE_SIZE * column + c.TILE_SIZE // 2
@@ -97,6 +97,11 @@ class Hostile(arcade.Sprite):
     def move_back(self):
         '''
         move_back takes a key and moves the hostile back
+
+        param:
+            self
+        returns:
+            nothing
         '''
 
         if self.is_moving_left is True:
@@ -113,6 +118,11 @@ class Hostile(arcade.Sprite):
         '''
         is_off_screen checks if the hostile object has moved off the screen, and
         should be deleted
+
+        param:
+            self
+        returns:
+            nothing
         '''
 
         if (self.center_x < c.TILE_SIZE or
@@ -121,13 +131,14 @@ class Hostile(arcade.Sprite):
             return True
         else:
             return False
-        
+
     def run(self, delta_time):
         '''
         run changes the wolf textures so it appears as if it's running
 
         param:
             self
+            delta_time
         returns:
             none
         '''
@@ -139,15 +150,15 @@ class Hostile(arcade.Sprite):
             self.texture = self.running_textures[self.cur_texture_index]
 
             if self.is_moving_left:
-                
+
                 self.scale_x = -1
 
             self.cur_texture_index += 1
 
-            if (self.cur_texture_index > 10):
+            if self.cur_texture_index > 10:
 
-                            self.cur_texture_index = 0
-            
+                self.cur_texture_index = 0
+
             self.next_run_frame += self.run_speed
 
     def update_resolution(self, curr_x_on_screen, curr_y_on_screen):
