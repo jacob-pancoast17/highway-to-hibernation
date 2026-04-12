@@ -1,7 +1,7 @@
 '''This module is the part of the world engine that generates platforms'''
 # Python modules
-import arcade
 import random
+import arcade
 
 # Constants
 from scripts import constants as c
@@ -12,7 +12,8 @@ from scripts.engines.world_subengines.drunkards_walk import drunkards_walk
 # Objects
 from scripts.objects.platform_object import Platform
 
-def generate_platforms(texture_engine, platforms, current_walk_coords, biome_info, row, curr_bottom):
+def generate_platforms(texture_engine, platforms, current_walk_coords, biome_info,
+                       row, curr_bottom):
     '''
     generate_platform is a helper function that takes a row index 
     and generates platforms based on the biome
@@ -36,12 +37,13 @@ def generate_platforms(texture_engine, platforms, current_walk_coords, biome_inf
 
     elif biome == 'River_Logs':
 
-        return generate_logs(texture_engine, platforms, current_walk_coords, row, curr_bottom, biome_info[1])
+        return generate_logs(texture_engine, platforms, current_walk_coords, row,
+                             curr_bottom, biome_info[1])
 
     else:
 
         return [arcade.SpriteList(), current_walk_coords]
-    
+
 def generate_lilypads(texture_engine, curr_walk_coords, row, curr_bottom):
     """
     generate_lilypads takes a row and lilypads you can use to walk across

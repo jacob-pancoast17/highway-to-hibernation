@@ -1,7 +1,7 @@
 '''This module is the part of the world engine that generates obstacles'''
 # Python modules
-import arcade
 import random
+import arcade
 
 # Constants
 from scripts import constants as c
@@ -32,7 +32,7 @@ def generate_obstacles(texture_engine, current_walk_coords, biome, row, curr_bot
     '''
 
     biome = biome[0]
-    
+
     if biome == "Pack":
 
         return generate_wolves(texture_engine, current_walk_coords, row, curr_bottom)
@@ -41,12 +41,11 @@ def generate_obstacles(texture_engine, current_walk_coords, biome, row, curr_bot
 
         return generate_forest(texture_engine, current_walk_coords, row, curr_bottom)
 
-    elif (biome == "River_Lilypads" or
-            biome =="River_Logs"):
+    elif biome == "River_Lilypads" or biome =="River_Logs":
 
         return generate_river(texture_engine, current_walk_coords, row, curr_bottom)
-    
-    elif (biome == "Bank"):
+
+    elif biome == "Bank":
 
         return [arcade.SpriteList(), current_walk_coords]
 
@@ -60,43 +59,42 @@ def generate_obstacles(texture_engine, current_walk_coords, biome, row, curr_bot
         exit()
 
 def generate_wolves(texture_engine, curr_walk_coords, row, curr_bottom):
-        '''
-        generate_wolves takes a row and generates it randomly based on
-        the "wolves" quality -- moving objects across the screen
+    '''
+    generate_wolves takes a row and generates it randomly based on
+    the "wolves" quality -- moving objects across the screen
 
-        param:
-            texture_engine - where to get textures from
-            curr_walk_coords - current coords of the walkable path
-            row - the row index to be drawn at
-            curr_bottom - the current bottom of the screen
-        returns:`
-            a spritelist of obstacles and the new walkable_path
-        '''
+    param:
+        texture_engine - where to get textures from
+        curr_walk_coords - current coords of the walkable path
+        row - the row index to be drawn at
+        curr_bottom - the current bottom of the screen
+    returns:`
+        a spritelist of obstacles and the new walkable_path
+    '''
 
-        walkable = drunkards_walk(curr_walk_coords[0],
-                                  curr_walk_coords[1],
-                                  4, c.COLUMN_COUNT - 4)
-        walkable = sorted(walkable, key=lambda x: x[1])
+    walkable = drunkards_walk(curr_walk_coords[0],
+                                curr_walk_coords[1],
+                                4, c.COLUMN_COUNT - 4)
+    walkable = sorted(walkable, key=lambda x: x[1])
 
-        hostiles = arcade.SpriteList()
+    hostiles = arcade.SpriteList()
 
-        # For each tile, just generate a hostile object that kills you
+    # For each tile, just generate a hostile object that kills you
 
-        moving_left = random.choice([True, False])
-        # Pick a random speed
-        speed = random.uniform(c.LOWER_OBSTACLE_SPEED, c.UPPER_OBSTACLE_SPEED)
+    moving_left = random.choice([True, False])
+    # Pick a random speed
+    speed = random.uniform(c.LOWER_OBSTACLE_SPEED, c.UPPER_OBSTACLE_SPEED)
 
-        if not moving_left:
-            hostiles.append(Hostile(texture_engine.wolf[0], 0, row - curr_bottom,
-                                    texture_engine, speed, static=False, left=False))
-        else:
-            hostiles.append(Hostile(texture_engine.wolf[0], 14, row - curr_bottom,
-                                    texture_engine, speed, static=False, left=True))
-            
+    if not moving_left:
+        hostiles.append(Hostile(texture_engine.wolf[0], 0, row - curr_bottom,
+                                texture_engine, speed, static=False, left=False))
+    else:
+        hostiles.append(Hostile(texture_engine.wolf[0], 14, row - curr_bottom,
+                                texture_engine, speed, static=False, left=True))
 
-        current_walk_coords = walkable[-1]
+    current_walk_coords = walkable[-1]
 
-        return [hostiles, current_walk_coords]
+    return [hostiles, current_walk_coords]
 
 def generate_forest(texture_engine, curr_walk_coords, row, curr_bottom):
     '''
@@ -123,7 +121,7 @@ def generate_forest(texture_engine, curr_walk_coords, row, curr_bottom):
                               curr_walk_coords[1],
                               num_trees_left,
                               c.COLUMN_COUNT - num_trees_right)
-    
+
     walkable = sorted(walkable, key=lambda x: x[1])
 
     last_rock = None
@@ -137,9 +135,8 @@ def generate_forest(texture_engine, curr_walk_coords, row, curr_bottom):
 
         tree = Obstacle(tree_texture, i, row - curr_bottom, False)
 
-        tree.center_y = (c.TILE_SIZE * (row - curr_bottom)
-                                + c.TILE_SIZE)
-        
+        tree.center_y = c.TILE_SIZE * (row - curr_bottom) + c.TILE_SIZE
+
         sprites.append(tree)
 
     # Append rocks
@@ -180,16 +177,15 @@ def generate_forest(texture_engine, curr_walk_coords, row, curr_bottom):
     tree_textures_right = texture_engine.get_trees(num_trees_right, True)
 
     for i in range(num_trees_right):
-        
+
         x = c.COLUMN_COUNT - num_trees_right + i
 
         tree_texture = tree_textures_right[i]
 
         tree = Obstacle(tree_texture, x, row - curr_bottom, False)
 
-        tree.center_y = (c.TILE_SIZE * (row - curr_bottom)
-                                + c.TILE_SIZE)
-        
+        tree.center_y = c.TILE_SIZE * (row - curr_bottom) + c.TILE_SIZE
+
         sprites.append(tree)
 
 

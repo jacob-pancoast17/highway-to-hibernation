@@ -25,7 +25,7 @@ class Pause(arcade.View):
 
         self.options = ['Reset', 'Leaderboard', 'Settings', 'Main Menu']
         self.currently_selected = self.options[0]
-        
+
         self.game_view = game_view
         self.initialize()
 
@@ -130,11 +130,11 @@ class Pause(arcade.View):
 
                 from scripts.screens.start_screen import StartScreen
                 self.window.show_view(StartScreen())
-            
+
             elif self.currently_selected == 'Reset':
-                
+
                 self.window.show_view(self.game_view.__class__())
-            
+
             elif self.currently_selected == 'Leaderboard':
 
                 self.window.show_view(LeaderboardScreen(self))
@@ -144,11 +144,11 @@ class Pause(arcade.View):
                 self.window.show_view(Settings(self, True))
 
         elif symbol == arcade.key.UP and index != 0:
-    
+
             self.currently_selected = self.options[index - 1]
-        
+
         elif symbol == arcade.key.DOWN and index != len(self.options) - 1:
-        
+
             self.currently_selected = self.options[index + 1]
 
     def on_update(self, delta_time):
@@ -347,13 +347,9 @@ class Pause(arcade.View):
         returns:
             nothing
         '''
-
         if self.blinked is False:
 
             self.blinked = True
 
         else:
             self.blinked = False
-
-
-

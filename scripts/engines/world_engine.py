@@ -126,7 +126,7 @@ class WorldEngine():
                 self.rows.append(["Pack"])
 
             else:
-                print(f"ERROR GENERATING ARRAY IN WORLD_GEN.PY DUE TO A" +
+                print("ERROR GENERATING ARRAY IN WORLD_GEN.PY DUE TO A" +
                        f"NOISE LEVEL OF {noise} NOT MATCHING ANY BIOME")
 
         # Make sure the first last rows are always grass at the
@@ -153,7 +153,7 @@ class WorldEngine():
             background = generate_background(self.tex_eng, # Texture engine
                                              self.rows[i], # Biome
                                              i, # Current row
-                                             self.loaded_indices[0]) # Current bottom row 
+                                             self.loaded_indices[0]) # Current bottom row
             self.backgrounds.append(background)
 
             obstacle_info = generate_obstacles(self.tex_eng, # Texture engine
@@ -165,7 +165,7 @@ class WorldEngine():
             self.current_walk_coords = obstacle_info[1]
 
             # Randomly pick a velocity to add to list for initial screen generation
-            
+
             platform_info = generate_platforms(self.tex_eng, # Texture engine
                                                self.platforms, # Current platforms
                                                self.current_walk_coords, # Current walk coords
@@ -184,12 +184,13 @@ class WorldEngine():
 
         # append indices for each log row to an array according to its speed for time_engine
         curr_log_rows = self.get_log_rows()
+
         for i in curr_log_rows:
-            if (self.rows[i][1] == c.LOG_SPEED_SLOW):
+            if self.rows[i][1] == c.LOG_SPEED_SLOW:
                 self.slow_log_rows.append(i)
-            elif (self.rows[i][1] == c.LOG_SPEED_MED):
+            elif self.rows[i][1] == c.LOG_SPEED_MED:
                 self.med_log_rows.append(i)
-            elif (self.rows[i][1] == c.LOG_SPEED_FAST):
+            elif self.rows[i][1] == c.LOG_SPEED_FAST:
                 self.fast_log_rows.append(i)
             else:
                 print("LOG SPEED APPENDING ERROR")
@@ -269,11 +270,11 @@ class WorldEngine():
         self.fast_log_rows = []
 
         for i in curr_log_rows:
-            if (self.rows[i][1] == c.LOG_SPEED_SLOW):
+            if self.rows[i][1] == c.LOG_SPEED_SLOW:
                 self.slow_log_rows.append(i)
-            elif (self.rows[i][1] == c.LOG_SPEED_MED):
+            elif self.rows[i][1] == c.LOG_SPEED_MED:
                 self.med_log_rows.append(i)
-            elif (self.rows[i][1] == c.LOG_SPEED_FAST):
+            elif self.rows[i][1] == c.LOG_SPEED_FAST:
                 self.fast_log_rows.append(i)
             else:
                 print("LOG SPEED APPENDING ERROR")
@@ -370,7 +371,7 @@ class WorldEngine():
             nothing
         '''
         new_row = arcade.SpriteList()
-        
+
         existing_row = self.platforms[row - self.loaded_indices[0]]
         tmp = existing_row[0]
         moving_left = tmp.is_moving_left
@@ -551,24 +552,30 @@ class WorldEngine():
         return logs
 
     def update_resolution(self):
-
+        '''
+        Updates the current resolution
+        
+        param:
+            self
+        return:
+            nothing
+        '''
         ## FOR BACKGROUNDS
         for row in self.backgrounds:
 
             for cell in row:
 
-                if cell == None:
+                if cell is None:
 
                     pass
 
                 else:
-                
+
                     # Set the cell's center based on grid position
-                    cell.center_x = (c.TILE_SIZE * row.index(cell) + c.TILE_SIZE // 2)
-                    cell.center_y = (c.TILE_SIZE * 
-                                    (self.backgrounds.index(row)) 
+                    cell.center_x = c.TILE_SIZE * row.index(cell) + c.TILE_SIZE // 2
+                    cell.center_y = (c.TILE_SIZE * self.backgrounds.index(row)
                                     + c.TILE_SIZE // 2)
-                    
+
                     cell.scale = c.RESOLUTION_RATIO
 
         ## FOR OBSTACLES
@@ -576,23 +583,23 @@ class WorldEngine():
 
             for cell in row:
 
-                if cell == None:
+                if cell is None:
 
                     pass
 
                 else:
 
                     # For trees specifically
-                    if (isinstance(cell, Obstacle) and 
+                    if (isinstance(cell, Obstacle) and
                         cell.texture in [self.tex_eng.tree1, self.tex_eng.tree2, self.tex_eng.tree3,
                                         self.tex_eng.tree1_left_end, self.tex_eng.tree2_left_end,
                                         self.tex_eng.tree3_left_end, self.tex_eng.tree1_right_end,
                                         self.tex_eng.tree2_right_end, self.tex_eng.tree3_right_end,
                                         self.tex_eng.tree1_no_bush, self.tex_eng.tree2_no_bush,
                                         self.tex_eng.tree3_no_bush]):
-                        
+
                         cell.update_resolution(cell.x, cell.y, False)
-                        
+
                     elif isinstance(cell, Obstacle):
 
                         cell.update_resolution(cell.x, cell.y, True)
@@ -616,6 +623,3 @@ class WorldEngine():
             for cell in row:
 
                 cell.update_resolution(cell.x, cell.y, True)
-
-
-    

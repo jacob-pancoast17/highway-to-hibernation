@@ -1,7 +1,7 @@
 '''This module is the part of the world engine that generates collectibles'''
 # Python modules
-import arcade
 import random
+import arcade
 
 # Constants
 from scripts import constants as c
@@ -10,30 +10,30 @@ from scripts import constants as c
 from scripts.objects.obstacle_object import Obstacle
 
 def generate_collectible(texture_engine, obstacles, biome, row, curr_bottom):
-        '''
-        generate_collectible is a helper function that takes a row index 
-        and generates the collectibles in that row by calling a child generate function
-        based on what type of collectible it should be
+    '''
+    generate_collectible is a helper function that takes a row index 
+    and generates the collectibles in that row by calling a child generate function
+    based on what type of collectible it should be
 
-        param: 
-            texture_engine - where to get textures from
-            biome - current biome to generate collectibles based off
-            row - the current row to be generated
-            curr_bottom - the current bottom of the screen
-        returns:
-            a SpriteList object from child function
-        '''
+    param: 
+        texture_engine - where to get textures from
+        biome - current biome to generate collectibles based off
+        row - the current row to be generated
+        curr_bottom - the current bottom of the screen
+    returns:
+        a SpriteList object from child function
+    '''
 
-        biome = biome[0]
-        
-        if biome == 'Forest':
+    biome = biome[0]
 
-            return generate_honey(texture_engine, obstacles, row, curr_bottom)
+    if biome == 'Forest':
 
-        else:
+        return generate_honey(texture_engine, obstacles, row, curr_bottom)
 
-            return arcade.SpriteList()
-        
+    else:
+
+        return arcade.SpriteList()
+
 def generate_honey(texture_engine, obstacles, row, curr_bottom):
     """
     generate_honey takes a row and generates it randomly

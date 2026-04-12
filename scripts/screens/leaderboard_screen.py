@@ -90,9 +90,18 @@ class LeaderboardScreen(arcade.View):
 
         self.draw_back()
 
-    def on_key_press(self, key, modifiers):
-        
-        if key == arcade.key.ENTER or key == arcade.key.ESCAPE:
+    def on_key_press(self, symbol, modifiers):
+        '''
+        on_key_press detects when a key is pressed
+
+        param:
+            self
+            symbol - key pressed
+            modifiers - e.g. capslock or numlock
+        returns:
+            nothing
+        '''
+        if symbol == arcade.key.ENTER or symbol == arcade.key.ESCAPE:
             self.window.show_view(self.previous_view)
 
     def on_update(self, delta_time):
@@ -115,7 +124,15 @@ class LeaderboardScreen(arcade.View):
             self.blink()
 
     def draw_back(self):
+        '''
+        draw_back is a helper function used to draw the back button from the leaderboard
+        screen
 
+        param:
+            self
+        returns:
+            nothing
+        '''
         if self.blinked:
 
             back_text = arcade.Text(
@@ -135,7 +152,7 @@ class LeaderboardScreen(arcade.View):
                 back_text.content_width + (6 * c.RESOLUTION_RATIO),
                 back_text.content_height),
                 arcade.csscolor.WHITE)
-        
+
         else:
 
             back_text = arcade.Text(
