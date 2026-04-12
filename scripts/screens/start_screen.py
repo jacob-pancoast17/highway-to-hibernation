@@ -102,7 +102,7 @@ class StartScreen(arcade.View):
 
 
         # draw stats window
-        arcade.draw_text(
+        leaderboard = arcade.Text(
             "Press L for leaderboard",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT / 3.4,
@@ -111,7 +111,9 @@ class StartScreen(arcade.View):
             anchor_x="center"
         )
 
-        arcade.draw_text(
+        leaderboard.draw()
+
+        stats = arcade.Text(
             "Press 'S' for personal stats",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT / 4.5,
@@ -120,7 +122,9 @@ class StartScreen(arcade.View):
             anchor_x="center"
         )
 
-        arcade.draw_text(
+        stats.draw()
+
+        quit = arcade.Text(
             "Press 'Q' to Quit",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT / 6.5,
@@ -129,7 +133,7 @@ class StartScreen(arcade.View):
             anchor_x="center"
         )
 
-
+        quit.draw()
 
         # draw "buttons"
         self.draw_infinity()
