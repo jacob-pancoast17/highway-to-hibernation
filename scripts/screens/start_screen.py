@@ -272,18 +272,26 @@ class StartScreen(arcade.View):
                 
                 if self.currently_selected_mode == "Hundred":
                     c.LEVEL_SIZE = 100
+                    c.ENDING_X = 7
+                    c.ENDING_Y = 99
                     c.CURRENT_MODE = 'Hundred'
 
                 elif self.currently_selected_mode == "Fifty":
                     c.LEVEL_SIZE = 50
+                    c.ENDING_X = 7
+                    c.ENDING_Y = 49
                     c.CURRENT_MODE = 'Fifty'
 
                 elif self.currently_selected_mode == "Thirty":
                     c.LEVEL_SIZE = 30
+                    c.ENDING_X = 7
+                    c.ENDING_Y = 29
                     c.CURRENT_MODE = 'Thirty'
 
                 else:
                     c.LEVEL_SIZE = 10000
+                    c.ENDING_X = 7
+                    c.ENDING_Y = 9999
                     c.CURRENT_MODE = 'Infinite'
 
                 game_view = GameView()

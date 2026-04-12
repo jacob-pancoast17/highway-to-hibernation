@@ -109,9 +109,9 @@ class WorldEngine():
 
                 # random speed for log velocity
                 rand_speed = random.choices([c.LOG_SPEED_SLOW, c.LOG_SPEED_MED, c.LOG_SPEED_FAST],
-                                        weights = [1/3, 1/3, 1/3])
+                                        weights = [1/3, 1/3, 1/3])[0]
                 # River with logs
-                self.rows.append(["River_Logs", rand_speed[0]])
+                self.rows.append(["River_Logs", rand_speed])
 
             # Forest
             elif (noise > -0.1 and noise <= 0.1):

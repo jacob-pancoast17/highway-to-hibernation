@@ -235,6 +235,9 @@ def generate_victory(texture_engine, curr_walk_coords, row, curr_bottom):
     returns:
         a spritelist of obstacles and the new walkable path coords
     '''
+    print("generatin the vicroy")
+    print(c.ENDING_X)
+    print(c.ENDING_Y)
 
 
     sprites = arcade.SpriteList()
@@ -264,10 +267,13 @@ def generate_victory(texture_engine, curr_walk_coords, row, curr_bottom):
 
         x = i + num_trees_left
 
+        print(f"x: {x}, y: {row}")
+
         # The victory square should not be a rock
         if row == c.ENDING_Y and x == c.ENDING_X:
             den = Den('sprites/den.png', x, row - curr_bottom)
             sprites.append(den)
+            print('den')
 
         # Always a clear path to end
         elif x == c.ENDING_X:

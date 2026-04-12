@@ -64,6 +64,7 @@ class TimeEngine():
                 self.spawn_platforms("MED", self.world.med_log_rows)
         elif self.world_time > self.next_slow_log_spawn_check:
             if len(self.world.slow_log_rows) > 0:
+                print("slow log")
                 self.spawn_platforms("SLOW", self.world.slow_log_rows)
 
     def try_to_move_log(self, delta_time):
