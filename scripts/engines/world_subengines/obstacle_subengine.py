@@ -84,6 +84,7 @@ def generate_wolves(texture_engine, curr_walk_coords, row, curr_bottom):
     moving_left = random.choice([True, False])
     # Pick a random speed
     speed = random.uniform(c.LOWER_OBSTACLE_SPEED, c.UPPER_OBSTACLE_SPEED)
+    print(f"wolf coming in at {speed}")
 
     if not moving_left:
         hostiles.append(Hostile(texture_engine.wolf[0], 0, row - curr_bottom,

@@ -125,7 +125,7 @@ class Hostile(arcade.Sprite):
             nothing
         '''
 
-        if (self.center_x < c.TILE_SIZE or
+        if (self.center_x < 0 or
             self.center_x > c.WINDOW_WIDTH):
             self.speed = 0
             return True
