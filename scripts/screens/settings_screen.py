@@ -2,7 +2,6 @@
 import arcade
 from scripts import constants as c
 
-
 class Settings(arcade.View):
     ''' Settings represents the settings view '''
     def __init__(self, previous_view, from_pause=False):
