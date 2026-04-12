@@ -25,6 +25,12 @@ class GameOver(arcade.View):
         self.submit_message = ""
         self.submit_message_timer = 0
 
+        # logic for blinking buttons
+        self.time_elapsed = 0
+        self.next_blink = c.BLINK_RATE
+        self.blinked = False
+        self.currently_selected_option = 'Play Again'
+
 
         self.initialize()
 
@@ -169,9 +175,9 @@ class GameOver(arcade.View):
             self.name_text.draw()
             self.submit_text.draw()
         else:
-            self.play_again_text.draw()
-            self.leaderboard_text.draw()
-            self.main_text.draw()
+            self.draw_play_again()
+            self.draw_leaderboard()
+            self.draw_main_menu()
 
         self.submit_message_text.draw()
 
@@ -243,6 +249,177 @@ class GameOver(arcade.View):
                 self.submit_message_text.text = ""
                 self.submit_message_timer = 0
 
+        self.time_elapsed += delta_time
+
+        if self.time_elapsed > self.next_blink:
+
+            self.next_blink += c.BLINK_RATE
+            self.blink()
+
+
+    def blink(self):
+        '''
+        blink takes the variable blinked and changes it on or off depending on what the
+        current value is
+
+        param:
+            self
+        returns:
+            nothing
+        '''
+
+        if self.blinked is False:
+
+            self.blinked = True
+
+        else:
+            self.blinked = False
+
+
+
+    def draw_play_again(self):
+        '''
+        draw_play_again draws the play again button
+
+        param:
+            self
+        returns:
+            nothing
+        '''
+        if self.blinked and self.currently_selected_option == 'Play Again':
+
+            play_again = arcade.Text(
+                "Play Again",
+                x=c.WINDOW_WIDTH / 2,
+                y=c.WINDOW_HEIGHT * 0.38,
+                font_name="Edit Undo BRK",
+                font_size=24 * c.RESOLUTION_RATIO,
+                anchor_x="center",
+                anchor_y="center",
+                color=arcade.csscolor.BLACK
+            )
+
+            arcade.draw_rect_filled(
+                arcade.XYWH(
+                    play_again.x,
+                    play_again.y,
+                    play_again.content_width + (6 * c.RESOLUTION_RATIO),
+                    play_again.content_height
+                ),
+                arcade.csscolor.WHITE
+            )
+
+        else:
+
+            play_again = arcade.Text(
+                "Play Again",
+                x=c.WINDOW_WIDTH / 2,
+                y=c.WINDOW_HEIGHT * 0.38,
+                font_name="Edit Undo BRK",
+                font_size=24 * c.RESOLUTION_RATIO,
+                anchor_x="center",
+                anchor_y="center"
+            )
+
+        play_again.draw()
+
+
+
+    def draw_leaderboard(self):
+        '''
+        draw_leaderboard draws the leaderboard button
+
+        param:
+            self
+        returns:
+            nothing
+        '''
+        if self.blinked and self.currently_selected_option == 'Leaderboard':
+
+            leaderboard = arcade.Text(
+                "Leaderboard",
+                x=c.WINDOW_WIDTH / 2,
+                y=c.WINDOW_HEIGHT * 0.28,
+                font_name="Edit Undo BRK",
+                font_size=24 * c.RESOLUTION_RATIO,
+                anchor_x="center",
+                anchor_y="center",
+                color=arcade.csscolor.BLACK
+            )
+
+            arcade.draw_rect_filled(
+                arcade.XYWH(
+                    leaderboard.x,
+                    leaderboard.y,
+                    leaderboard.content_width + (6 * c.RESOLUTION_RATIO),
+                    leaderboard.content_height
+                ),
+                arcade.csscolor.WHITE
+            )
+
+        else:
+
+            leaderboard = arcade.Text(
+                "Leaderboard",
+                x=c.WINDOW_WIDTH / 2,
+                y=c.WINDOW_HEIGHT * 0.28,
+                font_name="Edit Undo BRK",
+                font_size=24 * c.RESOLUTION_RATIO,
+                anchor_x="center",
+                anchor_y="center"
+            )
+
+        leaderboard.draw()
+
+
+
+    def draw_main_menu(self):
+        '''
+        draw_main_menu draws the main menu button
+
+        param:
+            self
+        returns:
+            nothing
+        '''
+        if self.blinked and self.currently_selected_option == 'Main Menu':
+
+            main_menu = arcade.Text(
+                "Main Menu",
+                x=c.WINDOW_WIDTH / 2,
+                y=c.WINDOW_HEIGHT * 0.18,
+                font_name="Edit Undo BRK",
+                font_size=24 * c.RESOLUTION_RATIO,
+                anchor_x="center",
+                anchor_y="center",
+                color=arcade.csscolor.BLACK
+            )
+
+            arcade.draw_rect_filled(
+                arcade.XYWH(
+                    main_menu.x,
+                    main_menu.y,
+                    main_menu.content_width + (6 * c.RESOLUTION_RATIO),
+                    main_menu.content_height
+                ),
+                arcade.csscolor.WHITE
+            )
+
+        else:
+
+            main_menu = arcade.Text(
+                "Main Menu",
+                x=c.WINDOW_WIDTH / 2,
+                y=c.WINDOW_HEIGHT * 0.18,
+                font_name="Edit Undo BRK",
+                font_size=24 * c.RESOLUTION_RATIO,
+                anchor_x="center",
+                anchor_y="center"
+            )
+
+        main_menu.draw()
+
+
     def on_key_press(self, symbol, modifiers):
         '''
         on_key_press detects when the E key is pressed
@@ -259,20 +436,50 @@ class GameOver(arcade.View):
 
             if symbol == arcade.key.ENTER:
                 self.submit_score()
+
             elif symbol == arcade.key.BACKSPACE:
                 self.player_name = self.player_name[:-1]
-                self.name_text.text = self.player_name if self.player_name else "_ _ _"
+                self.name_text.text = " ".join(self.player_name) if self.player_name else "_ _ _"
+
             else:
                 if len(self.player_name) < 3 and 97 <= symbol <= 122:
                     self.player_name += chr(symbol).upper()
                     self.name_text.text = " ".join(self.player_name)
+
                 elif len(self.player_name) < 3 and 65 <= symbol <= 90:
                     self.player_name += chr(symbol)
                     self.name_text.text = " ".join(self.player_name)
 
         else:
-            if symbol == arcade.key.M:
-                from scripts.screens.start_screen import StartScreen
-                self.window.show_view(StartScreen())
+            if symbol == arcade.key.UP or symbol == arcade.key.W:
+
+                if self.currently_selected_option == 'Leaderboard':
+                    self.currently_selected_option = 'Play Again'
+
+                elif self.currently_selected_option == 'Main Menu':
+                    self.currently_selected_option = 'Leaderboard'
+
+            elif symbol == arcade.key.DOWN or symbol == arcade.key.S:
+
+                if self.currently_selected_option == 'Play Again':
+                    self.currently_selected_option = 'Leaderboard'
+
+                elif self.currently_selected_option == 'Leaderboard':
+                    self.currently_selected_option = 'Main Menu'
+
+            elif symbol == arcade.key.ENTER:
+
+                if self.currently_selected_option == 'Play Again':
+                    self.window.show_view(self.previous_view.__class__())
+
+                elif self.currently_selected_option == 'Leaderboard':
+                    self.window.show_view(LeaderboardScreen(self))
+
+                elif self.currently_selected_option == 'Main Menu':
+                    self.window.show_view(self.window.main_menu_view)
+
             elif symbol == arcade.key.L:
                 self.window.show_view(LeaderboardScreen(self))
+
+            elif symbol == arcade.key.M:
+                self.window.show_view(self.window.main_menu_view)

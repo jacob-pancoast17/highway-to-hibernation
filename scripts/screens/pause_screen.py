@@ -23,7 +23,7 @@ class Pause(arcade.View):
 
         self.title_coords = [c.WINDOW_WIDTH / 2, c.WINDOW_HEIGHT * 3 / 4]
 
-        self.options = ['Reset', 'Leaderboard', 'Settings', 'Main Menu']
+        self.options = ['Continue','Reset', 'Leaderboard', 'Settings', 'Main Menu']
         self.currently_selected = self.options[0]
 
         self.game_view = game_view
@@ -60,15 +60,6 @@ class Pause(arcade.View):
             anchor_y = 'center'
         )
 
-        self.continue_text = arcade.Text(
-            "Press 'ESC' to continue",
-            x = c.WINDOW_WIDTH / 2,
-            y = 0 + 60 * c.RESOLUTION_RATIO,
-            font_size = 18,
-            font_name="Edit Undo BRK",
-            anchor_x = 'center',
-            anchor_y = 'center'
-        )
 
     def on_show_view(self):
         '''
@@ -107,12 +98,12 @@ class Pause(arcade.View):
 
         pause.draw()
 
+        self.draw_continue()
         self.draw_reset()
         self.draw_leaderboard()
         self.draw_main_menu()
         self.draw_settings()
 
-        self.continue_text.draw()
 
     def on_key_press(self, symbol, modifiers):
 
@@ -126,21 +117,19 @@ class Pause(arcade.View):
 
         if symbol == arcade.key.ENTER:
 
-            if self.currently_selected == 'Main Menu':
+            if self.currently_selected == 'Continue':
+                self.window.show_view(self.game_view)
 
-                from scripts.screens.start_screen import StartScreen
-                self.window.show_view(StartScreen())
+            elif self.currently_selected == 'Main Menu':
+                self.window.show_view(self.window.main_menu_view)
 
             elif self.currently_selected == 'Reset':
-
                 self.window.show_view(self.game_view.__class__())
 
             elif self.currently_selected == 'Leaderboard':
-
                 self.window.show_view(LeaderboardScreen(self))
 
             elif self.currently_selected == 'Settings':
-
                 self.window.show_view(Settings(self, True))
 
         elif symbol == arcade.key.UP and index != 0:
@@ -170,6 +159,53 @@ class Pause(arcade.View):
 
             self.blink()
 
+
+    def draw_continue(self):
+        '''
+        draw_continue draws the continue button
+
+        param:
+            self
+        returns:
+            nothing
+        '''
+        if self.blinked and self.currently_selected == 'Continue':
+
+            continue_text = arcade.Text(
+                "Continue",
+                x=self.title_coords[0],
+                y=self.title_coords[1] - (50 * c.RESOLUTION_RATIO),
+                font_name="Edit Undo BRK",
+                font_size=30 * c.RESOLUTION_RATIO,
+                anchor_x="center",
+                anchor_y="center",
+                color=arcade.csscolor.BLACK
+            )
+            arcade.draw_rect_filled(
+                arcade.XYWH(
+                    continue_text.x,
+                    continue_text.y,
+                    continue_text.content_width + (6 * c.RESOLUTION_RATIO),
+                    continue_text.content_height
+                ),
+                arcade.csscolor.WHITE
+            )
+
+        else:
+            continue_text = arcade.Text(
+                "Continue",
+                x=self.title_coords[0],
+                y=self.title_coords[1] - (50 * c.RESOLUTION_RATIO),
+                font_name="Edit Undo BRK",
+                font_size=30 * c.RESOLUTION_RATIO,
+                anchor_x="center",
+                anchor_y="center"
+            )
+
+        continue_text.draw()
+
+
+
     def draw_reset(self):
         '''
         draw_reset draws the reset button
@@ -184,7 +220,7 @@ class Pause(arcade.View):
             reset = arcade.Text(
                 "Reset",
                 x=self.title_coords[0],
-                y=self.title_coords[1] - (60 * c.RESOLUTION_RATIO),
+                y=self.title_coords[1] - (95 * c.RESOLUTION_RATIO),
                 font_name="Edit Undo BRK",
                 font_size = 30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
@@ -203,7 +239,7 @@ class Pause(arcade.View):
             reset = arcade.Text(
                 "Reset",
                 x=self.title_coords[0],
-                y=self.title_coords[1] - (60 * c.RESOLUTION_RATIO),
+                y=self.title_coords[1] - (95 * c.RESOLUTION_RATIO),
                 font_name="Edit Undo BRK",
                 font_size = 30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
@@ -225,7 +261,7 @@ class Pause(arcade.View):
             leaderboard = arcade.Text(
                 "leaderboard",
                 x=self.title_coords[0],
-                y=self.title_coords[1] - (100 * c.RESOLUTION_RATIO),
+                y=self.title_coords[1] - (140 * c.RESOLUTION_RATIO),
                 font_name="Edit Undo BRK",
                 font_size = 30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
@@ -244,7 +280,7 @@ class Pause(arcade.View):
             leaderboard = arcade.Text(
                 "leaderboard",
                 x=self.title_coords[0],
-                y=self.title_coords[1] - (100 * c.RESOLUTION_RATIO),
+                y=self.title_coords[1] - (140 * c.RESOLUTION_RATIO),
                 font_name="Edit Undo BRK",
                 font_size = 30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
@@ -267,7 +303,7 @@ class Pause(arcade.View):
             settings = arcade.Text(
                 "Settings",
                 x=self.title_coords[0],
-                y=self.title_coords[1] - (140 * c.RESOLUTION_RATIO),
+                y=self.title_coords[1] - (185 * c.RESOLUTION_RATIO),
                 font_name="Edit Undo BRK",
                 font_size = 30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
@@ -286,7 +322,7 @@ class Pause(arcade.View):
             settings = arcade.Text(
                 "Settings",
                 x=self.title_coords[0],
-                y=self.title_coords[1] - (140 * c.RESOLUTION_RATIO),
+                y=self.title_coords[1] - (185 * c.RESOLUTION_RATIO),
                 font_name="Edit Undo BRK",
                 font_size = 30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
@@ -309,7 +345,7 @@ class Pause(arcade.View):
             main_menu = arcade.Text(
                 "Main Menu",
                 x=self.title_coords[0],
-                y=self.title_coords[1] - (180 * c.RESOLUTION_RATIO),
+                y=self.title_coords[1] - (230 * c.RESOLUTION_RATIO),
                 font_name="Edit Undo BRK",
                 font_size = 30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
@@ -328,7 +364,7 @@ class Pause(arcade.View):
             main_menu = arcade.Text(
                 "Main Menu",
                 x=self.title_coords[0],
-                y=self.title_coords[1] - (180 * c.RESOLUTION_RATIO),
+                y=self.title_coords[1] - (230 * c.RESOLUTION_RATIO),
                 font_name="Edit Undo BRK",
                 font_size = 30 * c.RESOLUTION_RATIO,
                 anchor_x="center",
