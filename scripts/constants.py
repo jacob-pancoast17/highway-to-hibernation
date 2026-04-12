@@ -1,4 +1,5 @@
 ''' Module providing constants for the game. '''
+import arcade
 
 # Set window and grid information
 ROW_COUNT = 15
