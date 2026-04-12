@@ -17,7 +17,7 @@ class Settings(arcade.View):
         super().__init__()
 
         self.previous_view = previous_view
-        
+
         # if from_pause:
         #     self.came_from_game = True
         # else:
