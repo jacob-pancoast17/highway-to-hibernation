@@ -124,7 +124,7 @@ class StartScreen(arcade.View):
 
         stats.draw()
 
-        quit = arcade.Text(
+        quit_text = arcade.Text(
             "Press 'Q' to Quit",
             x=c.WINDOW_WIDTH / 2,
             y=c.WINDOW_HEIGHT / 6.5,
@@ -133,7 +133,7 @@ class StartScreen(arcade.View):
             anchor_x="center"
         )
 
-        quit.draw()
+        quit_text.draw()
 
         # draw "buttons"
         self.draw_infinity()
