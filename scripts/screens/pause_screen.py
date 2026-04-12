@@ -169,6 +169,7 @@ class Pause(arcade.View):
         )
 
     def on_key_press(self, symbol, modifiers):
+        print(symbol)
         if symbol == arcade.key.ESCAPE:
             self.window.show_view(self.game_view)
             self.game_view.initialize()

@@ -83,7 +83,7 @@ class Settings(arcade.View):
     def on_key_press(self, symbol, modifiers):
 
         # Move up
-        if (symbol == arcade.key.UP and
+        if ((symbol == arcade.key.UP or symbol == arcade.key.W) and
             self.currently_selected != self.options[0]):
 
             # Get curr index
@@ -95,7 +95,7 @@ class Settings(arcade.View):
                 self.currently_selected = self.options[curr_index - 3]
 
         # Move down
-        elif (symbol == arcade.key.DOWN and
+        elif ((symbol == arcade.key.DOWN or symbol == arcade.key.S) and
             self.currently_selected != self.options[-1]):
 
             # Get curr index
@@ -107,7 +107,7 @@ class Settings(arcade.View):
                 self.currently_selected = self.options[curr_index + 3]
         
         # Move left or right
-        elif (symbol == arcade.key.LEFT):
+        elif (symbol == arcade.key.LEFT or symbol == arcade.key.A):
 
             # For volume
             if (self.currently_selected == 'Volume' and
@@ -145,7 +145,7 @@ class Settings(arcade.View):
                 c.DEBUG = not c.DEBUG
 
         # Move left or right
-        elif (symbol == arcade.key.RIGHT):
+        elif (symbol == arcade.key.RIGHT or symbol == arcade.key.D):
 
             # For volume
             if (self.currently_selected == 'Volume' and
@@ -186,7 +186,9 @@ class Settings(arcade.View):
         elif symbol == arcade.key.ESCAPE:
             
             self.window.show_view(self.previous_view)
-            self.previous_view.initialize()
+            #self.previous_view.initialize()
+            # Commented out so the game doesn't break
+            # This is what would allow you to change the resolution mid game
 
     def draw_settings(self):
 

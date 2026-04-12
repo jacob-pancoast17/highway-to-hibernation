@@ -209,7 +209,11 @@ class GameView(arcade.View):
         if ((symbol == arcade.key.UP or
             symbol == arcade.key.DOWN or
             symbol == arcade.key.LEFT or
-            symbol == arcade.key.RIGHT) and
+            symbol == arcade.key.RIGHT or
+            symbol == arcade.key.W or
+            symbol == arcade.key.A or
+            symbol == arcade.key.S or
+            symbol == arcade.key.D) and
             not self.controls_removed):
 
             # Test if player is going to collide with something

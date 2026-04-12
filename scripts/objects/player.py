@@ -149,25 +149,25 @@ class Player(arcade.Sprite):
         without checking if the move is valid
         '''
 
-        if key == arcade.key.UP:
+        if key == arcade.key.UP or key == arcade.key.W:
             #print("UP")
             self.center_y += c.VELOCITY_MULTIPLIER * c.RESOLUTION_RATIO
             self.y += 1
             self.angle = 180
 
-        elif key == arcade.key.DOWN:
+        elif key == arcade.key.DOWN or key == arcade.key.S:
             #print("DOWN")
             self.center_y -= c.VELOCITY_MULTIPLIER * c.RESOLUTION_RATIO
             self.y -= 1
             self.angle = 0
 
-        elif key == arcade.key.LEFT:
+        elif key == arcade.key.LEFT or key == arcade.key.A:
             #print("LEFT")
             self.center_x -= c.VELOCITY_MULTIPLIER * c.RESOLUTION_RATIO
             self.x -= 1
             self.angle = 90
 
-        elif key == arcade.key.RIGHT:
+        elif key == arcade.key.RIGHT or key == arcade.key.D:
             #print("RIGHT")
             self.center_x += c.VELOCITY_MULTIPLIER * c.RESOLUTION_RATIO
             self.x += 1
@@ -181,28 +181,28 @@ class Player(arcade.Sprite):
         '''
 
         # If up, move back down
-        if key == arcade.key.UP:
+        if key == arcade.key.UP or key == arcade.key.W:
 
             self.center_y -= c.VELOCITY_MULTIPLIER * c.RESOLUTION_RATIO
             self.y -= 1
             self.angle = 180
 
         # If down, move back up
-        elif key == arcade.key.DOWN:
+        elif key == arcade.key.DOWN or key == arcade.key.S:
 
             self.center_y += c.VELOCITY_MULTIPLIER * c.RESOLUTION_RATIO
             self.y += 1
             self.angle = 0
 
         # If left, move back right
-        elif key == arcade.key.LEFT:
+        elif key == arcade.key.LEFT or key == arcade.key.A:
 
             self.center_x += c.VELOCITY_MULTIPLIER * c.RESOLUTION_RATIO
             self.x += 1
             self.angle = 90
 
         # If right, move back left
-        elif key == arcade.key.RIGHT:
+        elif key == arcade.key.RIGHT or key == arcade.key.D:
 
             self.center_x -= c.VELOCITY_MULTIPLIER * c.RESOLUTION_RATIO
             self.x -= 1

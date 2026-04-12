@@ -168,7 +168,7 @@ class StartScreen(arcade.View):
     def on_key_press(self, symbol, modifiers):
 
         # Move up
-        if (symbol == arcade.key.LEFT):
+        if (symbol == arcade.key.LEFT or symbol == arcade.key.A):
 
             if self.currently_selected_option == 'Mode':
 
@@ -193,7 +193,7 @@ class StartScreen(arcade.View):
                 self.currently_selected_option = 'Leaderboard'
 
         # Move down
-        elif (symbol == arcade.key.RIGHT):
+        elif (symbol == arcade.key.RIGHT or symbol == arcade.key.D):
 
             if self.currently_selected_option == 'Mode':
 
@@ -217,7 +217,7 @@ class StartScreen(arcade.View):
 
                 self.currently_selected_option = 'Quit'
         
-        elif (symbol == arcade.key.DOWN):
+        elif (symbol == arcade.key.DOWN or symbol == arcade.key.S):
 
             if self.currently_selected_option == 'Mode':
 
@@ -235,7 +235,7 @@ class StartScreen(arcade.View):
 
                 self.currently_selected_option = 'Quit'
 
-        elif (symbol == arcade.key.UP):
+        elif (symbol == arcade.key.UP or symbol == arcade.key.W):
 
             if self.currently_selected_option == 'Play':
 

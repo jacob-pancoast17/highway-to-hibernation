@@ -607,7 +607,7 @@ class WorldEngine():
 
         for row in self.platforms:
 
-            for cell in row[0]:
+            for cell in row:
 
                 cell.update_resolution(cell.x, cell.y)
 
