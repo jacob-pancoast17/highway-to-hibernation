@@ -94,6 +94,24 @@ def generate_hostiles(texture_engine, curr_walk_coords, row, curr_bottom, type):
 
     else:
 
+        if moving_left:
+
+            x = 14
+
+        else:
+
+            x = 0
+
+        # If bees, add the hive tree
+        tree = Obstacle(texture_engine.tree1_no_bush, x, row - curr_bottom, False)
+        tree.center_y = c.TILE_SIZE * (row - curr_bottom) + c.TILE_SIZE
+
+        hive = Obstacle(texture_engine.hive[0], x, row - curr_bottom, False)
+        hive.center_y = c.TILE_SIZE * (row - curr_bottom) + (c.TILE_SIZE / 2)
+
+        hostiles.append(tree)
+        hostiles.append(hive)
+
         hostile_texture = texture_engine.swarm[0]
 
     if not moving_left:

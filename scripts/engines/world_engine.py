@@ -293,21 +293,28 @@ class WorldEngine():
 
         hostiles = arcade.SpriteList()
 
+        # Add the tree and hive first
+        for wolf in self.obstacles[row - self.loaded_indices[0]]:
+
+            if isinstance(wolf, Obstacle):
+
+                hostiles.append(wolf)
+
         # For each Wolf in the row
         for wolf in self.obstacles[row - self.loaded_indices[0]]:
 
             # If it's still on screen, keep it
-            if not wolf.is_off_screen():
+            if isinstance(wolf, Hostile) and not wolf.is_off_screen():
                 hostiles.append(wolf)
 
-        index = 0
-        while len(hostiles) == 0:
+        index = -1
+        while len(hostiles) < 1:
 
             wolf = self.obstacles[row - self.loaded_indices[0]][index]
+
             if wolf.is_off_screen():
                 hostiles.append(wolf)
-            else:
-                index += 1
+                index -= 1
 
 
         # After cleaning up the current cacrs we have in a row,
@@ -318,7 +325,12 @@ class WorldEngine():
 
         # First we need to determine  when the last in line
         # arrives (we don't want wolves lapping each other)
-        last_arrival = hostiles[-1]
+        index = -1
+
+        while not isinstance(self.obstacles[row - self.loaded_indices[0]][index], Hostile):
+            index -=1
+
+        last_arrival = self.obstacles[row - self.loaded_indices[0]][index]
 
         # Arrival time if going right
         if last_arrival.left is False:
