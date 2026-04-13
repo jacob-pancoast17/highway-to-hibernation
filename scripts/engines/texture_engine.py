@@ -31,6 +31,8 @@ class TextureEngine():
             bear_sprite_set = ["sprites/polar_bear.png", "sprites/polar_bear_death1.png", "sprites/polar_bear_death2_sheet.png"]
         elif(c.SKIN == "Black"):
             bear_sprite_set = ["sprites/black_bear.png", "sprites/black_bear_death1.png", "sprites/black_bear_death2_sheet.png"]
+        elif(c.SKIN == "Pooh"):
+            bear_sprite_set = ["sprites/pooh_bear.png", "sprites/pooh_bear_death1.png", "sprites/pooh_bear_death2_sheet.png"]
         else:
             # Grizzly is default
             bear_sprite_set = ["sprites/bear_rev2.png", "sprites/bear_death1.png", "sprites/bear_death2_sheet.png"]
