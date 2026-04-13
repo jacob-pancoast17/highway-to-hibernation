@@ -36,7 +36,7 @@ def drunkards_walk(x, y, left_bound, right_bound):
 
                 path.append((x, y))
 
-        elif a[0] == 'left' and x > left_bound - 1:
+        elif a[0] == 'left' and x > left_bound + 1:
 
             x += -1
 
