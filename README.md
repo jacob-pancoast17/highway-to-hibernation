@@ -31,9 +31,9 @@ Must install requirements:
 ` pip install requirements.txt `
 
 To run:
-` python3 -m scripts.main `
+` python3 -m main `
 or
-` python -m scripts.main `
+` python -m main `
 depending on your machine!
 
 
