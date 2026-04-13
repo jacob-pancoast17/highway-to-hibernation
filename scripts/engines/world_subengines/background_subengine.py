@@ -20,7 +20,7 @@ def generate_background(texture_engine, biome, row, curr_bottom):
 
     biome = biome[0]
 
-    if biome == "Pack":
+    if biome == "Hostile":
 
         return generate_grass(texture_engine, row, curr_bottom)
 

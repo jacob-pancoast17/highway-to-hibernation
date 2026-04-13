@@ -97,6 +97,13 @@ class TextureEngine():
         wolf_sheet = arcade.load_spritesheet("sprites/wolf_sheet.png")
         self.wolf = wolf_sheet.get_texture_grid(size = (30, 30), columns=11, count=11)
 
+        # Bees
+        hive_sheet = arcade.load_spritesheet("sprites/beehive.png")
+        self.hive = hive_sheet.get_texture_grid(size = (30, 30), columns=17, count=17)
+
+        bees_sheet = arcade.load_spritesheet("sprites/bees.png")
+        self.swarm = bees_sheet.get_texture_grid(size = (30, 30), columns=6, count=6)
+
     def add_player(self, player):
         '''
         add_player is a helper function with initializes the player sprite and adds
@@ -336,7 +343,7 @@ class TextureEngine():
                 self.world.rows[index][0] == 'Road' or
                 self.world.rows[index][0] == 'Bank' or
                 self.world.rows[index][0] == 'Victory' or
-                self.world.rows[index][0] == 'Pack'):
+                self.world.rows[index][0] == 'Hostile'):
 
                 self.world.obstacles[index - self.world.loaded_indices[0]].draw()
 
