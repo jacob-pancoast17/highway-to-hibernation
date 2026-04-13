@@ -14,7 +14,6 @@ from scripts.engines.world_subengines.obstacle_subengine import generate_obstacl
 from scripts.engines.world_subengines.platform_subengine import generate_platforms
 
 # Objects
-from scripts.objects.den_object import Den
 from scripts.objects.hostile_object import Hostile
 from scripts.objects.obstacle_object import Obstacle
 from scripts.objects.platform_object import Platform
@@ -134,7 +133,6 @@ class WorldEngine():
         for i in range(c.NUM_ENDING_FOREST_ROWS):
 
             self.rows.append(['Victory'])
-        
 
     def generate_screen(self):
         '''
