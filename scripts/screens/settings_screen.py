@@ -240,6 +240,9 @@ class Settings(arcade.View):
             # For skin
             if self.currently_selected == 'Skin':
 
+                if(c.SKIN == 'Pooh'):
+                    c.SKIN = 'Grizzly'
+
                 index = self.skin_options.index(c.SKIN) + 1
 
                 if index == len(self.skin_options):
