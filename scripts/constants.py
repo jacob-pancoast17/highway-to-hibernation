@@ -56,9 +56,6 @@ brennas_favorite_color = arcade.csscolor.DARK_GREEN
 blood_mwahaha = arcade.csscolor.RED
 victory = arcade.csscolor.GOLD
 
-# Fonts
-arcade.load_font("fonts/edit-undo.brk.ttf")
-
 # Sounds
 VOLUME = 5
 MIN_VOLUME = 0
