@@ -112,9 +112,6 @@ def generate_logs(texture_engine, platforms, curr_walk_coords, row, curr_bottom,
         a spritelist of obstacles and the new walkable path coords
     '''
 
-    walkable = drunkards_walk(curr_walk_coords[0], row, 4, c.COLUMN_COUNT - 4)
-    walkable = sorted(walkable, key=lambda x: x[1])
-
     log_cells = arcade.SpriteList()
     moving_left = random.choice([True, False])
 
@@ -144,7 +141,4 @@ def generate_logs(texture_engine, platforms, curr_walk_coords, row, curr_bottom,
                                 speed = speed,
                                 left = False))
 
-    # Update walk
-    current_walk_coords = walkable[-1]
-
-    return [log_cells, current_walk_coords]
+    return [log_cells, curr_walk_coords]
