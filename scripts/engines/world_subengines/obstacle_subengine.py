@@ -73,11 +73,6 @@ def generate_hostiles(texture_engine, curr_walk_coords, row, curr_bottom, type):
         a spritelist of obstacles and the new walkable_path
     '''
 
-    walkable = drunkards_walk(curr_walk_coords[0],
-                                curr_walk_coords[1],
-                                4, c.COLUMN_COUNT - 4)
-    walkable = sorted(walkable, key=lambda x: x[1])
-
     hostiles = arcade.SpriteList()
 
     # For each tile, just generate a hostile object that kills you
@@ -121,9 +116,7 @@ def generate_hostiles(texture_engine, curr_walk_coords, row, curr_bottom, type):
         hostiles.append(Hostile(hostile_texture, 14, row - curr_bottom,
                                 texture_engine, speed, static=False, left=True))
 
-    current_walk_coords = walkable[-1]
-
-    return [hostiles, current_walk_coords]
+    return [hostiles, curr_walk_coords]
 
 def generate_forest(texture_engine, curr_walk_coords, row, curr_bottom):
     '''
@@ -147,11 +140,12 @@ def generate_forest(texture_engine, curr_walk_coords, row, curr_bottom):
     num_trees_right = random.randint(1,4)
 
     walkable = drunkards_walk(curr_walk_coords[0],
-                              curr_walk_coords[1],
+                              row,
                               num_trees_left,
                               c.COLUMN_COUNT - num_trees_right)
 
     walkable = sorted(walkable, key=lambda x: x[1])
+    print(f"Path: {walkable}")
 
     last_rock = None
 
@@ -185,7 +179,7 @@ def generate_forest(texture_engine, curr_walk_coords, row, curr_bottom):
         else:
             chance = random.random()
             if chance < .3:
-
+                print(f"Rock Placed: {x}, {row}")
                 if last_rock is None or last_rock.x != i-1:
                     rock_texture = random.choices(
                         ['sprites/rock1.png',

@@ -142,7 +142,6 @@ class Settings(arcade.View):
                 self.currently_selected = self.options[curr_index - 1]
             else:
                 self.currently_selected = self.options[curr_index - 3]
-            print(curr_index)
 
         # Move down
         elif ((symbol == arcade.key.DOWN or symbol == arcade.key.S) and
@@ -155,7 +154,6 @@ class Settings(arcade.View):
                 self.currently_selected = self.options[curr_index + 1]
             elif self.currently_selected:
                 self.currently_selected = self.options[curr_index + 3]
-            print(curr_index)
         
         # Move left or right
         elif (symbol == arcade.key.LEFT or symbol == arcade.key.A):
@@ -200,8 +198,6 @@ class Settings(arcade.View):
                 else:
                     c.SKIN = self.skin_options[index]
 
-                print(f"The player's current skin is: {c.SKIN}") 
-
                 # The player's skin is changed in texture engine
 
             # For debug
@@ -244,6 +240,9 @@ class Settings(arcade.View):
             # For skin
             if self.currently_selected == 'Skin':
 
+                if(c.SKIN == 'Pooh'):
+                    c.SKIN = 'Grizzly'
+
                 index = self.skin_options.index(c.SKIN) + 1
 
                 if index == len(self.skin_options):
@@ -270,7 +269,8 @@ class Settings(arcade.View):
             if self.currently_selected == 'Back':
 
                 self.window.show_view(self.previous_view)
-        print(self.currently_selected)
+        elif (symbol == arcade.key.P and self.currently_selected == 'Skin'):
+            c.SKIN = "Pooh"
 
     def draw_settings(self):
         '''
@@ -768,7 +768,7 @@ class Settings(arcade.View):
                     anchor_x="center",
                     anchor_y="center",
                     color = arcade.csscolor.WHITE)
-        else:
+        elif c.SKIN == "Black":
             skin_status = arcade.Text(
                     "Black",
 
@@ -784,7 +784,23 @@ class Settings(arcade.View):
                     anchor_x="center",
                     anchor_y="center",
                     color = arcade.csscolor.WHITE)
+        
+        else:
+            skin_status = arcade.Text(
+                    "Pooh",
 
+                    # Would need to be changed to change order
+                    x=self.options_coords[3][0] + skin_title.content_width * 4/2.35,
+                    y=self.options_coords[3][1],
+
+                    align='center',
+                    font_name="Edit Undo BRK",
+                    multiline=True,
+                    width = 300 * c.RESOLUTION_RATIO,
+                    font_size=30 * c.RESOLUTION_RATIO,
+                    anchor_x="center",
+                    anchor_y="center",
+                    color = arcade.csscolor.WHITE)
         skin_arrow_left = arcade.Text(
                 "<",
 
