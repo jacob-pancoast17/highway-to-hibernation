@@ -112,7 +112,7 @@ def generate_forest(texture_engine, curr_walk_coords, row, curr_bottom):
     num_trees_right = random.randint(1,4)
 
     walkable = drunkards_walk(curr_walk_coords[0],
-                              row,
+                              row - curr_bottom,
                               num_trees_left,
                               c.COLUMN_COUNT - num_trees_right)
 
