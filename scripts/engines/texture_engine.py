@@ -22,16 +22,31 @@ class TextureEngine():
         ### SPRITES
 
         ## BEAR
-        self.bear = "sprites/bear_rev2.png"
+
+        # list of the current sprites for each bear skin
+        # list order: walk sprite, death1, death2
+        bear_sprite_set = []
+
+        if(c.SKIN == "Polar"):
+            bear_sprite_set = ["sprites/polar_bear.png", "sprites/polar_bear_death1.png", "sprites/polar_bear_death2_sheet.png"]
+        elif(c.SKIN == "Black"):
+            bear_sprite_set = ["sprites/black_bear.png", "sprites/black_bear_death1.png", "sprites/black_bear_death2_sheet.png"]
+        elif(c.SKIN == "Pooh"):
+            bear_sprite_set = ["sprites/pooh_bear.png", "sprites/pooh_bear_death1.png", "sprites/pooh_bear_death2_sheet.png"]
+        else:
+            # Grizzly is default
+            bear_sprite_set = ["sprites/bear_rev2.png", "sprites/bear_death1.png", "sprites/bear_death2_sheet.png"]
+
+        self.bear = bear_sprite_set[0]
         # player
         self.player = None
         # world
         self.world = None
         # Deaths
-        drowning_sheet = arcade.load_spritesheet("sprites/bear_death2_sheet.png")
+        drowning_sheet = arcade.load_spritesheet(bear_sprite_set[2])
         self.drowning = drowning_sheet.get_texture_grid(size = (30, 30), columns=9, count=9)
 
-        self.mauled = arcade.load_texture("sprites/bear_death1.png")
+        self.mauled = arcade.load_texture(bear_sprite_set[1])
 
         wolf_sheet = arcade.load_spritesheet("sprites/wolf_sheet.png")
         self.wolf = drowning_sheet.get_texture_grid(size = (30, 30), columns=9, count=9)

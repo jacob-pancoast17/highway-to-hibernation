@@ -35,6 +35,7 @@ class Settings(arcade.View):
         self.options = ['Volume',
                         'Window',
                         'Resolution',
+                        'Skin',
                         'Debug Mode',
                         'Back']
         self.num_options = len(self.options)
@@ -43,6 +44,10 @@ class Settings(arcade.View):
         self.window_options = ['Windowed',
                                'Borderless Windowed',
                                'Fullscreen']
+        
+        self.skin_options = ['Grizzly', 
+                             'Polar', 
+                             'Black']
 
         self.resolution_options = [450,
                                    675]
@@ -111,6 +116,7 @@ class Settings(arcade.View):
         self.draw_volume()
         self.draw_window()
         self.draw_resolution()
+        self.draw_skin()
         self.draw_debug_mode()
         self.draw_back()
 
@@ -132,7 +138,7 @@ class Settings(arcade.View):
             # Get curr index
             curr_index = self.options.index(self.currently_selected)
 
-            if not self.came_from_game or self.currently_selected == 'Back':
+            if not self.came_from_game or self.currently_selected == 'Back' or self.currently_selected == 'Debug Mode':
                 self.currently_selected = self.options[curr_index - 1]
             else:
                 self.currently_selected = self.options[curr_index - 3]
@@ -148,7 +154,7 @@ class Settings(arcade.View):
                 self.currently_selected = self.options[curr_index + 1]
             elif self.currently_selected:
                 self.currently_selected = self.options[curr_index + 3]
-
+        
         # Move left or right
         elif (symbol == arcade.key.LEFT or symbol == arcade.key.A):
 
@@ -181,6 +187,18 @@ class Settings(arcade.View):
                     c.RESOLUTION = self.resolution_options[index]
 
                 self.change_resolution()
+
+            # For skin
+            if self.currently_selected == 'Skin':
+
+                index = self.skin_options.index(c.SKIN) - 1
+
+                if index == -1:
+                    c.SKIN = self.skin_options[-1]
+                else:
+                    c.SKIN = self.skin_options[index]
+
+                # The player's skin is changed in texture engine
 
             # For debug
             if self.currently_selected == 'Debug Mode':
@@ -219,6 +237,19 @@ class Settings(arcade.View):
 
                 self.change_resolution()
 
+            # For skin
+            if self.currently_selected == 'Skin':
+
+                if(c.SKIN == 'Pooh'):
+                    c.SKIN = 'Grizzly'
+
+                index = self.skin_options.index(c.SKIN) + 1
+
+                if index == len(self.skin_options):
+                    c.SKIN = self.skin_options[0]
+                else:
+                    c.SKIN = self.skin_options[index]
+
             # For debug
             if self.currently_selected == 'Debug Mode':
 
@@ -238,6 +269,8 @@ class Settings(arcade.View):
             if self.currently_selected == 'Back':
 
                 self.window.show_view(self.previous_view)
+        elif (symbol == arcade.key.P and self.currently_selected == 'Skin'):
+            c.SKIN = "Pooh"
 
     def draw_settings(self):
         '''
@@ -653,6 +686,154 @@ class Settings(arcade.View):
         resolution_arrow_left.draw()
         resolution_arrow_right.draw()
 
+    def draw_skin(self):
+        '''
+        draw_skin is a helper function used to draw the player's current skin for the setting
+        screen
+
+        param:
+            self
+        returns:
+            nothing
+        '''
+        if (self.blinked and
+            self.currently_selected == 'Skin'):
+
+            skin_title = arcade.Text(
+                "SKIN",
+
+                # Would need to be changed to change order of options
+                x=self.options_coords[3][0],
+                y=self.options_coords[3][1],
+
+                align='right',
+                font_name="Edit Undo BRK",
+                font_size=30 * c.RESOLUTION_RATIO,
+                anchor_x="center",
+                anchor_y="center",
+                color = arcade.csscolor.BLACK)
+
+            arcade.draw_rect_filled(
+                arcade.XYWH(self.options_coords[3][0],
+                self.options_coords[3][1],
+                skin_title.content_width,
+                skin_title.content_height),
+                arcade.csscolor.WHITE
+            )
+
+        else:
+
+            skin_title = arcade.Text(
+                "SKIN",
+
+                # Would need to be changed to change order of options
+                x=self.options_coords[3][0],
+                y=self.options_coords[3][1],
+
+                align='right',
+                font_name="Edit Undo BRK",
+                font_size=30 * c.RESOLUTION_RATIO,
+                anchor_x="center",
+                anchor_y="center",
+                color = arcade.csscolor.WHITE)
+            
+        skin_title.draw()
+
+        if c.SKIN == 'Grizzly':
+            skin_status = arcade.Text(
+                    'Grizzly',
+
+                    # Would need to be changed to change order
+                    x=self.options_coords[3][0] + skin_title.content_width * 4/2.3,
+                    y=self.options_coords[3][1],
+
+                    align='right',
+                    font_name="Edit Undo BRK",
+                    font_size=30 * c.RESOLUTION_RATIO,
+                    anchor_x="center",
+                    anchor_y="center",
+                    color = arcade.csscolor.WHITE)
+
+        elif c.SKIN == 'Polar':
+            skin_status = arcade.Text(
+                    "Polar",
+
+                    # Would need to be changed to change order
+                    x=self.options_coords[3][0] + skin_title.content_width * 4/2.37,
+                    y=self.options_coords[3][1],
+
+                    align='right',
+                    font_name="Edit Undo BRK",
+                    font_size=30 * c.RESOLUTION_RATIO,
+                    anchor_x="center",
+                    anchor_y="center",
+                    color = arcade.csscolor.WHITE)
+        elif c.SKIN == "Black":
+            skin_status = arcade.Text(
+                    "Black",
+
+                    # Would need to be changed to change order
+                    x=self.options_coords[3][0] + skin_title.content_width * 4/2.35,
+                    y=self.options_coords[3][1],
+
+                    align='center',
+                    font_name="Edit Undo BRK",
+                    multiline=True,
+                    width = 300 * c.RESOLUTION_RATIO,
+                    font_size=30 * c.RESOLUTION_RATIO,
+                    anchor_x="center",
+                    anchor_y="center",
+                    color = arcade.csscolor.WHITE)
+        
+        else:
+            skin_status = arcade.Text(
+                    "Pooh",
+
+                    # Would need to be changed to change order
+                    x=self.options_coords[3][0] + skin_title.content_width * 4/2.35,
+                    y=self.options_coords[3][1],
+
+                    align='center',
+                    font_name="Edit Undo BRK",
+                    multiline=True,
+                    width = 300 * c.RESOLUTION_RATIO,
+                    font_size=30 * c.RESOLUTION_RATIO,
+                    anchor_x="center",
+                    anchor_y="center",
+                    color = arcade.csscolor.WHITE)
+        skin_arrow_left = arcade.Text(
+                "<",
+
+                # Would need to be changed to change order
+                x=self.options_coords[3][0] + (skin_title.content_width * 4 / 2) -
+                    (110 * c.RESOLUTION_RATIO),
+                y=self.options_coords[3][1],
+
+                align='right',
+                font_name="Edit Undo BRK",
+                font_size=30 * c.RESOLUTION_RATIO / 1.5,
+                anchor_x="center",
+                anchor_y="center")
+
+        skin_arrow_right = arcade.Text(
+                ">",
+
+                # Would need to be changed to change order
+                x=self.options_coords[3][0] + (skin_title.content_width * 3 / 2) +
+                    (110 * c.RESOLUTION_RATIO),
+                y=self.options_coords[3][1],
+
+                align='right',
+                font_name="Edit Undo BRK",
+                font_size=30 * c.RESOLUTION_RATIO / 1.5,
+                anchor_x="center",
+                anchor_y="center")
+
+        skin_status.draw()
+
+        skin_arrow_left.draw()
+        skin_arrow_right.draw()
+
     def draw_debug_mode(self):
         '''
         draw_debug_mode is a helper function used to draw the debug text for the setting
@@ -670,8 +851,8 @@ class Settings(arcade.View):
                 "DEBUG MODE",
 
                 # Would need to be changed to change order of options
-                x=self.options_coords[3][0],
-                y=self.options_coords[3][1],
+                x=self.options_coords[4][0],
+                y=self.options_coords[4][1],
 
                 align='right',
                 font_name="Edit Undo BRK",
@@ -681,8 +862,8 @@ class Settings(arcade.View):
                 color = arcade.csscolor.BLACK)
 
             arcade.draw_rect_filled(
-                arcade.XYWH(self.options_coords[3][0],
-                self.options_coords[3][1],
+                arcade.XYWH(self.options_coords[4][0],
+                self.options_coords[4][1],
                 debug_title.content_width,
                 debug_title.content_height),
                 arcade.csscolor.WHITE
@@ -694,8 +875,8 @@ class Settings(arcade.View):
                 "DEBUG MODE",
 
                 # Would need to be changed to change order of options
-                x=self.options_coords[3][0],
-                y=self.options_coords[3][1],
+                x=self.options_coords[4][0],
+                y=self.options_coords[4][1],
 
                 align='right',
                 font_name="Edit Undo BRK",
@@ -711,8 +892,8 @@ class Settings(arcade.View):
                     "ON",
 
                     # Would need to be changed to change order
-                    x=self.options_coords[3][0] + debug_title.content_width * 7/8,
-                    y=self.options_coords[3][1],
+                    x=self.options_coords[4][0] + debug_title.content_width * 7/8,
+                    y=self.options_coords[4][1],
 
                     align='right',
                     font_name="Edit Undo BRK",
@@ -725,8 +906,8 @@ class Settings(arcade.View):
                     "OFF",
 
                     # Would need to be changed to change order
-                    x=self.options_coords[3][0] + debug_title.content_width * 7/8,
-                    y=self.options_coords[3][1],
+                    x=self.options_coords[4][0] + debug_title.content_width * 7/8,
+                    y=self.options_coords[4][1],
 
                     align='right',
                     font_name="Edit Undo BRK",
@@ -739,9 +920,9 @@ class Settings(arcade.View):
                 "<",
 
                 # Would need to be changed to change order
-                x=self.options_coords[3][0] + (debug_title.content_width * 7 / 8) -
+                x=self.options_coords[4][0] + (debug_title.content_width * 7 / 8) -
                     (50 * c.RESOLUTION_RATIO),
-                y=self.options_coords[3][1],
+                y=self.options_coords[4][1],
 
                 align='right',
                 font_name="Edit Undo BRK",
@@ -753,9 +934,9 @@ class Settings(arcade.View):
                 ">",
 
                 # Would need to be changed to change order
-                x=self.options_coords[3][0] + (debug_title.content_width * 7 / 8) +
+                x=self.options_coords[4][0] + (debug_title.content_width * 7 / 8) +
                     (50 * c.RESOLUTION_RATIO),
-                y=self.options_coords[3][1],
+                y=self.options_coords[4][1],
 
                 align='right',
                 font_name="Edit Undo BRK",
