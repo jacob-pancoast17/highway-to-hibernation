@@ -1,6 +1,8 @@
 '''This module contains the engine that manages timing and spawns'''
 from scripts import constants as c
 
+from scripts.objects.hostile_object import Hostile
+
 class TimeEngine():
     '''
     The TimeEngine class is the engine that manages world time
@@ -107,9 +109,11 @@ class TimeEngine():
 
             for wolf in self.world.obstacles[row - self.world.loaded_indices[0]]:
 
-                wolf.run(delta_time)
+                if isinstance(wolf, Hostile):
 
-                wolf.try_move(delta_time, self.world.player)
+                    wolf.run(delta_time)
+
+                    wolf.try_move(delta_time, self.world.player)
 
     def spawn_hostiles(self):
         '''

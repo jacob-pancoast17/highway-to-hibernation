@@ -121,8 +121,10 @@ class WorldEngine():
             # Wolfs
             elif (noise > 0.1 and noise <= 1):
 
-                # Pack
-                self.rows.append(["Pack"])
+                type = random.choice(['Wolf', 'Bees'])
+
+                # Hostile
+                self.rows.append(["Hostile", type])
 
             else:
                 print("ERROR GENERATING ARRAY IN WORLD_GEN.PY DUE TO A" +
@@ -291,21 +293,28 @@ class WorldEngine():
 
         hostiles = arcade.SpriteList()
 
+        # Add the tree and hive first
+        for wolf in self.obstacles[row - self.loaded_indices[0]]:
+
+            if isinstance(wolf, Obstacle):
+
+                hostiles.append(wolf)
+
         # For each Wolf in the row
         for wolf in self.obstacles[row - self.loaded_indices[0]]:
 
             # If it's still on screen, keep it
-            if not wolf.is_off_screen():
+            if isinstance(wolf, Hostile) and not wolf.is_off_screen():
                 hostiles.append(wolf)
 
-        index = 0
-        while len(hostiles) == 0:
+        index = -1
+        while len(hostiles) < 1:
 
             wolf = self.obstacles[row - self.loaded_indices[0]][index]
+
             if wolf.is_off_screen():
                 hostiles.append(wolf)
-            else:
-                index += 1
+                index -= 1
 
 
         # After cleaning up the current cacrs we have in a row,
@@ -316,7 +325,12 @@ class WorldEngine():
 
         # First we need to determine  when the last in line
         # arrives (we don't want wolves lapping each other)
-        last_arrival = hostiles[-1]
+        index = -1
+
+        while not isinstance(self.obstacles[row - self.loaded_indices[0]][index], Hostile):
+            index -=1
+
+        last_arrival = self.obstacles[row - self.loaded_indices[0]][index]
 
         # Arrival time if going right
         if last_arrival.left is False:
@@ -342,16 +356,29 @@ class WorldEngine():
         if new_speed > c.UPPER_OBSTACLE_SPEED:
             new_speed = c.UPPER_OBSTACLE_SPEED
 
-        if last_arrival.is_moving_left:
-            wolf = Hostile(self.tex_eng.wolf[0], 14, row - self.loaded_indices[0],
-                         self.tex_eng, speed = new_speed, static=False, left=True)
-            wolf.scale = c.RESOLUTION_RATIO
-            hostiles.append(wolf)
+        type = self.rows[row][1]
+
+        # Pick the texture
+        if type == 'Wolf':
+
+            hostile_texture = self.tex_eng.wolf[0]
+
         else:
-            wolf = Hostile(self.tex_eng.wolf[0], 0, row - self.loaded_indices[0],
+
+            hostile_texture = self.tex_eng.swarm[0]
+
+        if last_arrival.is_moving_left:
+
+            wolf = Hostile(hostile_texture, 14, row - self.loaded_indices[0],
+                         self.tex_eng, speed = new_speed, static=False, left=True)
+            
+        else:
+
+            wolf = Hostile(hostile_texture, 0, row - self.loaded_indices[0],
                          self.tex_eng, speed = new_speed, static=False, left=False)
-            wolf.scale = c.RESOLUTION_RATIO
-            hostiles.append(wolf)
+        
+        wolf.scale = c.RESOLUTION_RATIO
+        hostiles.append(wolf)
 
         # Replace currently loaded row with the updated one
         self.obstacles[row - self.loaded_indices[0]] = hostiles
@@ -523,7 +550,7 @@ class WorldEngine():
 
         for i in self.loaded_indices:
 
-            if self.rows[i][0] == "Pack":
+            if self.rows[i][0] == "Hostile":
 
                 wolves.append(i)
 

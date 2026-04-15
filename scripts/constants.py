@@ -1,5 +1,19 @@
 ''' Module providing constants for the game. '''
 import arcade
+import os
+import sys
+
+def resource_path(relative_path):
+    '''
+    Gets absolute path to resource for pyinstaller
+    '''
+    try:
+        base_path = sys._MEIPASS
+
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 # Set window and grid information
 ROW_COUNT = 15
@@ -62,12 +76,12 @@ MIN_VOLUME = 0
 MAX_VOLUME = 10
 
 # Sound Effects
-ADVENTURE_MUSIC = arcade.load_sound("sfx/bear_adventure.mp3")
-WALK_SFX = arcade.load_sound("sfx/footstep.mp3")
-DEATH_SFX = arcade.load_sound("sfx/death.mp3")
-HUNNY_SFX = arcade.load_sound("sfx/hunny_pickup.mp3")
-VICTORY_JINGLE = arcade.load_sound("sfx/victory.wav")
-GAME_OVER_JINGLE = arcade.load_sound("sfx/game_over.wav")
+ADVENTURE_MUSIC = arcade.load_sound(resource_path("sfx/bear_adventure.mp3"))
+WALK_SFX = arcade.load_sound(resource_path("sfx/footstep.mp3"))
+DEATH_SFX = arcade.load_sound(resource_path("sfx/death.mp3"))
+HUNNY_SFX = arcade.load_sound(resource_path("sfx/hunny_pickup.mp3"))
+VICTORY_JINGLE = arcade.load_sound(resource_path("sfx/victory.wav"))
+GAME_OVER_JINGLE = arcade.load_sound(resource_path("sfx/game_over.wav"))
 
 
 # Music

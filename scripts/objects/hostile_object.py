@@ -25,7 +25,11 @@ class Hostile(arcade.Sprite):
 
         if texture in tex_eng.wolf:
 
-            self.running_textures = tex_eng.wolf
+            self.moving_textures = tex_eng.wolf
+
+        elif texture in tex_eng.swarm:
+
+            self.moving_textures = tex_eng.swarm
 
         self.center_x = c.TILE_SIZE * column + c.TILE_SIZE // 2
         self.x = column
@@ -134,7 +138,7 @@ class Hostile(arcade.Sprite):
 
     def run(self, delta_time):
         '''
-        run changes the wolf textures so it appears as if it's running
+        run changes the hostile textures so it appears as if it's moving
 
         param:
             self
@@ -147,7 +151,7 @@ class Hostile(arcade.Sprite):
 
         if self.timer > self.next_run_frame:
 
-            self.texture = self.running_textures[self.cur_texture_index]
+            self.texture = self.moving_textures[self.cur_texture_index]
 
             if self.is_moving_left:
 
@@ -155,7 +159,7 @@ class Hostile(arcade.Sprite):
 
             self.cur_texture_index += 1
 
-            if self.cur_texture_index > 10:
+            if self.cur_texture_index > len(self.moving_textures) - 1:
 
                 self.cur_texture_index = 0
 

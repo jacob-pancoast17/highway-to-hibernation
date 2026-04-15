@@ -14,7 +14,7 @@ from scripts.objects.den_object import Den
 from scripts.objects.hostile_object import Hostile
 from scripts.objects.obstacle_object import Obstacle
 
-def generate_obstacles(texture_engine, current_walk_coords, biome, row, curr_bottom):
+def generate_obstacles(texture_engine, current_walk_coords, biome_info, row, curr_bottom):
     '''
     generate_obstacles is a helper function that takes a row index 
     and generates that row by calling a child generate function
@@ -31,11 +31,11 @@ def generate_obstacles(texture_engine, current_walk_coords, biome, row, curr_bot
         a SpriteList object from child function and the new walkable path
     '''
 
-    biome = biome[0]
+    biome = biome_info[0]
 
-    if biome == "Pack":
+    if biome == "Hostile":
 
-        return generate_wolves(texture_engine, current_walk_coords, row, curr_bottom)
+        return generate_hostiles(texture_engine, current_walk_coords, row, curr_bottom, biome_info[1])
 
     elif biome == "Forest":
 
@@ -58,16 +58,17 @@ def generate_obstacles(texture_engine, current_walk_coords, biome, row, curr_bot
         print("PROBLEM IN GENERATION DUE TO A BIOME MISMATCH IN obstacle_subengine.py")
         exit()
 
-def generate_wolves(texture_engine, curr_walk_coords, row, curr_bottom):
+def generate_hostiles(texture_engine, curr_walk_coords, row, curr_bottom, type):
     '''
-    generate_wolves takes a row and generates it randomly based on
-    the "wolves" quality -- moving objects across the screen
+    generate_hostiles takes a row and generates it randomly based on
+    the "Hostile" quality -- moving objects across the screen
 
     param:
         texture_engine - where to get textures from
         curr_walk_coords - current coords of the walkable path
         row - the row index to be drawn at
         curr_bottom - the current bottom of the screen
+        type - type of hostile (e.g. bees or wolf)
     returns:`
         a spritelist of obstacles and the new walkable_path
     '''
@@ -77,15 +78,42 @@ def generate_wolves(texture_engine, curr_walk_coords, row, curr_bottom):
     # For each tile, just generate a hostile object that kills you
 
     moving_left = random.choice([True, False])
+
     # Pick a random speed
     speed = random.uniform(c.LOWER_OBSTACLE_SPEED, c.UPPER_OBSTACLE_SPEED)
-    print(f"wolf coming in at {speed}")
+    
+    # Pick the texture
+    if type == 'Wolf':
+
+        hostile_texture = texture_engine.wolf[0]
+
+    else:
+
+        if moving_left:
+
+            x = 14
+
+        else:
+
+            x = 0
+
+        # If bees, add the hive tree
+        tree = Obstacle(texture_engine.tree1_no_bush, x, row - curr_bottom, False)
+        tree.center_y = c.TILE_SIZE * (row - curr_bottom) + c.TILE_SIZE
+
+        hive = Obstacle(texture_engine.hive[0], x, row - curr_bottom, False)
+        hive.center_y = c.TILE_SIZE * (row - curr_bottom) + (c.TILE_SIZE / 2)
+
+        hostiles.append(tree)
+        hostiles.append(hive)
+
+        hostile_texture = texture_engine.swarm[0]
 
     if not moving_left:
-        hostiles.append(Hostile(texture_engine.wolf[0], 0, row - curr_bottom,
+        hostiles.append(Hostile(hostile_texture, 0, row - curr_bottom,
                                 texture_engine, speed, static=False, left=False))
     else:
-        hostiles.append(Hostile(texture_engine.wolf[0], 14, row - curr_bottom,
+        hostiles.append(Hostile(hostile_texture, 14, row - curr_bottom,
                                 texture_engine, speed, static=False, left=True))
 
     return [hostiles, curr_walk_coords]
