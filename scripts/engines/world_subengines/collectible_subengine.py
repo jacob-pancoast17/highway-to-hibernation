@@ -26,7 +26,9 @@ def generate_collectible(texture_engine, obstacles, biome, row, curr_bottom):
 
     biome = biome[0]
 
-    if biome == 'Forest':
+    if (biome == 'Forest' or
+        biome == 'Hostiles' or
+        biome == 'Victory'):
 
         return generate_honey(texture_engine, obstacles, row, curr_bottom)
 

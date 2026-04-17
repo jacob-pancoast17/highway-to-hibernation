@@ -145,7 +145,7 @@ def generate_forest(texture_engine, curr_walk_coords, row, curr_bottom):
                               c.COLUMN_COUNT - num_trees_right)
 
     walkable = sorted(walkable, key=lambda x: x[1])
-    print(f"Path: {walkable}")
+    #print(f"Path: {walkable}")
 
     last_rock = None
 
@@ -179,7 +179,7 @@ def generate_forest(texture_engine, curr_walk_coords, row, curr_bottom):
         else:
             chance = random.random()
             if chance < .3:
-                print(f"Rock Placed: {x}, {row}")
+                #print(f"Rock Placed: {x}, {row}")
                 if last_rock is None or last_rock.x != i-1:
                     rock_texture = random.choices(
                         ['sprites/rock1.png',

@@ -149,11 +149,11 @@ class TimeEngine():
 
         # Add TIME_BETWEEN_LOG_SPAWNS to log spawns
         if row_speed == "FAST":
-            self.next_fast_log_spawn_check += c.TIME_BETWEEN_FAST_LOG_SPAWNS
+            self.next_fast_log_spawn_check = self.world_time + c.TIME_BETWEEN_FAST_LOG_SPAWNS
         elif row_speed == "MED":
-            self.next_med_log_spawn_check += c.TIME_BETWEEN_MED_LOG_SPAWNS
+            self.next_med_log_spawn_check = self.world_time + c.TIME_BETWEEN_MED_LOG_SPAWNS
         elif row_speed == "SLOW":
-            self.next_slow_log_spawn_check += c.TIME_BETWEEN_SLOW_LOG_SPAWNS
+            self.next_slow_log_spawn_check = self.world_time + c.TIME_BETWEEN_SLOW_LOG_SPAWNS
         else:
             print("UNKNOWN SPEED ERROR IN time_engine.py")
             return

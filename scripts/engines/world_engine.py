@@ -59,6 +59,7 @@ class WorldEngine():
         self.spawn = [None]
 
         self.log_moving_left = random.choice([True, False])
+        self.last_move_left = None
         self.fast_log_rows = []
         self.med_log_rows = []
         self.slow_log_rows = []
@@ -174,6 +175,7 @@ class WorldEngine():
                                                self.loaded_indices[0]) # Current bottom row
             self.platforms.append(platform_info[0])
             self.current_walk_coords = platform_info[1]
+            self.last_move_left = platform_info[2]
 
             collectible = generate_collectible(self.tex_eng, # Texture engine
                                             self.obstacles, # Current obstacles
@@ -234,9 +236,13 @@ class WorldEngine():
                                                self.rows[new_row_index], # Biome
                                                new_row_index, # Current row
                                                self.loaded_indices[0]) # Current bottom row
-        self.platforms.append(platform_info[0])
-        self.current_walk_coords = platform_info[1]
-
+        
+        if self.rows[new_row_index][0] == 'River_Logs':
+            self.platforms.append(arcade.SpriteList())
+            self.current_walk_coords = self.current_walk_coords
+        else:
+            self.platforms.append(platform_info[0])
+            self.current_walk_coords = platform_info[1]
 
         new_collectible = generate_collectible(self.tex_eng, # Texture engine
                                                 self.obstacles, # Current platforms
@@ -278,6 +284,13 @@ class WorldEngine():
                 self.fast_log_rows.append(i)
             else:
                 print("LOG SPEED APPENDING ERROR")
+
+        if self.rows[i][0] == 'River_Logs':
+
+            for cell in self.platforms[-1]:
+
+                print(f"generated with log")
+            
     def update_wolves(self, row):
         '''
         update_wolves takes a row and updates the wolves in that row by trying
@@ -398,8 +411,12 @@ class WorldEngine():
         new_row = arcade.SpriteList()
 
         existing_row = self.platforms[row - self.loaded_indices[0]]
-        tmp = existing_row[0]
-        moving_left = tmp.is_moving_left
+        if len(existing_row) > 0:
+            tmp = existing_row[0]
+            moving_left = tmp.is_moving_left
+            self.last_move_left = moving_left
+        else:
+            moving_left = not self.last_move_left
 
         # For each log in the row
         for moving_cell in existing_row:
@@ -407,11 +424,6 @@ class WorldEngine():
             # If it's still on screen, keep it
             if not moving_cell.is_off_screen():
                 new_row.append(moving_cell)
-
-        # We want at least one so we can store if the row is a left row or a right row
-        if len(new_row) == 0:
-
-            new_row.append(tmp)
 
         # After cleaning up the current logs we have in a row,
         # let's check if we should add a new one!
@@ -451,10 +463,9 @@ class WorldEngine():
                     Platform(log_textures[i], 0 - i, row - self.loaded_indices[0],
                              speed = self.rows[row][1],
                              static=False, left=False))
+                
         # Replace currently loaded row with the updated one
         self.platforms[row - self.loaded_indices[0]] = new_row
-        # print("SPEED:")
-        # print(self.platforms[row - self.loaded_indices[0]][1])
 
     def get_row(self, row):
         '''

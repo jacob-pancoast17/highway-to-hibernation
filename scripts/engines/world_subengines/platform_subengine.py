@@ -42,7 +42,7 @@ def generate_platforms(texture_engine, platforms, current_walk_coords, biome_inf
 
     else:
 
-        return [arcade.SpriteList(), current_walk_coords]
+        return [arcade.SpriteList(), current_walk_coords, None]
 
 def generate_lilypads(texture_engine, curr_walk_coords, row, curr_bottom):
     """
@@ -95,7 +95,7 @@ def generate_lilypads(texture_engine, curr_walk_coords, row, curr_bottom):
     # Update walk
     current_walk_coords = walkable[-1]
 
-    return [lilypads, current_walk_coords]
+    return [lilypads, current_walk_coords, None]
 
 def generate_logs(texture_engine, platforms, curr_walk_coords, row, curr_bottom, speed):
     '''
@@ -140,5 +140,6 @@ def generate_logs(texture_engine, platforms, curr_walk_coords, row, curr_bottom,
                                 static = False,
                                 speed = speed,
                                 left = False))
+            
 
-    return [log_cells, curr_walk_coords]
+    return [log_cells, curr_walk_coords, moving_left]
