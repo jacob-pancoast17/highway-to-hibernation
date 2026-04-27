@@ -2,6 +2,7 @@
 import arcade
 import os
 import sys
+import random
 
 def resource_path(relative_path):
     '''
@@ -33,6 +34,7 @@ NUM_ENDING_FOREST_ROWS = 5 # how many grassy rows at the end?
 MIN_LILYPADS_PER_RIVER = 3
 SMALLEST_LOG = 2
 BIGGEST_LOG = 4
+LOG_MOVING_LEFT = random.choice([True, False])
 
 # Cars
 TIME_BETWEEN_SPAWNS = 1.0

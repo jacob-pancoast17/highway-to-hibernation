@@ -113,7 +113,8 @@ def generate_logs(texture_engine, platforms, curr_walk_coords, row, curr_bottom,
     '''
 
     log_cells = arcade.SpriteList()
-    moving_left = random.choice([True, False])
+    moving_left = c.LOG_MOVING_LEFT
+    c.LOG_MOVING_LEFT = not(c.LOG_MOVING_LEFT)
 
     length = random.randint(c.SMALLEST_LOG, c.BIGGEST_LOG)
 

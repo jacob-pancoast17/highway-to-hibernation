@@ -58,7 +58,6 @@ class WorldEngine():
         self.sprites = None
         self.spawn = [None]
 
-        self.log_moving_left = random.choice([True, False])
         self.last_move_left = None
         self.fast_log_rows = []
         self.med_log_rows = []
