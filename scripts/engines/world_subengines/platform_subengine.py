@@ -30,7 +30,6 @@ def generate_platforms(texture_engine, platforms, current_walk_coords, biome_inf
 
     biome = biome_info[0]
 
-
     if biome == 'River_Lilypads':
 
         return generate_lilypads(texture_engine, current_walk_coords, row, curr_bottom)
@@ -67,6 +66,7 @@ def generate_lilypads(texture_engine, curr_walk_coords, row, curr_bottom):
     walkable = drunkards_walk(curr_walk_coords[0], row - curr_bottom,
                                     4, c.COLUMN_COUNT - 4)
     walkable = sorted(walkable, key=lambda x: x[1])
+    # print(f"Path: {walkable}")
 
     # Append all except the last one
     for i in range(len(walkable) - 1):
@@ -74,6 +74,7 @@ def generate_lilypads(texture_engine, curr_walk_coords, row, curr_bottom):
         lilypads.append(Platform('sprites/lilypad.png',
                                         walkable[i][0],
                                         walkable[i][1]))
+        # print(f"Lilypad placed: {walkable[i][0]}, {walkable[i][1]}")
 
     for i in range(4, c.COLUMN_COUNT - 4):
 
@@ -114,7 +115,7 @@ def generate_logs(texture_engine, platforms, curr_walk_coords, row, curr_bottom,
 
     log_cells = arcade.SpriteList()
     moving_left = c.LOG_MOVING_LEFT
-    c.LOG_MOVING_LEFT = not(c.LOG_MOVING_LEFT)
+    c.LOG_MOVING_LEFT = not c.LOG_MOVING_LEFT
 
     length = random.randint(c.SMALLEST_LOG, c.BIGGEST_LOG)
 
@@ -141,6 +142,5 @@ def generate_logs(texture_engine, platforms, curr_walk_coords, row, curr_bottom,
                                 static = False,
                                 speed = speed,
                                 left = False))
-            
 
     return [log_cells, curr_walk_coords, moving_left]

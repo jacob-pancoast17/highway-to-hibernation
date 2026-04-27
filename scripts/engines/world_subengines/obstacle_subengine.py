@@ -35,7 +35,8 @@ def generate_obstacles(texture_engine, current_walk_coords, biome_info, row, cur
 
     if biome == "Hostile":
 
-        return generate_hostiles(texture_engine, current_walk_coords, row, curr_bottom, biome_info[1])
+        return generate_hostiles(texture_engine, current_walk_coords, row,
+                                 curr_bottom, biome_info[1])
 
     elif biome == "Forest":
 
@@ -81,7 +82,7 @@ def generate_hostiles(texture_engine, curr_walk_coords, row, curr_bottom, type):
 
     # Pick a random speed
     speed = random.uniform(c.LOWER_OBSTACLE_SPEED, c.UPPER_OBSTACLE_SPEED)
-    
+
     # Pick the texture
     if type == 'Wolf':
 
@@ -145,7 +146,7 @@ def generate_forest(texture_engine, curr_walk_coords, row, curr_bottom):
                               c.COLUMN_COUNT - num_trees_right)
 
     walkable = sorted(walkable, key=lambda x: x[1])
-    #print(f"Path: {walkable}")
+    # print(f"Path: {walkable}")
 
     last_rock = None
 
@@ -178,8 +179,8 @@ def generate_forest(texture_engine, curr_walk_coords, row, curr_bottom):
         # Otherwise, make it a random chance to be a rock
         else:
             chance = random.random()
-            if chance < .3:
-                #print(f"Rock Placed: {x}, {row}")
+            if chance < .25:
+                # print(f"Rock Placed: {x}, {row}")
                 if last_rock is None or last_rock.x != i-1:
                     rock_texture = random.choices(
                         ['sprites/rock1.png',
