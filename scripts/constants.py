@@ -1,8 +1,8 @@
 ''' Module providing constants for the game. '''
-import arcade
 import os
 import sys
 import random
+import arcade
 
 def resource_path(relative_path):
     '''
@@ -92,7 +92,7 @@ MAIN_THEME.pause()
 
 # Settings
 BLINK_RATE = 0.5
-DEBUG = False
+DEBUG = True
 WINDOW = 'Windowed'
 RESOLUTION = 450
 RESOLUTION_RATIO = RESOLUTION / 450
