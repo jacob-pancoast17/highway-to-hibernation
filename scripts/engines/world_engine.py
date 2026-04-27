@@ -235,7 +235,7 @@ class WorldEngine():
                                                self.rows[new_row_index], # Biome
                                                new_row_index, # Current row
                                                self.loaded_indices[0]) # Current bottom row
-        
+
         if self.rows[new_row_index][0] == 'River_Logs':
             self.platforms.append(arcade.SpriteList())
             self.current_walk_coords = self.current_walk_coords
@@ -288,8 +288,8 @@ class WorldEngine():
 
             for cell in self.platforms[-1]:
 
-                print(f"generated with log")
-            
+                print("generated with log")
+
     def update_wolves(self, row):
         '''
         update_wolves takes a row and updates the wolves in that row by trying
@@ -383,12 +383,12 @@ class WorldEngine():
 
             wolf = Hostile(hostile_texture, 14, row - self.loaded_indices[0],
                          self.tex_eng, speed = new_speed, static=False, left=True)
-            
+
         else:
 
             wolf = Hostile(hostile_texture, 0, row - self.loaded_indices[0],
                          self.tex_eng, speed = new_speed, static=False, left=False)
-        
+
         wolf.scale = c.RESOLUTION_RATIO
         hostiles.append(wolf)
 
@@ -462,7 +462,7 @@ class WorldEngine():
                     Platform(log_textures[i], 0 - i, row - self.loaded_indices[0],
                              speed = self.rows[row][1],
                              static=False, left=False))
-                
+
         # Replace currently loaded row with the updated one
         self.platforms[row - self.loaded_indices[0]] = new_row
 
