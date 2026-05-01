@@ -1,20 +1,7 @@
 ''' Module providing constants for the game. '''
 import os
 import sys
-import random
-import arcade
-
-def resource_path(relative_path):
-    '''
-    Gets absolute path to resource for pyinstaller
-    '''
-    try:
-        base_path = sys._MEIPASS
-
-    except Exception:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)
+from scripts.utils import resource_path
 
 # Set window and grid information
 ROW_COUNT = 15

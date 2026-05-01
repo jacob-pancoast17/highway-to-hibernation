@@ -12,6 +12,8 @@ from scripts.engines.world_subengines.drunkards_walk import drunkards_walk
 # Objects
 from scripts.objects.platform_object import Platform
 
+from scripts.utils import resource_path
+
 def generate_platforms(texture_engine, platforms, current_walk_coords, biome_info,
                        row, curr_bottom):
     '''
@@ -71,7 +73,7 @@ def generate_lilypads(texture_engine, curr_walk_coords, row, curr_bottom):
     # Append all except the last one
     for i in range(len(walkable) - 1):
 
-        lilypads.append(Platform('sprites/lilypad.png',
+        lilypads.append(Platform(resource_path('sprites/lilypad.png'),
                                         walkable[i][0],
                                         walkable[i][1]))
         # print(f"Lilypad placed: {walkable[i][0]}, {walkable[i][1]}")
@@ -81,8 +83,8 @@ def generate_lilypads(texture_engine, curr_walk_coords, row, curr_bottom):
         if ((i, row) not in walkable and random.random() < .2):
 
             lilypad_texture = random.choices(
-                ['sprites/lilypad.png',
-                'sprites/pink_frog.png'],
+                [resource_path('sprites/lilypad.png'),
+                resource_path('sprites/pink_frog.png')],
                 weights = [0.9, 0.1])
 
             for lilypad in lilypads:

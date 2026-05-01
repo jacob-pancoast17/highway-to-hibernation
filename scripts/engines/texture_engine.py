@@ -1,6 +1,7 @@
 '''This module loads and manages textures'''
 import random
 import arcade
+from scripts.utils import resource_path
 
 from scripts import constants as c
 
@@ -27,19 +28,15 @@ class TextureEngine():
         # list order: walk sprite, death1, death2
         bear_sprite_set = []
 
-        if c.SKIN == "Polar":
-            bear_sprite_set = ["sprites/polar_bear.png", "sprites/polar_bear_death1.png",
-                               "sprites/polar_bear_death2_sheet.png"]
-        elif c.SKIN == "Black" :
-            bear_sprite_set = ["sprites/black_bear.png", "sprites/black_bear_death1.png",
-                               "sprites/black_bear_death2_sheet.png"]
-        elif c.SKIN == "Pooh" :
-            bear_sprite_set = ["sprites/pooh_bear.png", "sprites/pooh_bear_death1.png",
-                               "sprites/pooh_bear_death2_sheet.png"]
+        if(c.SKIN == "Polar"):
+            bear_sprite_set = [resource_path("sprites/polar_bear.png"), resource_path("sprites/polar_bear_death1.png"), resource_path("sprites/polar_bear_death2_sheet.png")]
+        elif(c.SKIN == "Black"):
+            bear_sprite_set = [resource_path("sprites/black_bear.png"), resource_path("sprites/black_bear_death1.png"), resource_path("sprites/black_bear_death2_sheet.png")]
+        elif(c.SKIN == "Pooh"):
+            bear_sprite_set = [resource_path("sprites/pooh_bear.png"), resource_path("sprites/pooh_bear_death1.png"), resource_path("sprites/pooh_bear_death2_sheet.png")]
         else:
             # Grizzly is default
-            bear_sprite_set = ["sprites/bear_rev2.png", "sprites/bear_death1.png",
-                               "sprites/bear_death2_sheet.png"]
+            bear_sprite_set = [resource_path("sprites/bear_rev2.png"), resource_path("sprites/bear_death1.png"), resource_path("sprites/bear_death2_sheet.png")]
 
         self.bear = bear_sprite_set[0]
         # player
@@ -52,62 +49,62 @@ class TextureEngine():
 
         self.mauled = arcade.load_texture(bear_sprite_set[1])
 
-        wolf_sheet = arcade.load_spritesheet("sprites/wolf_sheet.png")
+        wolf_sheet = arcade.load_spritesheet(resource_path("sprites/wolf_sheet.png"))
         self.wolf = drowning_sheet.get_texture_grid(size = (30, 30), columns=9, count=9)
 
-        wolf_sheet = arcade.load_spritesheet("sprites/wolf_sheet.png")
+        wolf_sheet = arcade.load_spritesheet(resource_path("sprites/wolf_sheet.png"))
         self.wolf = drowning_sheet.get_texture_grid(size = (30, 30), columns=9, count=9)
 
         ## HUNNY
-        self.hunny = 'sprites/hunny.png'
+        self.hunny = resource_path('sprites/hunny.png')
 
         ## BACKGROUNDS
 
         # Grass
-        self.grass1 = 'sprites/grass_1.png'
-        self.grass2 = 'sprites/grass_2.png'
-        self.grass3 = 'sprites/grass_3.png'
-        self.flowers1 = 'sprites/flowers_1.png'
-        self.flowers2 = 'sprites/flowers_2.png'
-        self.flowers3 = 'sprites/flowers_3.png'
+        self.grass1 = resource_path('sprites/grass_1.png')
+        self.grass2 = resource_path('sprites/grass_2.png')
+        self.grass3 = resource_path('sprites/grass_3.png')
+        self.flowers1 = resource_path('sprites/flowers_1.png')
+        self.flowers2 = resource_path('sprites/flowers_2.png')
+        self.flowers3 = resource_path('sprites/flowers_3.png')
 
         # Bank
-        self.bank1 = 'sprites/bank_1.png'
-        self.bank2 = 'sprites/bank_2.png'
-        self.bank3 = 'sprites/bank_3.png'
+        self.bank1 = resource_path('sprites/bank_1.png')
+        self.bank2 = resource_path('sprites/bank_2.png')
+        self.bank3 = resource_path('sprites/bank_3.png')
 
         ## OBSTACLES
         # Trees
-        self.tree1 = "sprites/tree1.png"
-        self.tree2 = "sprites/tree2.png"
-        self.tree3 = "sprites/tree3.png"
+        self.tree1 = resource_path("sprites/tree1.png")
+        self.tree2 = resource_path("sprites/tree2.png")
+        self.tree3 = resource_path("sprites/tree3.png")
 
-        self.tree1_left_end = "sprites/tree1_left_end.png"
-        self.tree2_left_end = "sprites/tree2_left_end.png"
-        self.tree3_left_end = "sprites/tree3_left_end.png"
+        self.tree1_left_end = resource_path("sprites/tree1_left_end.png")
+        self.tree2_left_end = resource_path("sprites/tree2_left_end.png")
+        self.tree3_left_end = resource_path("sprites/tree3_left_end.png")
 
-        self.tree1_right_end = "sprites/tree1_right_end.png"
-        self.tree2_right_end = "sprites/tree2_right_end.png"
-        self.tree3_right_end = "sprites/tree3_right_end.png"
+        self.tree1_right_end = resource_path("sprites/tree1_right_end.png")
+        self.tree2_right_end = resource_path("sprites/tree2_right_end.png")
+        self.tree3_right_end = resource_path("sprites/tree3_right_end.png")
 
-        self.tree1_no_bush = "sprites/tree1_no_bush.png"
-        self.tree2_no_bush = "sprites/tree2_no_bush.png"
-        self.tree3_no_bush = "sprites/tree3_no_bush.png"
+        self.tree1_no_bush = resource_path("sprites/tree1_no_bush.png")
+        self.tree2_no_bush = resource_path("sprites/tree2_no_bush.png")
+        self.tree3_no_bush = resource_path("sprites/tree3_no_bush.png")
 
         # Logs
-        self.logs = ["sprites/water_log_left_end.png",
-                     "sprites/water_log_connector.png",
-                     "sprites/water_log_right_end.png"]
+        self.logs = [resource_path("sprites/water_log_left_end.png"),
+                     resource_path("sprites/water_log_connector.png"),
+                     resource_path("sprites/water_log_right_end.png")]
 
         # Wolf
-        wolf_sheet = arcade.load_spritesheet("sprites/wolf_sheet.png")
+        wolf_sheet = arcade.load_spritesheet(resource_path("sprites/wolf_sheet.png"))
         self.wolf = wolf_sheet.get_texture_grid(size = (30, 30), columns=11, count=11)
 
         # Bees
-        hive_sheet = arcade.load_spritesheet("sprites/beehive.png")
+        hive_sheet = arcade.load_spritesheet(resource_path("sprites/beehive.png"))
         self.hive = hive_sheet.get_texture_grid(size = (30, 30), columns=17, count=17)
 
-        bees_sheet = arcade.load_spritesheet("sprites/bees.png")
+        bees_sheet = arcade.load_spritesheet(resource_path("sprites/bees.png"))
         self.swarm = bees_sheet.get_texture_grid(size = (30, 30), columns=6, count=6)
 
     def add_player(self, player):
@@ -153,12 +150,12 @@ class TextureEngine():
 
                 # Append a new grass cell
                 grass_texture = random.choices(
-                    ['sprites/grass_1.png',
-                    'sprites/grass_2.png',
-                    'sprites/grass_3.png',
-                    'sprites/flowers_1.png',
-                    'sprites/flowers_2.png',
-                    'sprites/flowers_3.png'],
+                    [resource_path('sprites/grass_1.png'),
+                    resource_path('sprites/grass_2.png'),
+                    resource_path('sprites/grass_3.png'),
+                    resource_path('sprites/flowers_1.png'),
+                    resource_path('sprites/flowers_2.png'),
+                    resource_path('sprites/flowers_3.png')],
                     weights = [0.22, 0.22, 0.22,
                                0.11, 0.11, 0.11])
 

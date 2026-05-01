@@ -2,10 +2,25 @@
 from datetime import datetime
 import firebase_admin
 from firebase_admin import credentials, firestore
+import sys
+import os
+
+
+def resource_path(relative_path):
+    '''
+    Gets absolute path to resource for pyinstaller
+    '''
+    try:
+        base_path = sys._MEIPASS
+
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 # initialize firebase app if not already initialized
 if not firebase_admin._apps:
-    cred = credentials.Certificate("firebase_key/serviceAccountKey.json")
+    cred = credentials.Certificate(resource_path("firebase_key/serviceAccountKey.json"))
     firebase_admin.initialize_app(cred)
 
 db = firestore.client()

@@ -6,6 +6,7 @@ from scripts.game_view import GameView
 from scripts.screens.leaderboard_screen import LeaderboardScreen
 from scripts.screens.stats_screen import StatsScreen
 from scripts.screens.settings_screen import Settings
+from scripts.utils import resource_path
 
 
 class StartScreen(arcade.View):
@@ -49,7 +50,7 @@ class StartScreen(arcade.View):
 
         # Load title
         self.sprites = arcade.SpriteList()
-        title = arcade.Sprite("sprites/title.png")
+        title = arcade.Sprite(resource_path("sprites/title.png"))
         title.center_x = c.WINDOW_WIDTH / 2
         title.center_y = c.WINDOW_HEIGHT * .8
         title.scale = 0.85 * c.RESOLUTION_RATIO

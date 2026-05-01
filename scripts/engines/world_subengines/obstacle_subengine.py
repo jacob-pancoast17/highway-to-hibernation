@@ -2,6 +2,7 @@
 # Python modules
 import random
 import arcade
+from scripts.utils import resource_path
 
 # Constants
 from scripts import constants as c
@@ -183,15 +184,15 @@ def generate_forest(texture_engine, curr_walk_coords, row, curr_bottom):
                 # print(f"Rock Placed: {x}, {row}")
                 if last_rock is None or last_rock.x != i-1:
                     rock_texture = random.choices(
-                        ['sprites/rock1.png',
-                        'sprites/rock2.png',
-                        'sprites/rock3.png',
-                        'sprites/rock1_mossy.png',
-                        'sprites/rock2_mossy.png',
-                        'sprites/rock3_mossy.png',
-                        'sprites/log.png',
-                        'sprites/log_mossy.png',
-                        'sprites/log_mushrooms.png'],
+                        [resource_path('sprites/rock1.png'),
+                        resource_path('sprites/rock2.png'),
+                        resource_path('sprites/rock3.png'),
+                        resource_path('sprites/rock1_mossy.png'),
+                        resource_path('sprites/rock2_mossy.png'),
+                        resource_path('sprites/rock3_mossy.png'),
+                        resource_path('sprites/log.png'),
+                        resource_path('sprites/log_mossy.png'),
+                        resource_path('sprites/log_mushrooms.png')],
                         weights = [0.18, 0.18, 0.18, 0.08, 0.08, 0.08, 0.12, 0.06, 0.04])
 
                     last_rock = Obstacle(rock_texture[0], x, row - curr_bottom, True)
@@ -238,7 +239,7 @@ def generate_river(texture_engine, curr_walk_coords, row, curr_bottom):
     for i in range(c.COLUMN_COUNT):
 
         river.append(
-            Hostile("sprites/water.png", i, row - curr_bottom, texture_engine))
+            Hostile(resource_path("sprites/water.png"), i, row - curr_bottom, texture_engine))
 
     return [river, curr_walk_coords]
 
@@ -285,7 +286,7 @@ def generate_victory(texture_engine, curr_walk_coords, row, curr_bottom):
 
         # The victory square should not be a rock
         if row == c.ENDING_Y and x == c.ENDING_X:
-            den = Den('sprites/den.png', x, row - curr_bottom)
+            den = Den(resource_path('sprites/den.png'), x, row - curr_bottom)
             sprites.append(den)
 
         # Always a clear path to end
@@ -299,15 +300,15 @@ def generate_victory(texture_engine, curr_walk_coords, row, curr_bottom):
 
                 if last_rock is None or last_rock.x != i-1:
                     rock_texture = random.choices(
-                        ['sprites/rock1.png',
-                        'sprites/rock2.png',
-                        'sprites/rock3.png',
-                        'sprites/rock1_mossy.png',
-                        'sprites/rock2_mossy.png',
-                        'sprites/rock3_mossy.png',
-                        'sprites/log.png',
-                        'sprites/log_mossy.png',
-                        'sprites/log_mushrooms.png'],
+                        [resource_path('sprites/rock1.png'),
+                        resource_path('sprites/rock2.png'),
+                        resource_path('sprites/rock3.png'),
+                        resource_path('sprites/rock1_mossy.png'),
+                        resource_path('sprites/rock2_mossy.png'),
+                        resource_path('sprites/rock3_mossy.png'),
+                        resource_path('sprites/log.png'),
+                        resource_path('sprites/log_mossy.png'),
+                        resource_path('sprites/log_mushrooms.png')],
                         weights = [0.18, 0.18, 0.18, 0.08, 0.08, 0.08, 0.12, 0.06, 0.04])
 
                     last_rock = Obstacle(rock_texture[0], x, row - curr_bottom, True)
