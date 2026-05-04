@@ -1,6 +1,8 @@
 ''' Module representing the settings screen. '''
 import arcade
+import os
 from scripts import constants as c
+from scripts import settings
 
 class Settings(arcade.View):
     ''' Settings represents the settings view '''
@@ -53,6 +55,10 @@ class Settings(arcade.View):
                                    675]
 
         self.size_dependent_constructor()
+
+        self.volume = settings.retrieve_settings()['volume']
+        self.skin = settings.retrieve_settings()['skin']
+        self.debug_mode = settings.retrieve_settings()['debug-mode']
 
     def size_dependent_constructor(self):
         '''
@@ -160,9 +166,10 @@ class Settings(arcade.View):
 
             # For volume
             if (self.currently_selected == 'Volume' and
-                c.VOLUME > c.MIN_VOLUME):
+                self.volume > c.MIN_VOLUME):
 
-                c.VOLUME -= 1
+                settings.update_settings(volume = self.volume - 1)
+                self.volume -= 1
 
             # For window
             if self.currently_selected == 'Window':
@@ -191,27 +198,32 @@ class Settings(arcade.View):
             # For skin
             if self.currently_selected == 'Skin':
 
-                index = self.skin_options.index(c.SKIN) - 1
+                index = self.skin_options.index(self.skin) - 1
 
                 if index == -1:
-                    c.SKIN = self.skin_options[-1]
+                    settings.update_settings(skin = self.skin_options[-1])
+                    self.skin = self.skin_options[-1]
                 else:
-                    c.SKIN = self.skin_options[index]
+                    settings.update_settings(skin = self.skin_options[index])
+                    self.skin = self.skin_options[index]
 
                 # The player's skin is changed in texture engine
 
             # For debug
             if self.currently_selected == 'Debug Mode':
 
-                c.DEBUG = not c.DEBUG
+                settings.update_settings(debug_mode = not self.debug_mode)
+                self.debug_mode = not self.debug_mode
 
         # Move left or right
         elif (symbol == arcade.key.RIGHT or symbol == arcade.key.D):
 
             # For volume
-            if (self.currently_selected == 'Volume' and c.VOLUME < c.MAX_VOLUME):
+            if (self.currently_selected == 'Volume' and 
+                self.volume < c.MAX_VOLUME):
 
-                c.VOLUME += 1
+                settings.update_settings(volume = self.volume + 1)
+                self.volume += 1
 
             # For window
             if self.currently_selected == 'Window':
@@ -240,28 +252,33 @@ class Settings(arcade.View):
             # For skin
             if self.currently_selected == 'Skin':
 
-                if(c.SKIN == 'Pooh'):
-                    c.SKIN = 'Grizzly'
+                if(self.skin == 'Pooh'):
 
-                index = self.skin_options.index(c.SKIN) + 1
+                    settings.update_settings(skin = 'Grizzly')
+                    self.skin = 'Grizzly'
+
+                index = self.skin_options.index(self.skin) + 1
 
                 if index == len(self.skin_options):
-                    c.SKIN = self.skin_options[0]
+                    settings.update_settings(skin = self.skin_options[0])
+                    self.skin = self.skin_options[0]
                 else:
-                    c.SKIN = self.skin_options[index]
+                    settings.update_settings(skin = self.skin_options[index])
+                    self.skin = self.skin_options[index]
 
             # For debug
             if self.currently_selected == 'Debug Mode':
 
-                c.DEBUG = not c.DEBUG
+                settings.update_settings(debug_mode = not self.debug_mode)
+                self.debug_mode = not self.debug_mode
 
         # Exit to menu
-        elif symbol == arcade.key.ESCAPE:
+        # elif symbol == arcade.key.ESCAPE:
 
-            self.window.show_view(self.previous_view)
-            #self.previous_view.initialize()
-            # Commented out so the game doesn't break
-            # This is what would allow you to change the resolution mid game
+        #     self.window.show_view(self.previous_view)
+        #     #self.previous_view.initialize()
+        #     # Commented out so the game doesn't break
+        #     # This is what would allow you to change the resolution mid game
 
         elif symbol == arcade.key.ENTER:
 
@@ -269,8 +286,11 @@ class Settings(arcade.View):
             if self.currently_selected == 'Back':
 
                 self.window.show_view(self.previous_view)
+
         elif (symbol == arcade.key.P and self.currently_selected == 'Skin'):
-            c.SKIN = "Pooh"
+
+            settings.update_settings(skin = "Pooh")
+            self.skin = "Pooh"
 
     def draw_settings(self):
         '''
@@ -348,7 +368,7 @@ class Settings(arcade.View):
 
             volume_title.draw()
 
-        for i in range(c.VOLUME):
+        for i in range(self.volume):
 
             arcade.draw_rect_filled(
                 arcade.XYWH((self.options_coords[0][0] + (volume_title.content_width / 2) +
@@ -358,9 +378,9 @@ class Settings(arcade.View):
                 30 * c.RESOLUTION_RATIO),
                 arcade.csscolor.WHITE)
 
-        for i in range(self.num_volume_bars - c.VOLUME):
+        for i in range(self.num_volume_bars - self.volume):
 
-            x = i + c.VOLUME
+            x = i + self.volume
 
             arcade.draw_rect_filled(
                 arcade.XYWH((self.options_coords[0][0] + (volume_title.content_width / 2) +
@@ -739,7 +759,7 @@ class Settings(arcade.View):
             
         skin_title.draw()
 
-        if c.SKIN == 'Grizzly':
+        if self.skin == 'Grizzly':
             skin_status = arcade.Text(
                     'Grizzly',
 
@@ -754,7 +774,7 @@ class Settings(arcade.View):
                     anchor_y="center",
                     color = arcade.csscolor.WHITE)
 
-        elif c.SKIN == 'Polar':
+        elif self.skin == 'Polar':
             skin_status = arcade.Text(
                     "Polar",
 
@@ -768,7 +788,7 @@ class Settings(arcade.View):
                     anchor_x="center",
                     anchor_y="center",
                     color = arcade.csscolor.WHITE)
-        elif c.SKIN == "Black":
+        elif self.skin == "Black":
             skin_status = arcade.Text(
                     "Black",
 
@@ -887,7 +907,7 @@ class Settings(arcade.View):
 
         debug_title.draw()
 
-        if c.DEBUG:
+        if self.debug_mode:
             debug_status = arcade.Text(
                     "ON",
 
@@ -1066,3 +1086,5 @@ class Settings(arcade.View):
         #print(f"{height}, {width}")
 
         #self.camera.position = (-225, -225)
+
+  

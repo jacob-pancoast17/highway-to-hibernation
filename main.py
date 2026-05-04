@@ -1,9 +1,11 @@
 ''' Main module to run the game. '''
 import arcade
+import json
 import sys
 import os
 from scripts import constants as c
 from scripts.screens.start_screen import StartScreen
+from scripts import settings
 
 def resource_path(relative_path):
     '''
@@ -19,6 +21,8 @@ def resource_path(relative_path):
 
 # Load the game font
 arcade.load_font(resource_path("fonts/edit-undo.brk.ttf"))
+
+settings.load_file()
 
 # Create a new arcade window and run the start screen
 window = arcade.Window(c.WINDOW_WIDTH, c.WINDOW_HEIGHT, c.TITLE)

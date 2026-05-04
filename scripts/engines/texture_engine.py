@@ -2,6 +2,7 @@
 import random
 import arcade
 from scripts.utils import resource_path
+from scripts import settings
 
 from scripts import constants as c
 
@@ -28,11 +29,11 @@ class TextureEngine():
         # list order: walk sprite, death1, death2
         bear_sprite_set = []
 
-        if(c.SKIN == "Polar"):
+        if(settings.retrieve_settings()['skin'] == "Polar"):
             bear_sprite_set = [resource_path("sprites/polar_bear.png"), resource_path("sprites/polar_bear_death1.png"), resource_path("sprites/polar_bear_death2_sheet.png")]
-        elif(c.SKIN == "Black"):
+        elif(settings.retrieve_settings()['skin'] == "Black"):
             bear_sprite_set = [resource_path("sprites/black_bear.png"), resource_path("sprites/black_bear_death1.png"), resource_path("sprites/black_bear_death2_sheet.png")]
-        elif(c.SKIN == "Pooh"):
+        elif(settings.retrieve_settings()['skin'] == "Pooh"):
             bear_sprite_set = [resource_path("sprites/pooh_bear.png"), resource_path("sprites/pooh_bear_death1.png"), resource_path("sprites/pooh_bear_death2_sheet.png")]
         else:
             # Grizzly is default

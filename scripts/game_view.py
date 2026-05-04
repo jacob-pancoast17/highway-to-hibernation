@@ -7,6 +7,7 @@ from scripts.screens.game_over_screen import GameOver
 from scripts.engines.texture_engine import TextureEngine
 from scripts.engines.time_engine import TimeEngine
 from scripts.engines.world_engine import WorldEngine
+from scripts import settings
 
 #from pause_screen import Pause
 
@@ -97,7 +98,7 @@ class GameView(arcade.View):
         self.current_top_of_screen = c.ROW_COUNT - 1
 
         # Music
-        c.MAIN_THEME = arcade.play_sound(c.ADVENTURE_MUSIC, volume = c.VOLUME / 10)
+        c.MAIN_THEME = arcade.play_sound(c.ADVENTURE_MUSIC, volume = settings.retrieve_settings()['volume'] / 10)
         c.MAIN_THEME.loop = True
         c.MAIN_THEME.volume = 0.4
 
@@ -122,7 +123,7 @@ class GameView(arcade.View):
             bold= True)
 
         # Initialize our arcade.Text object for debug
-        if c.DEBUG:
+        if settings.retrieve_settings()['debug-mode']:
             self.debug_text = arcade.Text(
                 f"Debug Menu\nSEED: {self.world.seed}\nHUNNY: {self.player.hunny_collected}\n" +
                 f"X: {self.player.x}\nY {self.player.y}\n",
@@ -151,7 +152,7 @@ class GameView(arcade.View):
 
         # Load score text
         self.score_text.draw()
-        if c.DEBUG:
+        if settings.retrieve_settings()['debug-mode']:
             self.debug_text.draw()
 
     def on_update(self, delta_time):
@@ -166,7 +167,7 @@ class GameView(arcade.View):
         '''
 
         c.MAIN_THEME.play()
-        c.MAIN_THEME.volume = c.VOLUME / 10
+        c.MAIN_THEME.volume = settings.retrieve_settings()['volume'] / 10
 
         if not self.time_stopped:
 
@@ -184,7 +185,7 @@ class GameView(arcade.View):
 
                 self.window.show_view(GameOver(self.player.score, self))
                 self.achieve_game_over = arcade.play_sound(c.GAME_OVER_JINGLE,
-                                                           volume = c.VOLUME / 10)
+                                                           volume = settings.retrieve_settings()['volume'] / 10)
 
         # checks for collision between player and collectibles
 
@@ -198,14 +199,14 @@ class GameView(arcade.View):
                 self.world.collectibles[self.world.collectibles.index(hunny)] = arcade.SpriteList()
                 self.player.score += 300
                 self.player.hunny_collected += 1
-                self.hunny_pickup = arcade.play_sound(c.HUNNY_SFX, volume = c.VOLUME / 10)
+                self.hunny_pickup = arcade.play_sound(c.HUNNY_SFX, volume = settings.retrieve_settings()['volume'] / 10)
 
             self.score_text.text = f"Score: {self.player.score}"
-            if c.DEBUG and self.debug_text is not None:
+            if settings.retrieve_settings()['debug-mode'] and self.debug_text is not None:
                 self.debug_text.text = (f"Debug Menu\nSEED: {self.world.seed}\n" +
                                         f"HUNNY: {self.player.hunny_collected}\nX:" +
                                         f"{self.player.x}\nY {self.player.y}\n")
-            elif c.DEBUG:
+            elif settings.retrieve_settings()['debug-mode']:
                 self.debug_text = arcade.Text(
                     f"Debug Menu\nSEED: {self.world.seed}\nHUNNY: {self.player.hunny_collected}" +
                     f"\nX: {self.player.x}\nY {self.player.y}\n",
@@ -247,7 +248,7 @@ class GameView(arcade.View):
             if did_move:
                 # print("made it!")
                 # play movement sfx
-                self.walk_playback = arcade.play_sound(c.WALK_SFX, volume=c.VOLUME / 10)
+                self.walk_playback = arcade.play_sound(c.WALK_SFX, volume = settings.retrieve_settings()['volume'] / 10)
 
                 if self.player.y > self.farthest_y:
                     self.farthest_y = self.player.y
