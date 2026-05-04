@@ -3,6 +3,7 @@ import arcade
 from scripts import constants as c
 from scripts.screens.settings_screen import Settings
 from scripts.screens.leaderboard_screen import LeaderboardScreen
+from utils import resource_path
 
 class Pause(arcade.View):
     '''
@@ -41,7 +42,7 @@ class Pause(arcade.View):
             nothing
         '''
         self.pause_spr = arcade.Sprite(
-            path_or_texture= "sprites/pause_graphic.png",
+            path_or_texture= resource_path("sprites/pause_graphic.png"),
             scale = 1.25 * c.RESOLUTION_RATIO,
             center_x = c.WINDOW_WIDTH / 2,
             center_y = c.WINDOW_HEIGHT / 2,

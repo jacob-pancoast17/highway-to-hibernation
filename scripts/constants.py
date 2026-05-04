@@ -2,6 +2,8 @@
 import os
 import sys
 from scripts.utils import resource_path
+import random
+import arcade
 
 # Set window and grid information
 ROW_COUNT = 15
