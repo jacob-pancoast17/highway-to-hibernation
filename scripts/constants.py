@@ -92,7 +92,7 @@ MAIN_THEME.pause()
 
 # Settings
 BLINK_RATE = 0.5
-DEBUG = True
+DEBUG = False
 WINDOW = 'Windowed'
 RESOLUTION = 450
 RESOLUTION_RATIO = RESOLUTION / 450
